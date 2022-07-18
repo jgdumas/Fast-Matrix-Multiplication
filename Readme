@@ -1,0 +1,6 @@
+To get the results for figure 3 of the paper, run accuracy2.m, which gives the accuracy and runtimes of the three algorithms for complex matrice multiplication. To change the dimension, you can change the value of n. To plot the results, use picture.m and picture_acc_speed.m.
+To get the results for figure 2 of the paper, run speed_imp.m, which gives the speed of the three algorithms for complex matrix multiplication. To plot the results, run speed_plot.m.
+To get the results for figure 4 of the paper, run accuracy_poly.m. Then run accuracy_poly_plot.m and speed_poly_plot.m to get the plots.
+To get the results for figure 5 of the paper, run accuracy_unitary.m. Then run accuracy_unitary.m and speed_unitary.m to get the plots.
+To get the results for figure 6 of the paper, run accuracy_neural.m. Then run accuracy_neural_plot.m and speed_neural_network_plot.m to get the plots.
+To get the results for figure 1 of the paper, run accuracy_SWC_complex.m and accuracy_SWC_real.m. To change the distribution to normal, modify the gen_mat_SW.m file. Then run picture_SWC.m to get the plots.
