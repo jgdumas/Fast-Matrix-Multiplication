@@ -4,11 +4,6 @@ num = 9;  % Number of runs for each point
 n_0 = 1;  % Basecase of the recursion
 n_b = 20; % Smallest matrix dimension
 inc = 10; % Matrix dimension increment
-t = 4;   % Number of points
-num = 4;  % Number of runs for each point
-n_0 = 1;  % Basecase of the recursion
-n_b = 2; % Smallest matrix dimension
-inc = 1; % Matrix dimension increment
 
 E_W = zeros(t,1);E_S = zeros(t,1);E_4 = zeros(t,1);E_J = zeros(t,1);
 E_8 = zeros(t,1);E_5 = zeros(t,1);E_3 = zeros(t,1);

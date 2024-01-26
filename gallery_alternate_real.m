@@ -5,11 +5,6 @@ n_0 = 1;   % Basecase of the recursion
 c = 10^12; % Condition number of left matrix
 l_b = 4;   % Smallest matrix dimension log
 
-t = 3;   % Number of points
-num = 4;  % Number of runs for each point
-n_0 = 1;  % Basecase of the recursion
-l_b = 2; % Smallest matrix dimension
-
 E_S = zeros(t,1);E_1 = zeros(t,1);E_W = zeros(t,1);E_K = zeros(t,1);
 E_4 = zeros(t,1);E_O = zeros(t,1);E_8 = zeros(t,1);
 T_S = zeros(t,1);T_1 = zeros(t,1);T_W = zeros(t,1);T_K = zeros(t,1);
