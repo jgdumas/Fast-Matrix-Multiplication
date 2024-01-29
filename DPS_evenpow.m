@@ -40,14 +40,13 @@ PB6=PB0-PB3;
 	d5 = DPS_evenpow(PA5,PB5,nmin);
 	d6 = DPS_evenpow(PA6,PB6,nmin);
 
-r1=d4+d2;
-r2=d4-d2;
-r3=d6+d5-d3+d1;
-r4=d0+r2/2;
-c11=r3/2+r1/4;
-c12=d1-d5+r4;
-c21=d3+d6+r4;
-c22=r1;
+r1=d4-d2;
+r2=d6+d5-d3+d1;
+r3=d0+r1/2;
+c22=d4+d2;
+c11=r2/2+c22/4;
+c12=d1-d5+r3;
+c21=d3+d6+r3;
 
 	C = [ c11 c12 ; c21 c22 ] ;
 
