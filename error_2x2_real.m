@@ -1,4 +1,4 @@
-function [e_w,e_s,e_v4,e_jg,e_j5,e_a3,e_8,t_w,t_s,t_v4,t_jg,t_j5,t_a3,t_8] = error_2x2_real(A,B,n_0)
+function [e_w,e_s,e_v4,e_jg,e_ra,e_j5,e_a3,e_8,t_w,t_s,t_v4,t_jg,t_ra,t_j5,t_a3,t_8] = error_2x2_real(A,B,n_0)
     scale = comNorm_real(A)*comNorm_real(B);
     E = ec(A,B);
     tic
@@ -17,6 +17,10 @@ function [e_w,e_s,e_v4,e_jg,e_j5,e_a3,e_8,t_w,t_s,t_v4,t_jg,t_j5,t_a3,t_8] = err
     C_jg = DPS_evenpow(A,B,n_0);
     t_jg = toc;
     e_jg = diffe_real(C_jg,E)/scale;
+    tic
+    C_ra = DPS_smallrat(A,B,n_0);
+    t_ra = toc;
+    e_ra = diffe_real(C_ra,E)/scale;
     tic
     C_j5 = DPS_intermediate(A,B,n_0);
     t_j5 = toc;
