@@ -1,4 +1,7 @@
 function M = DPS_CoBR(A, nmin)
+%          Right change of basis of the sparsification
+%          of DPS's algorithm via alternate basis.
+
 if nargin < 2, nmin = 8; end
 n = length(A);
 if n ~= 2^( log2(n) )
