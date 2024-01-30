@@ -35,8 +35,8 @@ Faster variants, using an alternate basis from:
 
 | Program | Complexity bound | Description |
 | :---    |     :---:     |        ---: |
-| `Strassen_alternate.m` | $5n^{\log_2(7)}$ | Winograd's algorithm, sparsified |
-| `Winograd_alternate.mstrassen.m` | $5n^{\log_2(7)}$ | Strassen's algorithm, sparsified |
+| `Strassen_alternate.m` | $5n^{\log_2(7)}$ | Strassen's algorithm, sparsified |
+| `Winograd_alternate.m` | $5n^{\log_2(7)}$ | Winograd's algorithm, sparsified |
 | `DPS_alternate.m` | $5n^{\log_2(7)}$ | DPS's algorithm, sparsified |
 |  |  |  |
 
