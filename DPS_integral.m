@@ -2,7 +2,7 @@ function C = DPS_integral(A, B, nmin)
 %          For A and B are matrices of dimension power of 2, computes the product C = A*B.
 %          Used recursively until dimension <= NMIN, is reached,
 %          at which point standard multiplication is used.
-%          Growth-factor:75/8+2\sqrt(2)\approx 12.06616423.
+%          Growth-factor:4369701675/473027282+2\sqrt(2) \approx 12.06616423.
 %          Frobenius norms:
 %                   \frac{3 \sqrt{46527883412970}}{6449885},
 %                   \frac{3 \sqrt{46527883412970}}{6492304},

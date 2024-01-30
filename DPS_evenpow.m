@@ -1,4 +1,10 @@
 function C = DPS_evenpow(A, B, nmin)
+%          For A and B are matrices of dimension power of 2, computes the product C = A*B.
+%          Used recursively until dimension <= NMIN, is reached,
+%          at which point standard multiplication is used.
+%          Growth-factor:75/8+2\sqrt(2)\approx 12.20342712.
+%          Frobenius norms: (9*sqrt(2))/4, (9*sqrt(2))/4, (9*sqrt(2))/4,
+%          7+7+10 additions, 4+4+4 multiplications/divisions.
 
 if nargin < 3, nmin = 8; end
 

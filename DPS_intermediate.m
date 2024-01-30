@@ -1,4 +1,13 @@
 function C = DPS_intermediate(A, B, nmin)
+%          For A and B are matrices of dimension power of 2, computes the product C = A*B.
+%          Used recursively until dimension <= NMIN, is reached,
+%          at which point standard multiplication is used.
+%          Growth-factor:358452876675/38788923392+2\sqrt(2)\approx 12.06954148.
+%          Frobenius norms:
+%                    \sqrt(302819615879344530)/176980480 \approx 3.109328685
+%                    \sqrt(302819615879344530)/171051008 \approx 3.217113361
+%                    \sqrt( 876049400082)/295936 \approx 3.162761904
+%          7+7+10 additions, 8+5+7 multiplications/divisions.
 
 if nargin < 3, nmin = 8; end
 
