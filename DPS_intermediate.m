@@ -7,7 +7,7 @@ function C = DPS_intermediate(A, B, nmin)
 %                    \sqrt(302819615879344530)/176980480 \approx 3.109328685
 %                    \sqrt(302819615879344530)/171051008 \approx 3.217113361
 %                    \sqrt( 876049400082)/295936 \approx 3.162761904
-%          7+7+10 additions, 8+5+7 multiplications/divisions.
+%          7+7+10 additions, 6+7+5 multiplications/divisions.
 
 if nargin < 3, nmin = 8; end
 
@@ -21,36 +21,41 @@ if n <= nmin
 else
 	m = n/2; i = 1:m; j = m+1:n;
 
-PA1=(295936*(A(i,j)-A(j,i))-167042*(A(i,i)+A(j,j)))/345665;
-PA5=A(i,j)*289/256;
-PA3=A(j,j)*334084/345665-A(i,j)*51622047/88490240;
-PA4=PA5/2-A(i,i);
-PA2=PA4-PA1;
-PA6=PA1-PA5;
-PA7=PA1+PA3;
-PB1=(B(j,i)-B(i,j))/2-(B(i,i)+B(j,j))*256/289;
-PB2=-B(i,i)*345665/295936;
-PB3=PB2/2+B(j,i)*345665/334084;
-PB4=-B(i,i)*178623/295936-B(i,j);
-PB5=PB3-PB1;
-PB6=PB2-PB1;
-PB7=PB1-PB4;
+PA2=A(j,j)*334084/345665-A(i,j)*51622047/88490240;
+PA3=A(i,i)-A(i,j)*289/512;
+t1=A(j,j)-PA3;
+PA4=A(i,j)*289/256;
+PA6=t1*167042/345665-A(j,i)*295936/345665;
+PA0=PA6-PA2;
+PA1=PA0+PA3;
+PA5=PA4-PA0;
+
+t4=B(j,i)*512/289-B(i,i);
+PB1=B(i,i)*345665/295936;
+PB2=t4*345665/591872;
+PB3=B(i,i)*178623/295936+B(i,j);
+PB6=B(i,j)/2-B(j,j)*256/289+t4*289/1024;
+PB0=PB6-PB3;
+PB5=PB1+PB0;
+PB4=PB2-PB0;
+
+d0=DPS_intermediate(PA0,PB0,nmin);
 d1=DPS_intermediate(PA1,PB1,nmin);
 d2=DPS_intermediate(PA2,PB2,nmin);
 d3=DPS_intermediate(PA3,PB3,nmin);
 d4=DPS_intermediate(PA4,PB4,nmin);
 d5=DPS_intermediate(PA5,PB5,nmin);
 d6=DPS_intermediate(PA6,PB6,nmin);
-d7=DPS_intermediate(PA7,PB7,nmin);
-PC1=d4+d5;
-PC2=d3-d2;
-PC3=d1+d2+d5+d6;
-c11=PC3*295936/345665;
-MC1=c11*178623/295936;
-c21=PC1-MC1;
-c12=PC2+MC1;
-c22=(289*(289*c11/512+(c12-c21))-345665*(d6+d7)/(2*289))/512;
 
-C = [ c11 c21 ; c12 c22 ] ;
+w1=d5+d0+d4;
+w2=d6+d5;
+w3=d2+w1;
+w4=d1+w1;
+c11=w4*295936/345665;
+c12=d3+d4-w4*178623/345665;
+c21=w3-w4*167042/345665;
+c22=(w3-c12)*289/512-w2*345665/295936;
+
+C = [ c11 c12 ; c21 c22 ] ;
 
 end ;
