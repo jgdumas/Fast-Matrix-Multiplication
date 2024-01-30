@@ -1,4 +1,10 @@
 function C = DPS_smallrat(A, B, nmin)
+%          For A and B are matrices of dimension power of 2, computes the product C = A*B.
+%          Used recursively until dimension <= NMIN, is reached,
+%          at which point standard multiplication is used.
+%          Growth-factor:75/8+2\sqrt(2)\approx 12.20342712.
+%          Frobenius norms: \sqrt(10),\sqrt(162/16),81/80\sqrt(10),
+%          7+7+10 additions, 8+5+7 multiplications/divisions.
 
 if nargin < 3, nmin = 8; end
 

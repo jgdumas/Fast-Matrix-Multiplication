@@ -1,4 +1,13 @@
 function C = DPS_integral(A, B, nmin)
+%          For A and B are matrices of dimension power of 2, computes the product C = A*B.
+%          Used recursively until dimension <= NMIN, is reached,
+%          at which point standard multiplication is used.
+%          Growth-factor:75/8+2\sqrt(2)\approx 12.06616423.
+%          Frobenius norms:
+%                   \frac{3 \sqrt{46527883412970}}{6449885},
+%                   \frac{3 \sqrt{46527883412970}}{6492304},
+%                   \frac{3 \sqrt{1219124418}}{33124},
+%          7+7+11 additions, 7+7+4 multiplications/divisions.
 
 if nargin < 3, nmin = 8; end
 
@@ -12,41 +21,45 @@ if n <= nmin
 else
 	m = n/2; i = 1:m; j = m+1:n;
 
-PA1=((13^2)*(A(i,i)+A(j,j))+(7*14)*(A(i,j)-A(j,i)))/(5*17*449);
-PA5=A(j,j)/(13^2);
-PA3=-((14^2)*A(i,j)+(3*71*89)*PA5)/(5*17*449);
-PA4=(PA5-A(j,i)/(2*7^2))/2;
-PA2=PA4-PA1;
-PA6=PA1-PA5;
-PA7=PA1+PA3;
-PB1=(7*14)*(B(j,i)-B(i,j))-(13^2)*(B(i,i)+B(j,j));
-MB1=-B(i,i)/(13^2);
-PB2=(5*17*449)*MB1;
-PB3=(5*17*449)*(B(j,i)/(7*14)+MB1)/2;
-PB4=(3*71*89)*MB1-(14^2)*B(i,j);
-PB5=PB3-PB1;
-PB6=PB2-PB1;
-PB7=PB1-PB4;
+t1=A(i,j)+A(j,j)*18957/33124;
+PA1=A(i,i)*33124/38165+A(j,i)*18957/38165+t1*19208/38165;
+PA2=t1*38416/38165;
+PA3=A(j,i)-A(j,j)*98/169;
+PA4=A(j,j)*196/169;
+PA0=PA1-PA3;
+PA5=PA0-PA4;
+PA6=PA0-PA2;
+
+s1=B(i,i)-B(j,i)*169/98;
+PB1=B(i,i)*38165/33124;
+PB2=s1*38165/66248;
+PB3=B(i,i)*18957/33124+B(i,j);
+PB6=B(i,j)/2-B(j,j)*169/196-s1*49/169;
+PB0=PB6-PB3;
+PB4=PB2+PB0;
+PB5=PB1+PB0;
+
+d0=DPS_integral(PA0,PB0,nmin);
 d1=DPS_integral(PA1,PB1,nmin);
 d2=DPS_integral(PA2,PB2,nmin);
 d3=DPS_integral(PA3,PB3,nmin);
 d4=DPS_integral(PA4,PB4,nmin);
 d5=DPS_integral(PA5,PB5,nmin);
 d6=DPS_integral(PA6,PB6,nmin);
-d7=DPS_integral(PA7,PB7,nmin);
-PC1=d1+d2+d6+d5;
-PC3=PC1/(5*17*449);
-PC4=-(3*71*89)*PC3;
-PC2=d4+d5;
-PC1=d3-d2;
-c11=PC4-PC1;
-c22=PC2+PC4;
-PC1=((2*7)^2)*PC3;
-c12=((13)^2)*PC1;
-PC2=(5*17*449)*(d6+d7)/(14^2);
-c21=((2*7^2)*((c11+c22)-(2*7^2)*PC1)+PC2)/(13^2);
+
+w0=d1-d4-d5;
+w1=d6-d5;
+w2=d1-d2;
+w3=d3-d4;
+w4=w3+w2;
+w5=d0+w0;
+w6=w5*18957/38165;
+c11=w2-w6;
+c21=w5*33124/38165;
+c12=w1*38165/33124-c21+w4*98/169;
+c22=w3-w6;
 
 
-	C = [ c11 c21 ; c12 c22 ] ;
+	C = [ c11 c12 ; c21 c22 ] ;
 
 end ;
