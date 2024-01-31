@@ -14,21 +14,22 @@ else
 
    SQRT3o2=sqrt(3)/2;
    SQRT3o3=sqrt(3)/3;
-   SQRT3o6=sqrt(3)/6;
+   SQRT3f2o3=sqrt(3)*2/3;
 
    M1 = DPS_CoBL(A(i,i), nmin);
-   M2 = DPS_CoBL(A(j,i), nmin);
-   M3 = DPS_CoBL(A(i,j), nmin);
+   M2 = DPS_CoBL(A(i,j), nmin);
+   M3 = DPS_CoBL(A(j,i), nmin);
    M4 = DPS_CoBL(A(j,j), nmin);
 
-   T1 = (M3-M2)/2;
-   T2 = M4*SQRT3o3;
-   T3 = T1+M1*SQRT3o2;
 
-   S1 = M4*SQRT3o2+T3;
-   S2 = M2-T2;
-   S3 = M3+T2;
-   S4 = M4*SQRT3o6-T3;
+T1=M4*SQRT3o3;
+T2=M3-M2;
+T3=M1+M4;
+
+S1=M4*SQRT3f2o3;
+S2=M2+T1;
+S3=M3-T1;
+S4=T2/2-T3*SQRT3o2;
 
    M = [ S1 S2; S3 S4];
 end
