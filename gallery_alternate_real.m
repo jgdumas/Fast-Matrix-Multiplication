@@ -1,6 +1,6 @@
 rng(1);
 t = 49;    % Number of points
-num = 3;   % Number of runs for each point
+num = 9;   % Number of runs for each point
 n_0 = 1;   % Basecase of the recursion
 c = 10^12; % Condition number of left matrix
 n_b = 20;  % Smallest matrix dimension
