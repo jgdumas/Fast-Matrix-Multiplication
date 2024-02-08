@@ -1,9 +1,11 @@
 rng(1);
-t = 5;     % Number of points
-num = 9;   % Number of runs for each point
+t = 49;    % Number of points
+num = 3;   % Number of runs for each point
 n_0 = 1;   % Basecase of the recursion
 c = 10^12; % Condition number of left matrix
-l_b = 4;   % Smallest matrix dimension log
+n_b = 20;  % Smallest matrix dimension
+inc = 10;  % Matrix dimension increment
+
 
 E_S = zeros(t,1);E_1 = zeros(t,1);E_W = zeros(t,1);E_K = zeros(t,1);
 E_4 = zeros(t,1);E_O = zeros(t,1);E_8 = zeros(t,1);
@@ -12,11 +14,11 @@ T_4 = zeros(t,1);T_O = zeros(t,1);T_8 = zeros(t,1);
 N = zeros(t,1);m = zeros(t,1);
 
 parfor l = 1:t
-    n = 2^(l_b+l);     m(l) = n;
-    A = gallery('randsvd', n, c, 3, n, n, 1);     N(l) = size(A,2);
-    disp(l); disp(cond(A));
+    n = n_b + inc*l;          m(l) = n;
+    [A, T] = gen_mat_svd(c,n);     N(l) = size(A,2);
+    disp([l,n,cond(T)/c]);
     for k = 1:num
-        B = A \ randn(n); disp(cond(B));
+        [B, R] = gen_mat_dvs(n,T); disp(cond(R));
         [e_s,e_1,e_w,e_ks,e_v4,e_vk,e_8,t_s,t_1,t_w,t_ks,t_v4,t_vk,t_8] = error_alternate_real(A,B,n_0);
         E_S(l) = E_S(l) + e_s/num;        E_1(l) = E_1(l) + e_1/num;        E_W(l) = E_W(l) + e_w/num;
         E_4(l) = E_4(l) + e_v4/num;       E_O(l) = E_O(l) + e_vk/num;       E_K(l) = E_K(l) + e_ks/num;
