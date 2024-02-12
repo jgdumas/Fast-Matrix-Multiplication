@@ -3,8 +3,8 @@
 ### Matlab accurate fast matrix multiplications via 2x2 recursion
 --------------------------------------------------------------------------------
 
-**Authors**:
-Jean-Guillaume Dumas, Clément Pernet, Alexandre Sedoglavic
+**Authors**:  Jean-Guillaume Dumas, Clément Pernet, Alexandre Sedoglavic
+- [ J-G. Dumas, C. Pernet, A. Sedoglavic; Strassen's algorithm is not optimally accurate, Feb. 2024](https://hal.science/hal-04441653)
 
 
 **About**:

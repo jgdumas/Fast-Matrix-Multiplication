@@ -9,6 +9,11 @@ function C = DPS_integral(A, B, nmin)
 %                   \frac{3 \sqrt{1219124418}}{33124},
 %          7+7+11 additions, 7+7+4 multiplications/divisions.
 
+%          Reference:
+%          J-G. Dumas, C. Pernet, A. Sedoglavic
+%          Strassen's algorithm is not optimally accurate, Feb. 2024
+%          https://hal.science/hal-04441653
+
 if nargin < 3, nmin = 8; end
 
 n = length(A);

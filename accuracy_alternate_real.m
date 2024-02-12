@@ -1,3 +1,9 @@
+%   Comparing accuracy of sparsified 2x2-recursive matrix multiplications
+%   Reference:
+%   J-G. Dumas, C. Pernet, A. Sedoglavic
+%   Strassen's algorithm is not optimally accurate, Feb. 2024
+%   https://hal.science/hal-04441653
+
 rng(1);
 t = 49;   % Number of points
 num = 9;  % Number of runs for each point

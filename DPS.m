@@ -1,10 +1,16 @@
 function C = DPS(A, B, nmin)
-%          For A and B are matrices of dimension power of 2, computes the product C = A*B.
+%          For A and B are matrices of dimension power of 2,
+%                              computes the product C = A*B.
 %          Used recursively until dimension <= NMIN, is reached,
 %          at which point standard multiplication is used.
 %          Growth-factor: 2\sqrt(2)+16\sqrt(3)\approx 12.06603145.
 %          Frobenius norms: \sqrt(10),\sqrt(10),\sqrt(10),
 %          7+7+10 additions, 4+4+4 multiplications/divisions.
+
+%          Reference:
+%          J-G. Dumas, C. Pernet, A. Sedoglavic
+%          Strassen's algorithm is not optimally accurate, Feb. 2024
+%          https://hal.science/hal-04441653
 
 if nargin < 3, nmin = 8; end
 

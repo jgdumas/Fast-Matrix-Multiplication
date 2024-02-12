@@ -9,6 +9,11 @@ function C = DPS_intermediate(A, B, nmin)
 %                    \sqrt( 876049400082)/295936 \approx 3.162761904
 %          7+7+10 additions, 6+7+5 multiplications/divisions.
 
+%          Reference:
+%          J-G. Dumas, C. Pernet, A. Sedoglavic
+%          Strassen's algorithm is not optimally accurate, Feb. 2024
+%          https://hal.science/hal-04441653
+
 if nargin < 3, nmin = 8; end
 
 n = length(A);

@@ -6,6 +6,11 @@ function C = DPS_evenpow(A, B, nmin)
 %          Frobenius norms: (9*sqrt(2))/4, (9*sqrt(2))/4, (9*sqrt(2))/4,
 %          7+7+10 additions, 4+4+4 multiplications/divisions.
 
+%          Reference:
+%          J-G. Dumas, C. Pernet, A. Sedoglavic
+%          Strassen's algorithm is not optimally accurate, Feb. 2024
+%          https://hal.science/hal-04441653
+
 if nargin < 3, nmin = 8; end
 
 n = length(A);

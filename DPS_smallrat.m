@@ -6,6 +6,11 @@ function C = DPS_smallrat(A, B, nmin)
 %          Frobenius norms: \sqrt(10),\sqrt(162/16),81/80\sqrt(10),
 %          7+7+10 additions, 8+5+7 multiplications/divisions.
 
+%          Reference:
+%          J-G. Dumas, C. Pernet, A. Sedoglavic
+%          Strassen's algorithm is not optimally accurate, Feb. 2024
+%          https://hal.science/hal-04441653
+
 if nargin < 3, nmin = 8; end
 
 n = length(A);
