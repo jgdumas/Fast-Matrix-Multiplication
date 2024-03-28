@@ -23,10 +23,10 @@ if n <= nmin
 else
 	m = n/2; i = 1:m; j = m+1:n;
 
-u1=A(i,j)+A(j,j)*2;
-PA1=u1*5/9;
+u1=A(i,j)/2+A(j,j);
+PA1=u1*10/9;
 PA2=A(i,i)*8/9-A(i,j)*2/3;
-PA3=A(i,i)*4/9+A(j,i)*8/9+u1*2/9;
+PA3=A(j,i)*8/9+(A(i,i)+u1)*4/9;
 PA4=A(i,j)*10/9;
 PA0=PA2-PA3;
 PA5=PA1+PA0;
