@@ -4,7 +4,7 @@ function C = DPS_evenpow(A, B, nmin)
 %          at which point standard multiplication is used.
 %          Growth-factor:75/8+2\sqrt(2)\approx 12.20342712.
 %          Frobenius norms: (9*sqrt(2))/4, (9*sqrt(2))/4, (9*sqrt(2))/4,
-%          7+7+10 additions, 4+4+4 multiplications/divisions.
+%          8+8+11 additions, 2+2+2 multiplications/divisions.
 
 %          Reference:
 %          J-G. Dumas, C. Pernet, A. Sedoglavic

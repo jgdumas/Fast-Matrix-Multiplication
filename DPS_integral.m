@@ -7,7 +7,7 @@ function C = DPS_integral(A, B, nmin)
 %                   \frac{3 \sqrt{46527883412970}}{6449885},
 %                   \frac{3 \sqrt{46527883412970}}{6492304},
 %                   \frac{3 \sqrt{1219124418}}{33124},
-%          7+7+11 additions, 7+7+4 multiplications/divisions.
+%          7+7+10 additions, 6+7+5 multiplications/divisions.
 
 %          Reference:
 %          J-G. Dumas, C. Pernet, A. Sedoglavic
