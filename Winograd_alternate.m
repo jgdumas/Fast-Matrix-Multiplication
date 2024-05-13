@@ -1,6 +1,6 @@
 function C = Winograd_alternate(A, B, nmin)
 %          Sparsification of Winograd's algorithm
-%          via alternate basis.
+%          via alternative basis.
 
 %          Reference:
 %          E. Karstadt, O. Schwartz; Matrix multiplication, a little faster.

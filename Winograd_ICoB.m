@@ -1,6 +1,6 @@
 function M = Winograd_ICoB(A, nmin)
 %          Inverse change of basis of the sparsification
-%          of Winograd's algorithm via alternate basis.
+%          of Winograd's algorithm via alternative basis.
 
 if nargin < 2, nmin = 8; end
 n = length(A);

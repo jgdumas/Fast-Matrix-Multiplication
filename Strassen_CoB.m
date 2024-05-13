@@ -1,6 +1,6 @@
 function M = Strassen_CoB(A, nmin)
 %          Left & Right change of basis of the sparsification
-%          of Strassen's algorithm via alternate basis.
+%          of Strassen's algorithm via alternative basis.
 
 if nargin < 2, nmin = 8; end
 n = length(A);

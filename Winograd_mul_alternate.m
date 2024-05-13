@@ -1,6 +1,6 @@
 function C = Winograd_mul_alternate(A, B, nmin)
 %          Sparse multiplication of the sparsification
-%          of Winograd's algorithm via alternate basis.
+%          of Winograd's algorithm via alternative basis.
 
 if nargin < 3, nmin = 8; end
 

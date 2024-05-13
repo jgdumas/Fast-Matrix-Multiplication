@@ -1,6 +1,6 @@
 function C = DPS_mul(A, B, nmin)
 %          Sparse multiplication of the sparsification
-%          of DPS's algorithm via alternate basis.
+%          of DPS's algorithm via alternative basis.
 
 if nargin < 3, nmin = 8; end
 

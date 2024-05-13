@@ -30,7 +30,7 @@ created for the numerical experiments of the paper:
 
 
 **Faster Algorithms**:
-Faster variants, using an alternate basis from:
+Faster variants, using an alternative basis from:
 - [G. Beniamini, N. Cheng, O. Holtz, E. Karstadt, O. Schwartz; Sparsifying the Operators of Fast Matrix Multiplication Algorithms](https://arxiv.org/abs/2008.03759).
 
 | Program | Complexity bound | Description |
