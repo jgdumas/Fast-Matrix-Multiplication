@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 # Fast-Matrix-Multiplication
-### Matlab accurate fast matrix multiplications via 2x2 recursion
+### Accuracy of Fast matrix multiplication Algorithms via 2x2 recursion
 --------------------------------------------------------------------------------
 
 **Authors**:  Jean-Guillaume Dumas, Clément Pernet, Alexandre Sedoglavic
@@ -15,7 +15,10 @@ created for the numerical experiments of the paper:
 
 - We add more accurate variants of fast matrix multiplication via 2x2 recursion
 
-**Accuracy of Fast matrix multiplication Algorithms**:
+
+
+--------------------------------------------------------------------------------
+**`FMM-matlab-benchmarks`, Accuracy benchmarks with Matlab**:
 | Program | Growth Factor | Description |
 | :---    |     :---:     |        ---: |
 | `strassenw.m` 	| 17.8530 | original Winograd's algorithm|
@@ -29,7 +32,7 @@ created for the numerical experiments of the paper:
 
 
 
-**Faster Algorithms**:
+**Faster Algorithms**,
 Faster variants, using an alternative basis from:
 - [G. Beniamini, N. Cheng, O. Holtz, E. Karstadt, O. Schwartz; Sparsifying the Operators of Fast Matrix Multiplication Algorithms](https://arxiv.org/abs/2008.03759).
 
@@ -42,7 +45,30 @@ Faster variants, using an alternative basis from:
 
 All "alternate" variants use left/right and inverse change of basis (`*CoB*` files) together with an inner sparse multiplication (`*mul*` files).
 
-**Benchmarks**:
+**Benchmarks**,
+Accuracy comparison with symbolic matrix multiplication: 
 - `accuracy_2x2_real.m`: comparing algorithms accuracy
 - `accuracy_alternate_real.m`: comparing alternate change of basis
 - `gallery_alternate_real.m`: change of basis on large condition number
+
+
+
+--------------------------------------------------------------------------------
+**`FMM-plinopt-codegen`, Progam generation via the PLinOpt library**:
+
+Command-line scritps generating optimized matlab programs.
+
+Examples: 
+`DPS.plo`, 
+`DPS_evenpow.plo`,
+`DPS_smallrat.plo`,
+`DPS_intermediate.plo`,  
+`DPS_integral.plo`,
+`DPS_CoB.plo`.
+- [PLinOpt library](https://github.com/jgdumas/plinopt): Routines handling linear, bilinear & trilinear programs.
+
+
+
+--------------------------------------------------------------------------------
+**`FMM-maple-proofs`, Proofs of accuracy bounds in Maple**:
+
