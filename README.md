@@ -72,3 +72,4 @@ Examples:
 --------------------------------------------------------------------------------
 **`FMM-maple-proofs`, Proofs of accuracy bounds in Maple**:
 
+- `Minimal2Norm`: Proof of the Frobenius norm minimal point of Fast Matrix Multiplication in Strassen's orbit
