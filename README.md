@@ -38,18 +38,18 @@ Faster variants, using an alternative basis from:
 
 | Program | Complexity bound | Description |
 | :---    |     :---:     |        ---: |
-| `Strassen_alternate.m` | $5n^{\log_2(7)}$ | Strassen's algorithm, sparsified |
-| `Winograd_alternate.m` | $5n^{\log_2(7)}$ | Winograd's algorithm, sparsified |
-| `DPS_alternate.m` | $5n^{\log_2(7)}$ | DPS's algorithm, sparsified |
+| `Strassen_aternative.m` | $5n^{\log_2(7)}$ | Strassen's algorithm, sparsified |
+| `Winograd_aternative.m` | $5n^{\log_2(7)}$ | Winograd's algorithm, sparsified |
+| `DPS_aternative.m` | $5n^{\log_2(7)}$ | DPS's algorithm, sparsified |
 |  |  |  |
 
-All "alternate" variants use left/right and inverse change of basis (`*CoB*` files) together with an inner sparse multiplication (`*mul*` files).
+All "aternative" variants use left/right and inverse change of basis (`*CoB*` files) together with an inner sparse multiplication (`*mul*` files).
 
 **Benchmarks**,
 Accuracy comparison with symbolic matrix multiplication: 
 - `accuracy_2x2_real.m`: comparing algorithms accuracy
-- `accuracy_alternate_real.m`: comparing alternate change of basis
-- `gallery_alternate_real.m`: change of basis on large condition number
+- `accuracy_alternative_real.m`: comparing alternative change of basis
+- `gallery_alternative_real.m`: change of basis on large condition number
 
 
 

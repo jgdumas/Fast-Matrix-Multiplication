@@ -1,4 +1,4 @@
-function C = Winograd_alternate(A, B, nmin)
+function C = Winograd_alternative(A, B, nmin)
 %          Sparsification of Winograd's algorithm
 %          via alternative basis.
 
@@ -8,6 +8,6 @@ function C = Winograd_alternate(A, B, nmin)
 
    U = Winograd_CoB(A, nmin);              % Left change of basis
    V = Winograd_CoB(B, nmin);              % Right change of basis
-   W = Winograd_mul_alternate(U, V, nmin); % Sparse multiplication
+   W = Winograd_mul_alternative(U, V, nmin); % Sparse multiplication
    C = Winograd_ICoB(W, nmin);             % Inverse change of basis
 end

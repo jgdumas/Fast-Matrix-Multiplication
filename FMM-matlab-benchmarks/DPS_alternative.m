@@ -1,4 +1,4 @@
-function C = DPS_alternate(A, B, nmin)
+function C = DPS_alternative(A, B, nmin)
 %          Sparsification of DPS's algorithm
 %          via alternative basis.
 
