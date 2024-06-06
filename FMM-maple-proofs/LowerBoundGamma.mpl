@@ -70,7 +70,7 @@ evalf(subs(z = 0.5171, [b1, b2]));
 ;
 evalf(subs(z = 0.5171 + rand(), eigs));
 # The extremal point is a minimum, we search for the limit of the combined Holder norms at infinity
-MinPoint := simplify(subs(subminpoint, E));
+MinPoint := simplify(expand(simplify(subs(subminpoint, E))));
 LowerBound1 := limit(MinPoint^3*7^(1 + 3*z), z = infinity);
 LowerBound2 := limit(MinPoint^2*subs(z = -2*z - 1, MinPoint), z = infinity);
 evalf([LowerBound1, LowerBound2]);
