@@ -1,4 +1,4 @@
-function C = Winograd_mul_alternate(A, B, nmin)
+function C = Winograd_mul_alternative(A, B, nmin)
 %          Sparse multiplication of the sparsification
 %          of Winograd's algorithm via alternative basis.
 
@@ -22,13 +22,13 @@ else
    T2 = B(i,j) - B(j,i);
    T3 = B(i,j) - B(i,i);
 
-   M1 = Winograd_mul_alternate( A(j,j), B(j,j), nmin);
-   M2 = Winograd_mul_alternate( A(j,i), B(j,i), nmin);
-   M3 = Winograd_mul_alternate( A(i,j), B(i,j), nmin);
-   M4 = Winograd_mul_alternate( A(i,i), B(i,i), nmin);
-   M5 = Winograd_mul_alternate( S1, T1, nmin);
-   M6 = Winograd_mul_alternate( S2, T2, nmin);
-   M7 = Winograd_mul_alternate( S3, T3, nmin);
+   M1 = Winograd_mul_alternative( A(j,j), B(j,j), nmin);
+   M2 = Winograd_mul_alternative( A(j,i), B(j,i), nmin);
+   M3 = Winograd_mul_alternative( A(i,j), B(i,j), nmin);
+   M4 = Winograd_mul_alternative( A(i,i), B(i,i), nmin);
+   M5 = Winograd_mul_alternative( S1, T1, nmin);
+   M6 = Winograd_mul_alternative( S2, T2, nmin);
+   M7 = Winograd_mul_alternative( S3, T3, nmin);
 
    C11 = M4+M5;
    C12 = M3+M5-M6+M7;

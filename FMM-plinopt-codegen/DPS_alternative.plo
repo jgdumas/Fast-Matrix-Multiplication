@@ -1,0 +1,28 @@
+# Generation of DPS_alternative.m
+
+# Automatically obtained with the PLinOpt library
+#   https://github.com/jgdumas/plinopt
+
+# Associated L,R,P matrices with PLinOpt are:
+#   left : data/La.sms
+#   right: data/Ra.sms
+#   prod.: data/Pa.sms
+
+# Pre-computation of the lhs:
+#   replace [i0;i1;i2;i3] by [A(i,i);A(i,j);A(j,i);A(j,j)]
+optimizer -E -N data/La.sms| compacter -s
+# [1;32m3	additions	instead of 3[0m 	0.0868759s (0.327302 cpu) [3]
+# [1;32m0	multiplications	instead of 0[0m
+
+# Pre-computation of the rhs:
+#   replace [i0;i1;i2;i3] by [B(i,i);B(i,j);B(j,i);B(j,j)]
+optimizer -E -N data/Ra.sms| compacter -s
+# [1;32m3	additions	instead of 3[0m 	0.0858929s (0.326958 cpu) [3]
+# [1;32m0	multiplications	instead of 0[0m
+
+# Pre-computation of the product:
+#   replace [o0;o1;o2;o3] by [C11,C12,C21,C22]
+matrix-transpose data/Pa.sms | optimizer -E -N | transpozer | compacter -s
+# [1;32m6	additions (3+3)[0m
+# [1;32m0	multiplications[0m
+

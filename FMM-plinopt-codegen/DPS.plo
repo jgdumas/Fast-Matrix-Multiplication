@@ -1,0 +1,56 @@
+#####################################################################
+# Fast-Matrix-Multiplication library
+#   https://github.com/jgdumas/Fast-Matrix-Multiplication
+#   Accurate fast matrix multiplications via 2x2 recursion
+#   Authors:
+#   [J-G. Dumas, C. Pernet, A. Sedoglavic;
+#    Strassen's algorithm is not optimally accurate.
+#    https://hal.science/hal-04441653]
+
+# Generation of DPS.m
+
+# Program Automatically obtained with the PLinOpt library
+#   https://github.com/jgdumas/plinopt
+#   (run this program within the installed 'plinopt' directory)
+
+# DPS.m linear algorithms description is provided via associated
+# PLinOpt L (left), R (right), P (product) matrices, which are:
+#   left : data/Lo.sms
+#   right: data/Ro.sms
+#   prod.: data/Po.sms
+
+
+##########
+# Pre-computation of the lhs:
+#   replace [i0;i1;i2;i3] by [A(i,i);A(i,j);A(j,i);A(j,j)]
+
+optimizer -E -N data/Lo.sms | compacter -s
+
+# 7	additions	instead of 14 	0.564344s (1.90303 cpu) [3]
+# 4	multiplications	instead of 19
+##########
+
+
+##########
+# Pre-computation of the rhs:
+#   replace [i0;i1;i2;i3] by [B(i,i);B(i,j);B(j,i);B(j,j)]
+
+optimizer -E -N data/Ro.sms | compacter -s
+
+# 7	additions	instead of 14 	1.16858s (3.85641 cpu) [3]
+# 4	multiplications	instead of 19
+##########
+
+
+##########
+# Pre-computation of the product:
+#   replace [o0;o1;o2;o3] by [C11,C12,C21,C22]
+
+matrix-transpose data/Po.sms | optimizer -E -N | transpozer | compacter -s
+
+# 10	additions (7+3)
+# 4	multiplications
+##########
+
+
+#####################################################################
