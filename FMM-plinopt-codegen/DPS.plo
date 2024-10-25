@@ -22,7 +22,9 @@
 
 ##########
 # Pre-computation of the lhs:
+#   replace 1013 by sqrt(3)
 #   replace [i0;i1;i2;i3] by [A(i,i);A(i,j);A(j,i);A(j,j)]
+#   replace [o0;o1;o2;o3;o4;o5;o6] by [PA0,PA1,PA2,PA3,PA4,PA5,PA6]
 
 optimizer -E -N data/Lo.sms | compacter -s
 
@@ -33,7 +35,9 @@ optimizer -E -N data/Lo.sms | compacter -s
 
 ##########
 # Pre-computation of the rhs:
+#   replace 1013 by sqrt(3)
 #   replace [i0;i1;i2;i3] by [B(i,i);B(i,j);B(j,i);B(j,j)]
+#   replace [o0;o1;o2;o3;o4;o5;o6] by [PB0,PB1,PB2,PB3,PB4,PB5,PB6]
 
 optimizer -E -N data/Ro.sms | compacter -s
 
@@ -44,6 +48,8 @@ optimizer -E -N data/Ro.sms | compacter -s
 
 ##########
 # Pre-computation of the product:
+#   replace 1013 by sqrt(3)
+#   replace [i0;i1;i2;i3;i4,i5,i6] by [d1,d2,d3,d4,d5,d6,d7]
 #   replace [o0;o1;o2;o3] by [C11,C12,C21,C22]
 
 matrix-transpose data/Po.sms | optimizer -E -N | transpozer | compacter -s

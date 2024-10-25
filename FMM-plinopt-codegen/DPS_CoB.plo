@@ -22,7 +22,9 @@
 
 ##########
 # Pre-computation of the alt. basis lhs:
+#   replace 1013 by sqrt(3)
 #   replace [i0;i1;i2;i3] by [A(i,i);A(i,j);A(j,i);A(j,j)]
+#   replace [o0;o1;o2;o3] by [M1,M2,M3,M4]
 
 optimizer -E -N data/CLo.sms | compacter -s
 
@@ -33,7 +35,9 @@ optimizer -E -N data/CLo.sms | compacter -s
 
 ##########
 # Pre-computation of the alt. basis rhs:
+#   replace 1013 by sqrt(3)
 #   replace [i0;i1;i2;i3] by [A(i,i);A(i,j);A(j,i);A(j,j)]
+#   replace [o0;o1;o2;o3] by [M1,M2,M3,M4]
 
 optimizer -E -N data/CRo.sms | compacter -s
 
@@ -44,7 +48,9 @@ optimizer -E -N data/CRo.sms | compacter -s
 
 ##########
 # Post-computation of the alt. basis product:
-#   replace [o0;o1;o2;o3] by [S1,S2,S3,S4S4]
+#   replace 1013 by sqrt(3)
+#   replace [i0;i1;i2;i3] by [M1,M2,M3,M4]
+#   replace [o0;o1;o2;o3] by [S1,S2,S3,S4]
 
 matrix-transpose data/CPo.sms | optimizer -E -N | transpozer | compacter -s
 

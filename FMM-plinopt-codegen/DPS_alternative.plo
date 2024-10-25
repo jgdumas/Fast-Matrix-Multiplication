@@ -21,6 +21,7 @@ optimizer -E -N data/Ra.sms| compacter -s
 # [1;32m0	multiplications	instead of 0[0m
 
 # Pre-computation of the product:
+#   replace [i0;i1;i2;i3;i4,i5,i6] by [M1,M2,M3,M4,M5,M6,M7]
 #   replace [o0;o1;o2;o3] by [C11,C12,C21,C22]
 matrix-transpose data/Pa.sms | optimizer -E -N | transpozer | compacter -s
 # [1;32m6	additions (3+3)[0m
