@@ -8,8 +8,8 @@
 
 
 **About**:
-This is a Fork of the 
-[Complex-Matrix-Multiplication](https://github.com/zhen06/Complex-Matrix-Multiplication) repository, 
+This is a Fork of the
+[Complex-Matrix-Multiplication](https://github.com/zhen06/Complex-Matrix-Multiplication) repository,
 created for the numerical experiments of the paper:
 - [Dai, Z., Lim, LH; Numerical stability and tensor nuclear norm. Numer. Math. 155, 345--376 (2023)](https://link.springer.com/article/10.1007/s00211-023-01377-5).
 
@@ -46,7 +46,7 @@ Faster variants, using an alternative basis from:
 All "aternative" variants use left/right and inverse change of basis (`*CoB*` files) together with an inner sparse multiplication (`*mul*` files).
 
 **Benchmarks**,
-Accuracy comparison with symbolic matrix multiplication: 
+Accuracy comparison with symbolic matrix multiplication:
 - `accuracy_2x2_real.m`: comparing algorithms accuracy
 - `accuracy_alternative_real.m`: comparing alternative change of basis
 - `gallery_alternative_real.m`: change of basis on large condition number
@@ -58,11 +58,11 @@ Accuracy comparison with symbolic matrix multiplication:
 
 Command-line scritps generating optimized matlab programs.
 
-Examples: 
-`DPS.plo`, 
+Examples:
+`DPS.plo`,
 `DPS_evenpow.plo`,
 `DPS_smallrat.plo`,
-`DPS_intermediate.plo`,  
+`DPS_intermediate.plo`,
 `DPS_integral.plo`,
 `DPS_CoB.plo`.
 - [PLinOpt library](https://github.com/jgdumas/plinopt): Routines handling linear, bilinear & trilinear programs.
