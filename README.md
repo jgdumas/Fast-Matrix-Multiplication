@@ -4,7 +4,7 @@
 --------------------------------------------------------------------------------
 
 **Authors**:  Jean-Guillaume Dumas, Clément Pernet, Alexandre Sedoglavic
-- [ J-G. Dumas, C. Pernet, A. Sedoglavic; Strassen's algorithm is not optimally accurate, Feb. 2024](https://hal.science/hal-04441653)
+- [ J-G. Dumas, C. Pernet, A. Sedoglavic; Strassen's algorithm is not optimally accurate, ISSAC 2024, Raleigh, NC USA, pp. 254-263.](https://hal.science/hal-04441653)
 
 
 **About**:
