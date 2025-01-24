@@ -13,7 +13,7 @@ function [e_f,e_fa,e_c,t_f,t_fa,t_c] = error_3x3x6_real(A,B,n_0)
     %t_fa = toc;
     %e_fa = diffe_real(C_fa,E)/scale;
     %tic
-    C_c = conventional(A,B,n_0);
+    C_c = conventional_3x3x6(A,B,n_0);
     t_c = toc;
     e_c = diffe_real(C_c,E)/scale;
 end
