@@ -1,8 +1,7 @@
-%   Comparing accuracy of fast 2x2-recursive matrix multiplications
-%   Reference:
-%   J-G. Dumas, C. Pernet, A. Sedoglavic
-%   Strassen's algorithm is not optimally accurate, Feb. 2024
-%   https://hal.science/hal-04441653
+%   	Comparing accuracy of fast 3x3x6-recursive matrix multiplications
+%   	Reference:
+%   	J-G. Dumas, C. Pernet, A. Sedoglavic
+%	next level
 
 rng(1);
 t = 49;   % Number of points
