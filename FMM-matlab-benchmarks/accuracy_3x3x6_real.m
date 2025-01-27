@@ -27,8 +27,9 @@ for l = 1:t
         A = gen_mat_SW_axb([n_1,n_1],[3,3]);        N(l) = size(A,2);  
         B = gen_mat_SW_axb([n_1,n_2],[3,6]);
         [e_c,t_c] = error_3x3x6_real(A,B,n_0);
+        [e_f,e_c,t_f,t_c] = error_3x3x6_real(A,B,n_0);
         %[e_f,e_fa,e_c,t_f,t_fa,t_c] = error_3x3x6_real(A,B,n_0);
-        %E_f(l) = E_f(l) + e_f/num;      T_f(l) = T_f(l) + t_f/num;
+        E_f(l) = E_f(l) + e_f/num;      T_f(l) = T_f(l) + t_f/num;
         %E_fa(l) = E_fa(l) + e_fa/num; T_fa(l) = T_fa(l) + t_fa/num;      
         E_c(l) = E_c(l) + e_c/num; T_c(l) = T_c(l) + t_c/num;  
     end
