@@ -4,22 +4,25 @@ function C = conventional_3x3x6(A, B, nmin)
 %          	a power of ?, computes the product C = A*B.
 %          	conventional algorithm is used recursively until dimension <= NMIN
 %          	is reached, at which point standard multiplication is used.
-%          	The default is NMIN = 6 (which minimizes the total number of
+%          	The default is NMIN = 3 (which minimizes the total number of
 %          	operations).
 
-if nargin < 3, nmin = 6; end
+if nargin < 3, nmin = 3; end
 
 ca = size(A,1);cb = size(B,2);
-if ca ~= 3^( log(ca)/log(3) )
-   error('The matrix dimension must be a power of 3.')
-end
-
-if ca(2) <= nmin
+if ((ca <= nmin) | (cb <=nmin))
    C = A*B;
 else
+if ((rem(ca,3) ~= 0) | (rem(size(A,2),3) ~=0))
+   error('The first matrix dimension must be a multiple of 3.')
+end
+if ((rem(cb,3) ~= 0) | (rem(size(B,2),6) ~=0))
+   error('The second matrix dimension must be a multiple of [3,6].')
+end
+
    atom = ca/3;
-   i = 1:atom; j = atom+1:2*atom; k:=2*atom+1:ca;
-   l = ca+1;ca+atom; m=ca+atom+1:ca+2*atom: n=ca+2*atom+1:cb:
+   i = 1:atom; j = (atom+1):(2*atom); k=(2*atom+1):ca;
+   l = (ca+1):(ca+atom); m=(ca+atom+1):(ca+2*atom); n=(ca+2*atom+1):(cb);
 
 P1=conventional_3x3x6(A(i,i),B(i,i),nmin);
 P2=conventional_3x3x6(A(i,i),B(i,j),nmin);
@@ -77,8 +80,9 @@ P53=conventional_3x3x6(A(k,k),B(k,m),nmin);
 P54=conventional_3x3x6(A(k,k),B(k,n),nmin);
 
    C = [ 
-P1 +P7 +P13  P2 +P8 +P14 P3 +P9 +P15 P4 +P10+P16 P5 +P11+P17 P6 +P12+P18 ;  
+P1+P7+P13  P2+P8+P14 P3+P9+P15 P4+P10+P16 P5+P11+P17 P6+P12+P18 ;  
 P19+P25+P31  P20+P26+P32 P21+P27+P33 P22+P28+P34 P23+P30+P35 P24+P31+P36 ;
 P37+P43+P49  P38+P42+P50 P39+P43+P51 P40+P44+P52 P41+P45+P53 P42+P46+P54
 	];
+
 end

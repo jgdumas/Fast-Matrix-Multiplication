@@ -1,4 +1,5 @@
-function [e_f,e_fa,e_c,t_f,t_fa,t_c] = error_3x3x6_real(A,B,n_0)
+function [e_c,t_c] = error_3x3x6_real(A,B,n_0)
+%function [e_f,e_fa,e_c,t_f,t_fa,t_c] = error_3x3x6_real(A,B,n_0)
 	% f fast classical 3x3x6 taken from fmm.univ-lille.fr
 	% fa fast and accurate (ours)
 	% c conventional
