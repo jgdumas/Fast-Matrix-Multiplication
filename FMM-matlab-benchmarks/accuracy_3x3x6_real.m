@@ -14,18 +14,16 @@ N = zeros(t,1);m = zeros(t,1);
 
 % A starts with 3x3 and increase (3+l)x(3+l)
 % B starts with 3x6 and increase (3+l)x(3+2*l)
-n_a = 3; % Smallest first matrix dimension
-n_b = 6; % Smallest second matrix dimension
-inc = 1; % Matrix dimension increment
+n = 6; % Smallest first matrix dimension
+inc = 6; % Matrix dimension increment
 
 %parfor l = 1:t
 for l = 1:t
-    n_1 = n_a + inc*l;
-    n_2 = n_b + 2*inc*l;
+    n = n + inc*l;
     m(l) = n_1;    disp(l);
     for k = 1:num
-        A = gen_mat_SW_axb([n_1,n_1],[3,3]);        N(l) = size(A,2);  
-        B = gen_mat_SW_axb([n_1,n_2],[3,6]);
+        A = gen_mat_SW(n);        N(l) = size(A,2);  
+        B = gen_mat_SW(n);
         [e_c,t_c] = error_3x3x6_real(A,B,n_0);
         [e_f,e_c,t_f,t_c] = error_3x3x6_real(A,B,n_0);
         %[e_f,e_fa,e_c,t_f,t_fa,t_c] = error_3x3x6_real(A,B,n_0);
