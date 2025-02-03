@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 # Fast-Matrix-Multiplication
-### Accuracy of Fast matrix multiplication Algorithms via 2x2 recursion
+### Accuracy of Fast matrix multiplication Algorithms
 --------------------------------------------------------------------------------
 
 **Authors**:  Jean-Guillaume Dumas, Clément Pernet, Alexandre Sedoglavic
@@ -13,7 +13,7 @@ This is a Fork of the
 created for the numerical experiments of the paper:
 - [Dai, Z., Lim, LH; Numerical stability and tensor nuclear norm. Numer. Math. 155, 345--376 (2023)](https://link.springer.com/article/10.1007/s00211-023-01377-5).
 
-- We add more accurate variants of fast matrix multiplication via 2x2 recursion
+- We add more accurate variants of fast matrix multiplication, especially 2x2 recursion
 
 
 
