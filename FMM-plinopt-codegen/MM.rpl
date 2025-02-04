@@ -39,7 +39,7 @@ set Cname = "${Fname}_${m}_${k}_${n}"
 echo "# Writing core algorithm to ${PathCname}.m"
 
 cat > ${PathCname}.m<< EOF
-function C = $Cname(A, B, nmin)
+function C = $Cname(A, B, nmin, level)
 [m,k] = size(A);
 [k,n] = size(B);
 EOF
@@ -60,36 +60,36 @@ cat >> ${PathCname}.m<< EOF
   if (mu < m) || (ku < k) || (nu < n)
     % fprintf("# Core SubMatrix[%d]: %d x %d x %d\n",l,mu,ku,nu)
 EOF
-echo "    C(1:mu,1:nu)=${Cname}(A(1:mu,1:ku),B(1:ku,1:nu),nmin);" >> ${PathCname}.m
+echo "    C(1:mu,1:nu)=${Cname}(A(1:mu,1:ku),B(1:ku,1:nu),nmin, level);" >> ${PathCname}.m
 cat >> ${PathCname}.m<< EOF
     if (m > mu)
       % fprintf("# MM peel m: %d x %d x %d\n",m-mu,k,n)
 EOF
-echo "      C(mu+1:m,1:n)=C(mu+1:m,1:n)+${Fname}(A(mu+1:m,1:k),B,nmin);" >> ${PathCname}.m
+echo "      C(mu+1:m,1:n)=C(mu+1:m,1:n)+${Fname}(A(mu+1:m,1:k),B,nmin, level);" >> ${PathCname}.m
 cat >> ${PathCname}.m<< EOF
     end
     if (k > ku) && (mu > 0) && (nu > 0)
       % fprintf("# MM peel k: %d x %d x %d\n",mu,k-ku,nu)
 EOF
-echo "      C(1:mu,1:nu)=C(1:mu,1:nu)+${Fname}(A(1:mu,ku+1:k),B(ku+1:k,1:nu),nmin);" >> ${PathCname}.m
+echo "      C(1:mu,1:nu)=C(1:mu,1:nu)+${Fname}(A(1:mu,ku+1:k),B(ku+1:k,1:nu),nmin, level);" >> ${PathCname}.m
 cat >> ${PathCname}.m<< EOF
     end
     if (n > nu) && (mu > 0)
       % fprintf("# MM peel n: %d x %d x %d\n",mu,k,n-nu)
 EOF
-echo "      C(1:mu,nu+1:n)=C(1:mu,nu+1:n)+${Fname}(A(1:mu,1:k),B(1:k,nu+1:n),nmin);" >> ${PathCname}.m
+echo "      C(1:mu,nu+1:n)=C(1:mu,nu+1:n)+${Fname}(A(1:mu,1:k),B(1:k,nu+1:n),nmin, level);" >> ${PathCname}.m
 cat >> ${PathCname}.m<< EOF
     end
   else
 EOF
-echo '    fprintf("# Core'"<$m;$k;$n>"': %d x %d x %d\n",m,k,n)' >> ${PathCname}.m
+echo '    if l>=level, fprintf("# Core'"<$m;$k;$n>"'[%d]: %d x %d x %d\n",l,m,k,n); end' >> ${PathCname}.m
 
 ./replacer $Lslp i o A $m $k $r 1 >> ${PathCname}.m
 ./replacer $Rslp i o B $k $n $r 1 >> ${PathCname}.m
 
 set j = 0
 while ( $j < $r )
-   echo "iC$j = $Fname( oA$j, oB$j, nmin);" >> ${PathCname}.m
+   echo "iC$j = $Fname( oA$j, oB$j, nmin, level);" >> ${PathCname}.m
    @ j++
 end
 echo >> ${PathCname}.m
@@ -112,8 +112,12 @@ endif
 
 echo "# Writing high-level MM routine to ${PathFname}.m"
 
-echo "function C = $Fname(A, B, nmin)" > ${PathFname}.m
+echo "function C = $Fname(A, B, nmin, level)" > ${PathFname}.m
+echo "%          Computes the product C = A*B, with fast core: <$m;$k;$n>." >> ${PathFname}.m
+echo "%          nmin : threshold switch to conventional." >> ${PathFname}.m
+echo "%          level: logging level." >> ${PathFname}.m
 echo "  if nargin < 3, nmin = min([$m,$k,$n]); end" >> ${PathFname}.m
+echo "  if nargin < 4, level = 3; end" >> ${PathFname}.m
 echo "  [m,k] = size(A); [k,n] = size(B);" >> ${PathFname}.m
-echo "  C=${Cname}(A,B,nmin);" >> ${PathFname}.m
+echo "  C=${Cname}(A,B,nmin,level);" >> ${PathFname}.m
 echo "end" >> ${PathFname}.m
