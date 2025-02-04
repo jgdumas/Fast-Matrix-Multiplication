@@ -22,18 +22,21 @@
 optimizer -E -N data/La.sms| compacter -s > data/La.slp
 # 3	additions	instead of 3 	0.0868759s (0.327302 cpu) [3]
 # 0	multiplications	instead of 0
+PMchecker -M data/La.sms data/La.slp
 
 ##########
 # Pre-computation of the rhs straight-line program:
 optimizer -E -N data/Ra.sms| compacter -s > data/Ra.slp
 # 3	additions	instead of 3 	0.0858929s (0.326958 cpu) [3]
 # 0	multiplications	instead of 0
+PMchecker -M data/Ra.sms data/Ra.slp
 
 ##########
 # Pre-computation of the product straight-line program:
 matrix-transpose data/Pa.sms | optimizer -E -N | transpozer | compacter -s > data/Pa.slp
 # 6	additions (3+3)
 # 0	multiplications
+PMchecker -M data/Pa.sms data/Pa.slp
 
 ##########
 # Gathering of all straight-line program/variables to produce a Matlab prgram:

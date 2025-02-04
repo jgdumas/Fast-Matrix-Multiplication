@@ -19,6 +19,7 @@
 #   right: data/Ri.sms
 #   prod.: data/Pi.sms
 
+MMchecker data/Li.sms data/Ri.sms data/Pi.sms
 
 ##########
 # Pre-computation of the lhs straight-line program:
@@ -29,6 +30,7 @@ optimizer -E -N data/Li.sms | compacter -s > data/Li.slp
 # 6	multiplications	instead of 20
 ##########
 
+PMchecker -M data/Li.sms data/Li.slp
 
 ##########
 # Pre-computation of the rhs straight-line program:
@@ -39,6 +41,7 @@ optimizer -E -N data/Ri.sms | compacter -s > data/Ri.slp
 # 7	multiplications	instead of 20
 ##########
 
+PMchecker -M data/Ri.sms data/Ri.slp
 
 ##########
 # Pre-computation of the product straight-line program:
@@ -48,6 +51,8 @@ matrix-transpose data/Pi.sms | optimizer -E -N | transpozer | compacter -s > dat
 # 10	additions (7+3)
 # 5	multiplications
 ##########
+
+PMchecker -M data/Pi.sms data/Pi.slp
 
 ##########
 # Gathering of all straight-line program/variables to produce a Matlab prgram:

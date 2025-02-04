@@ -19,6 +19,7 @@
 #   right: data/Rj.sms
 #   prod.: data/Pj.sms
 
+MMchecker data/Lj.sms data/Rj.sms data/Pj.sms
 
 ##########
 # Pre-computation of the lhs:
@@ -29,6 +30,7 @@ optimizer -E -N data/Lj.sms | compacter -s > data/Lj.slp
 # 6	multiplications	instead of 20
 ##########
 
+PMchecker -M data/Lj.sms data/Lj.slp
 
 ##########
 # Pre-computation of the rhs:
@@ -39,6 +41,7 @@ optimizer -E -N data/Rj.sms | compacter -s > data/Rj.slp
 # 7	multiplications	instead of 20
 ##########
 
+PMchecker -M data/Rj.sms data/Rj.slp
 
 ##########
 # Pre-computation of the product:
@@ -48,6 +51,8 @@ matrix-transpose data/Pj.sms | optimizer -E -N | transpozer | compacter -s > dat
 # 10	additions (7+3)
 # 5	multiplications
 ##########
+
+PMchecker -M data/Pj.sms data/Pj.slp
 
 ##########
 # Gathering of all straight-line program/variables to produce a Matlab prgram:

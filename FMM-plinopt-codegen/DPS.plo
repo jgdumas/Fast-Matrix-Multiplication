@@ -19,6 +19,7 @@
 #   right: data/Ro.sms
 #   prod.: data/Po.sms
 
+MMchecker data/Lo.sms data/Ro.sms data/Po.sms 128 3 1013
 
 ##########
 # Pre-computation of the lhs straight-line program:
@@ -29,6 +30,7 @@ optimizer -E -N data/Lo.sms | compacter -s > data/Lo.slp
 # 4	multiplications	instead of 19
 ##########
 
+PMchecker -M data/Lo.sms data/Lo.slp
 
 ##########
 # Pre-computation of the rhs straight-line program:
@@ -39,6 +41,7 @@ optimizer -E -N data/Ro.sms | compacter -s > data/Ro.slp
 # 4	multiplications	instead of 19
 ##########
 
+PMchecker -M data/Ro.sms data/Ro.slp
 
 ##########
 # Pre-computation of the product straight-line program:
@@ -48,6 +51,8 @@ matrix-transpose data/Po.sms | optimizer -E -N | transpozer | compacter -s > dat
 # 10	additions (7+3)	instead of 17	1.30323s (3.98992 cpu) [3]
 # 4	multiplications	instead of 19
 ##########
+
+PMchecker -M data/Po.sms data/Po.slp
 
 ##########
 # Gathering of all straight-line program/variables to produce a Matlab prgram:

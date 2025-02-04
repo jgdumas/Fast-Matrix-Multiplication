@@ -26,12 +26,13 @@
 #   replace [i0;i1;i2;i3] by [A(i,i);A(i,j);A(j,i);A(j,j)]
 #   replace [o0;o1;o2;o3] by [M1,M2,M3,M4]
 
-optimizer -E -N data/CLo.sms | compacter -s
+optimizer -E -N data/CLo.sms | compacter -s > data/CLo.slp
 
 # 5	additions	instead of 5 	0.00166893s (0.004428 cpu) [3]
 # 4	multiplications	instead of 7
 ##########
 
+PMchecker -M data/CLo.sms data/CLo.slp
 
 ##########
 # Pre-computation of the alt. basis rhs straight-line program:
@@ -39,12 +40,13 @@ optimizer -E -N data/CLo.sms | compacter -s
 #   replace [i0;i1;i2;i3] by [A(i,i);A(i,j);A(j,i);A(j,j)]
 #   replace [o0;o1;o2;o3] by [M1,M2,M3,M4]
 
-optimizer -E -N data/CRo.sms | compacter -s
+optimizer -E -N data/CRo.sms | compacter -s > data/CRo.slp
 
 # 5	additions	instead of 5 	0.00197005s (0.005239 cpu) [3]
 # 4	multiplications	instead of 7
 ##########
 
+PMchecker -M data/CRo.sms data/CRo.slp
 
 ##########
 # Post-computation of the alt. basis product straight-line program:
@@ -52,11 +54,12 @@ optimizer -E -N data/CRo.sms | compacter -s
 #   replace [i0;i1;i2;i3] by [M1,M2,M3,M4]
 #   replace [o0;o1;o2;o3] by [S1,S2,S3,S4]
 
-matrix-transpose data/CPo.sms | optimizer -E -N | transpozer | compacter -s
+matrix-transpose data/CPo.sms | optimizer -E -N | transpozer | compacter -s > data/CPo.slp
 
 # 5	additions (5+0)
 # 4	multiplications
 ##########
 
+PMchecker -M data/CPo.sms data/CPo.slp
 
 #####################################################################
