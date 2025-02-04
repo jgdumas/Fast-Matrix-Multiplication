@@ -24,26 +24,28 @@
 # ./MM.rpl L_6x3x3_accurate.slp R_6x3x3_accurate.slp P_6x3x3_accurate.slp 6 3 3 40 FMMa
 # ==========================================================================
 
-set Lslp = $1	# Left linear map
-set Rslp = $2	# Right linear map
-set Pslp = $3	# Product linear map
-set m = $4	# LHS row dimension
-set k = $5	# LHS column dimension & RHS row dimension
-set n = $6	# RHS column dimension
-set r = $7	# Tensor rank
-set Fname = $8	# Function name
+set Lslp = $1		# Left linear map
+set Rslp = $2		# Right linear map
+set Pslp = $3		# Product linear map
+set m = $4		# LHS row dimension
+set k = $5		# LHS column dimension & RHS row dimension
+set n = $6		# RHS column dimension
+set r = $7		# Tensor rank
+set PathFname = $8	# Function name
+set PathCname = "${PathFname}_${m}_${k}_${n}"
+set Fname = `basename ${PathFname}`	# Function name
 set Cname = "${Fname}_${m}_${k}_${n}"
 
-echo "# Writing core algorithm to ${Cname}.m"
+echo "# Writing core algorithm to ${PathCname}.m"
 
-cat > ${Cname}.m<< EOF
+cat > ${PathCname}.m<< EOF
 function C = $Cname(A, B, nmin)
 [m,k] = size(A);
 [k,n] = size(B);
 EOF
-echo "% Recursively cuts into nmin*${m}^l x nmin*${k}^l x nmin*${n}^l blocks, with decreasing maximal l" >> ${Cname}.m
-echo "if (m<=nmin)||(k<=nmin)||(n<=nmin)||(m<$m)||(k<$k)||(n<$n)" >> ${Cname}.m
-cat >> ${Cname}.m<< EOF
+echo "% Recursively cuts into nmin*${m}^l x nmin*${k}^l x nmin*${n}^l blocks, with decreasing maximal l" >> ${PathCname}.m
+echo "if (m<=nmin)||(k<=nmin)||(n<=nmin)||(m<$m)||(k<$k)||(n<$n)" >> ${PathCname}.m
+cat >> ${PathCname}.m<< EOF
   % fprintf("# MM Direct: %d x %d x %d\n",m,k,n)
   C = A*B;
 else
@@ -51,67 +53,67 @@ else
   mu=nmin;ku=nmin;nu=nmin;l=0;
   while (mu <= m) && (ku <= k) && (nu <= n)
 EOF
-echo "    l=l+1; mu=mu*$m; ku=ku*$k; nu=nu*$n;" >> ${Cname}.m
-echo "  end" >> ${Cname}.m
-echo "  l=l-1;mu=nmin*${m}^l; ku=nmin*${k}^l; nu=nmin*${n}^l;" >> ${Cname}.m
-cat >> ${Cname}.m<< EOF
+echo "    l=l+1; mu=mu*$m; ku=ku*$k; nu=nu*$n;" >> ${PathCname}.m
+echo "  end" >> ${PathCname}.m
+echo "  l=l-1;mu=nmin*${m}^l; ku=nmin*${k}^l; nu=nmin*${n}^l;" >> ${PathCname}.m
+cat >> ${PathCname}.m<< EOF
   if (mu < m) || (ku < k) || (nu < n)
     % fprintf("# Core SubMatrix[%d]: %d x %d x %d\n",l,mu,ku,nu)
 EOF
-echo "    C(1:mu,1:nu)=${Cname}(A(1:mu,1:ku),B(1:ku,1:nu),nmin);" >> ${Cname}.m
-cat >> ${Cname}.m<< EOF
+echo "    C(1:mu,1:nu)=${Cname}(A(1:mu,1:ku),B(1:ku,1:nu),nmin);" >> ${PathCname}.m
+cat >> ${PathCname}.m<< EOF
     if (m > mu)
       % fprintf("# MM peel m: %d x %d x %d\n",m-mu,k,n)
 EOF
-echo "      C(mu+1:m,1:n)=C(mu+1:m,1:n)+${Fname}(A(mu+1:m,1:k),B,nmin);" >> ${Cname}.m
-cat >> ${Cname}.m<< EOF
+echo "      C(mu+1:m,1:n)=C(mu+1:m,1:n)+${Fname}(A(mu+1:m,1:k),B,nmin);" >> ${PathCname}.m
+cat >> ${PathCname}.m<< EOF
     end
     if (k > ku) && (mu > 0) && (nu > 0)
       % fprintf("# MM peel k: %d x %d x %d\n",mu,k-ku,nu)
 EOF
-echo "      C(1:mu,1:nu)=C(1:mu,1:nu)+${Fname}(A(1:mu,ku+1:k),B(ku+1:k,1:nu),nmin);" >> ${Cname}.m
-cat >> ${Cname}.m<< EOF
+echo "      C(1:mu,1:nu)=C(1:mu,1:nu)+${Fname}(A(1:mu,ku+1:k),B(ku+1:k,1:nu),nmin);" >> ${PathCname}.m
+cat >> ${PathCname}.m<< EOF
     end
     if (n > nu) && (mu > 0)
       % fprintf("# MM peel n: %d x %d x %d\n",mu,k,n-nu)
 EOF
-echo "      C(1:mu,nu+1:n)=C(1:mu,nu+1:n)+${Fname}(A(1:mu,1:k),B(1:k,nu+1:n),nmin);" >> ${Cname}.m
-cat >> ${Cname}.m<< EOF
+echo "      C(1:mu,nu+1:n)=C(1:mu,nu+1:n)+${Fname}(A(1:mu,1:k),B(1:k,nu+1:n),nmin);" >> ${PathCname}.m
+cat >> ${PathCname}.m<< EOF
     end
   else
 EOF
-echo '    fprintf("# Core'"<$m;$k;$n>"': %d x %d x %d\n",m,k,n)' >> ${Cname}.m
+echo '    fprintf("# Core'"<$m;$k;$n>"': %d x %d x %d\n",m,k,n)' >> ${PathCname}.m
 
-./replacer $Lslp i o A $m $k $r 1 >> ${Cname}.m
-./replacer $Rslp i o B $k $n $r 1 >> ${Cname}.m
+./replacer $Lslp i o A $m $k $r 1 >> ${PathCname}.m
+./replacer $Rslp i o B $k $n $r 1 >> ${PathCname}.m
 
 set j = 0
 while ( $j < $r )
-   echo "iC$j = $Fname( oA$j, oB$j, nmin);" >> ${Cname}.m
+   echo "iC$j = $Fname( oA$j, oB$j, nmin);" >> ${PathCname}.m
    @ j++
 end
-echo >> ${Cname}.m
+echo >> ${PathCname}.m
 
-./replacer $Pslp i o C $m $n $r 0 >> ${Cname}.m
-cat >> ${Cname}.m<< EOF
+./replacer $Pslp i o C $m $n $r 0 >> ${PathCname}.m
+cat >> ${PathCname}.m<< EOF
   end
 end
 end
 EOF
 
 
-if ( -f ${Fname}.m ) then
-    echo -n "Overwrite ${Fname}.m (y/n)? "
+if ( -f ${PathFname}.m ) then
+    echo -n "Overwrite ${PathFname}.m (y/n)? "
     set answer = $<
     if ("$answer" != "y") then
 	exit;
     endif
 endif
 
-echo "# Writing high-level MM routine to ${Fname}.m"
+echo "# Writing high-level MM routine to ${PathFname}.m"
 
-echo "function C = $Fname(A, B, nmin)" > ${Fname}.m
-echo "  if nargin < 3, nmin = min([$m,$k,$n]); end" >> ${Fname}.m
-echo "  [m,k] = size(A); [k,n] = size(B);" >> ${Fname}.m
-echo "  C=${Cname}(A,B,nmin);" >> ${Fname}.m
-echo "end" >> ${Fname}.m
+echo "function C = $Fname(A, B, nmin)" > ${PathFname}.m
+echo "  if nargin < 3, nmin = min([$m,$k,$n]); end" >> ${PathFname}.m
+echo "  [m,k] = size(A); [k,n] = size(B);" >> ${PathFname}.m
+echo "  C=${Cname}(A,B,nmin);" >> ${PathFname}.m
+echo "end" >> ${PathFname}.m
