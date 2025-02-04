@@ -22,10 +22,8 @@
 
 ##########
 # Pre-computation of the lhs:
-#   replace [i0;i1;i2;i3] by [A(i,i);A(i,j);A(j,i);A(j,j)]
-#   replace [o0;o1;o2;o3;o4;o5;o6] by [PA0,PA1,PA2,PA3,PA4,PA5,PA6]
 
-optimizer -E -N data/Lj.sms | compacter -s
+optimizer -E -N data/Lj.sms | compacter -s > data/Lj.slp
 
 # 7	additions	instead of 14 	0.739764s (2.45833 cpu) [3]
 # 6	multiplications	instead of 20
@@ -34,10 +32,8 @@ optimizer -E -N data/Lj.sms | compacter -s
 
 ##########
 # Pre-computation of the rhs:
-#   replace [i0;i1;i2;i3] by [B(i,i);B(i,j);B(j,i);B(j,j)]
-#   replace [o0;o1;o2;o3;o4;o5;o6] by [PB0,PB1,PB2,PB3,PB4,PB5,PB6]
 
-optimizer -E -N data/Rj.sms | compacter -s
+optimizer -E -N data/Rj.sms | compacter -s > data/Rj.slp
 
 # 7	additions	instead of 14 	0.497288s (1.84279 cpu) [3]
 # 7	multiplications	instead of 20
@@ -46,13 +42,18 @@ optimizer -E -N data/Rj.sms | compacter -s
 
 ##########
 # Pre-computation of the product:
-#   replace [i0;i1;i2;i3;i4,i5,i6] by [d0,d1,d2,d3,d4,d5,d6]
-#   replace [o0;o1;o2;o3] by [C11,C12,C21,C22]
 
-matrix-transpose data/Pj.sms | optimizer -E -N | transpozer | compacter -s
+matrix-transpose data/Pj.sms | optimizer -E -N | transpozer | compacter -s > data/Pj.slp
 
 # 10	additions (7+3)
 # 5	multiplications
+##########
+
+##########
+# Gathering of all straight-line program/variables to produce a Matlab prgram:
+
+MM.rpl data/Lj.slp data/Rj.slp data/Pj.slp 2 2 2 7 data/DPS_intermediate
+
 ##########
 
 

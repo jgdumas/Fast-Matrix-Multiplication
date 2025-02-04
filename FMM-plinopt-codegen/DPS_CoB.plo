@@ -13,7 +13,7 @@
 #   https://github.com/jgdumas/plinopt
 #   (run this program within the installed 'plinopt' directory)
 
-# DPS_CoBL.m DPS_CoBR.m DPS_ICoB.m linear algorithms description is provided via associated
+# DPS_CoBL.m DPS_CoBR.m DPS_ICoB.m linear algorithms via associated
 # PLinOpt L (left), R (right), P (product) matrices, which are:
 #   left : data/CLo.sms
 #   right: data/CRo.sms
@@ -21,7 +21,7 @@
 
 
 ##########
-# Pre-computation of the alt. basis lhs:
+# Pre-computation of the alt. basis lhs straight-line program:
 #   replace 1013 by sqrt(3)
 #   replace [i0;i1;i2;i3] by [A(i,i);A(i,j);A(j,i);A(j,j)]
 #   replace [o0;o1;o2;o3] by [M1,M2,M3,M4]
@@ -34,7 +34,7 @@ optimizer -E -N data/CLo.sms | compacter -s
 
 
 ##########
-# Pre-computation of the alt. basis rhs:
+# Pre-computation of the alt. basis rhs straight-line program:
 #   replace 1013 by sqrt(3)
 #   replace [i0;i1;i2;i3] by [A(i,i);A(i,j);A(j,i);A(j,j)]
 #   replace [o0;o1;o2;o3] by [M1,M2,M3,M4]
@@ -47,7 +47,7 @@ optimizer -E -N data/CRo.sms | compacter -s
 
 
 ##########
-# Post-computation of the alt. basis product:
+# Post-computation of the alt. basis product straight-line program:
 #   replace 1013 by sqrt(3)
 #   replace [i0;i1;i2;i3] by [M1,M2,M3,M4]
 #   replace [o0;o1;o2;o3] by [S1,S2,S3,S4]

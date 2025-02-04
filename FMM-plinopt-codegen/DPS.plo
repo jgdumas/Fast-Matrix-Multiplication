@@ -53,9 +53,12 @@ matrix-transpose data/Po.sms | optimizer -E -N | transpozer | compacter -s > dat
 # Gathering of all straight-line program/variables to produce a Matlab prgram:
 
 MM.rpl data/Lo.slp data/Ro.slp data/Po.slp 2 2 2 7 data/DPS
+##########
 
 ##########
 # 1013 is a placeholder for sqrt(3)
 
 sed -i 's/2026/2\*1013/g;s/1013/sqrt(3)/g' data/DPS_2_2_2.m
+##########
+
 #####################################################################

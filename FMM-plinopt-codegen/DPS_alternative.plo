@@ -1,29 +1,42 @@
+#####################################################################
+# Fast-Matrix-Multiplication library
+#   https://github.com/jgdumas/Fast-Matrix-Multiplication
+#   Accurate fast matrix multiplications via 2x2 recursion
+#   Authors:
+#   [J-G. Dumas, C. Pernet, A. Sedoglavic;
+#    Strassen's algorithm is not optimally accurate.
+#    https://hal.science/hal-04441653]
+
 # Generation of DPS_alternative.m
 
 # Automatically obtained with the PLinOpt library
 #   https://github.com/jgdumas/plinopt
 
-# Associated L,R,P matrices with PLinOpt are:
-#   left : data/La.sms
-#   right: data/Ra.sms
+# Associated L,R,P matrices with PLinOpt are:
+#   left : data/La.sms
+#   right: data/Ra.sms
 #   prod.: data/Pa.sms
 
-# Pre-computation of the lhs:
-#   replace [i0;i1;i2;i3] by [A(i,i);A(i,j);A(j,i);A(j,j)]
-optimizer -E -N data/La.sms| compacter -s
-# [1;32m3	additions	instead of 3[0m 	0.0868759s (0.327302 cpu) [3]
-# [1;32m0	multiplications	instead of 0[0m
+##########
+# Pre-computation of the lhs straight-line program:
+optimizer -E -N data/La.sms| compacter -s > data/La.slp
+# 3	additions	instead of 3 	0.0868759s (0.327302 cpu) [3]
+# 0	multiplications	instead of 0
 
-# Pre-computation of the rhs:
-#   replace [i0;i1;i2;i3] by [B(i,i);B(i,j);B(j,i);B(j,j)]
-optimizer -E -N data/Ra.sms| compacter -s
-# [1;32m3	additions	instead of 3[0m 	0.0858929s (0.326958 cpu) [3]
-# [1;32m0	multiplications	instead of 0[0m
+##########
+# Pre-computation of the rhs straight-line program:
+optimizer -E -N data/Ra.sms| compacter -s > data/Ra.slp
+# 3	additions	instead of 3 	0.0858929s (0.326958 cpu) [3]
+# 0	multiplications	instead of 0
 
-# Pre-computation of the product:
-#   replace [i0;i1;i2;i3;i4,i5,i6] by [M1,M2,M3,M4,M5,M6,M7]
-#   replace [o0;o1;o2;o3] by [C11,C12,C21,C22]
-matrix-transpose data/Pa.sms | optimizer -E -N | transpozer | compacter -s
-# [1;32m6	additions (3+3)[0m
-# [1;32m0	multiplications[0m
+##########
+# Pre-computation of the product straight-line program:
+matrix-transpose data/Pa.sms | optimizer -E -N | transpozer | compacter -s > data/Pa.slp
+# 6	additions (3+3)
+# 0	multiplications
 
+##########
+# Gathering of all straight-line program/variables to produce a Matlab prgram:
+MM.rpl data/La.slp data/Ra.slp data/Pa.slp 2 2 2 7 data/DPS_mul
+
+#####################################################################
