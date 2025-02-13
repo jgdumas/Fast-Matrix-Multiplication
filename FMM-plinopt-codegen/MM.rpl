@@ -110,7 +110,7 @@ if ( -f ${PathFname}.m ) then
     endif
 endif
 
-echo "# Writing high-level MM routine to ${PathFname}.m"
+echo "Writing high-level MM routine to ${PathFname}.m"
 
 echo "function C = $Fname(A, B, nmin, level)" > ${PathFname}.m
 echo "%          Computes the product C = A*B, with fast core: <$m;$k;$n>." >> ${PathFname}.m

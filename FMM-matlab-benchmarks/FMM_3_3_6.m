@@ -1,4 +1,4 @@
-function C = FMM_3_3_6(A, B, nmin)
+function C = FMM_3_3_6(A, B, nmin, level)
 [m,k] = size(A);
 [k,n] = size(B);
 % Recursively cuts into nmin*3^l x nmin*3^l x nmin*6^l blocks, with decreasing maximal l
@@ -14,26 +14,26 @@ else
   l=l-1;mu=nmin*3^l; ku=nmin*3^l; nu=nmin*6^l;
   if (mu < m) || (ku < k) || (nu < n)
     % fprintf("# Core SubMatrix[%d]: %d x %d x %d\n",l,mu,ku,nu)
-    C(1:mu,1:nu)=FMM_3_3_6(A(1:mu,1:ku),B(1:ku,1:nu),nmin);
+    C(1:mu,1:nu)=FMM_3_3_6(A(1:mu,1:ku),B(1:ku,1:nu),nmin, level);
     if (m > mu)
       % fprintf("# MM peel m: %d x %d x %d\n",m-mu,k,n)
-      C(mu+1:m,1:n)=C(mu+1:m,1:n)+FMM(A(mu+1:m,1:k),B,nmin);
+      C(mu+1:m,1:n)=C(mu+1:m,1:n)+FMM(A(mu+1:m,1:k),B,nmin, level);
     end
     if (k > ku) && (mu > 0) && (nu > 0)
       % fprintf("# MM peel k: %d x %d x %d\n",mu,k-ku,nu)
-      C(1:mu,1:nu)=C(1:mu,1:nu)+FMM(A(1:mu,ku+1:k),B(ku+1:k,1:nu),nmin);
+      C(1:mu,1:nu)=C(1:mu,1:nu)+FMM(A(1:mu,ku+1:k),B(ku+1:k,1:nu),nmin, level);
     end
     if (n > nu) && (mu > 0)
       % fprintf("# MM peel n: %d x %d x %d\n",mu,k,n-nu)
-      C(1:mu,nu+1:n)=C(1:mu,nu+1:n)+FMM(A(1:mu,1:k),B(1:k,nu+1:n),nmin);
+      C(1:mu,nu+1:n)=C(1:mu,nu+1:n)+FMM(A(1:mu,1:k),B(1:k,nu+1:n),nmin, level);
     end
   else
-    fprintf("# Core<3;3;6>: %d x %d x %d\n",m,k,n)
+    if l>=level, fprintf("# Core<3;3;6>[%d]: %d x %d x %d\n",l,m,k,n); end
 [m,n] = size(A);
 m0 = 0; m1 = 1*m/3; m2 = 2*m/3; m3 = m;
-r0 = m0+1:m1; r1 = m1+1:m2; r2 = m2+1:m3; 
+r0 = m0+1:m1; r1 = m1+1:m2; r2 = m2+1:m3;
 n0 = 0; n1 = 1*n/3; n2 = 2*n/3; n3 = n;
-c0 = n0+1:n1; c1 = n1+1:n2; c2 = n2+1:n3; 
+c0 = n0+1:n1; c1 = n1+1:n2; c2 = n2+1:n3;
 t9 = A(r0,c0)-A(r2,c0);
 t10 = A(r2,c1)+t9;
 t11 = A(r0,c2)-A(r1,c2);
@@ -87,9 +87,9 @@ oA38 = -oA15-oA26;
 
 [m,n] = size(B);
 m0 = 0; m1 = 1*m/3; m2 = 2*m/3; m3 = m;
-r0 = m0+1:m1; r1 = m1+1:m2; r2 = m2+1:m3; 
+r0 = m0+1:m1; r1 = m1+1:m2; r2 = m2+1:m3;
 n0 = 0; n1 = 1*n/6; n2 = 2*n/6; n3 = 3*n/6; n4 = 4*n/6; n5 = 5*n/6; n6 = n;
-c0 = n0+1:n1; c1 = n1+1:n2; c2 = n2+1:n3; c3 = n3+1:n4; c4 = n4+1:n5; c5 = n5+1:n6; 
+c0 = n0+1:n1; c1 = n1+1:n2; c2 = n2+1:n3; c3 = n3+1:n4; c4 = n4+1:n5; c5 = n5+1:n6;
 t18 = B(r0,c0)+B(r2,c2)/8;
 t19 = B(r1,c0)-B(r2,c3)/8;
 t20 = B(r0,c3)+B(r1,c2);
@@ -183,46 +183,46 @@ oB14 = oB7-v58;
 oB35 = v58-oB9-v42;
 oB37 = oB2-oB10+oB17;
 
-iC0 = FMM( oA0, oB0, nmin);
-iC1 = FMM( oA1, oB1, nmin);
-iC2 = FMM( oA2, oB2, nmin);
-iC3 = FMM( oA3, oB3, nmin);
-iC4 = FMM( oA4, oB4, nmin);
-iC5 = FMM( oA5, oB5, nmin);
-iC6 = FMM( oA6, oB6, nmin);
-iC7 = FMM( oA7, oB7, nmin);
-iC8 = FMM( oA8, oB8, nmin);
-iC9 = FMM( oA9, oB9, nmin);
-iC10 = FMM( oA10, oB10, nmin);
-iC11 = FMM( oA11, oB11, nmin);
-iC12 = FMM( oA12, oB12, nmin);
-iC13 = FMM( oA13, oB13, nmin);
-iC14 = FMM( oA14, oB14, nmin);
-iC15 = FMM( oA15, oB15, nmin);
-iC16 = FMM( oA16, oB16, nmin);
-iC17 = FMM( oA17, oB17, nmin);
-iC18 = FMM( oA18, oB18, nmin);
-iC19 = FMM( oA19, oB19, nmin);
-iC20 = FMM( oA20, oB20, nmin);
-iC21 = FMM( oA21, oB21, nmin);
-iC22 = FMM( oA22, oB22, nmin);
-iC23 = FMM( oA23, oB23, nmin);
-iC24 = FMM( oA24, oB24, nmin);
-iC25 = FMM( oA25, oB25, nmin);
-iC26 = FMM( oA26, oB26, nmin);
-iC27 = FMM( oA27, oB27, nmin);
-iC28 = FMM( oA28, oB28, nmin);
-iC29 = FMM( oA29, oB29, nmin);
-iC30 = FMM( oA30, oB30, nmin);
-iC31 = FMM( oA31, oB31, nmin);
-iC32 = FMM( oA32, oB32, nmin);
-iC33 = FMM( oA33, oB33, nmin);
-iC34 = FMM( oA34, oB34, nmin);
-iC35 = FMM( oA35, oB35, nmin);
-iC36 = FMM( oA36, oB36, nmin);
-iC37 = FMM( oA37, oB37, nmin);
-iC38 = FMM( oA38, oB38, nmin);
-iC39 = FMM( oA39, oB39, nmin);
+iC0 = FMM( oA0, oB0, nmin, level);
+iC1 = FMM( oA1, oB1, nmin, level);
+iC2 = FMM( oA2, oB2, nmin, level);
+iC3 = FMM( oA3, oB3, nmin, level);
+iC4 = FMM( oA4, oB4, nmin, level);
+iC5 = FMM( oA5, oB5, nmin, level);
+iC6 = FMM( oA6, oB6, nmin, level);
+iC7 = FMM( oA7, oB7, nmin, level);
+iC8 = FMM( oA8, oB8, nmin, level);
+iC9 = FMM( oA9, oB9, nmin, level);
+iC10 = FMM( oA10, oB10, nmin, level);
+iC11 = FMM( oA11, oB11, nmin, level);
+iC12 = FMM( oA12, oB12, nmin, level);
+iC13 = FMM( oA13, oB13, nmin, level);
+iC14 = FMM( oA14, oB14, nmin, level);
+iC15 = FMM( oA15, oB15, nmin, level);
+iC16 = FMM( oA16, oB16, nmin, level);
+iC17 = FMM( oA17, oB17, nmin, level);
+iC18 = FMM( oA18, oB18, nmin, level);
+iC19 = FMM( oA19, oB19, nmin, level);
+iC20 = FMM( oA20, oB20, nmin, level);
+iC21 = FMM( oA21, oB21, nmin, level);
+iC22 = FMM( oA22, oB22, nmin, level);
+iC23 = FMM( oA23, oB23, nmin, level);
+iC24 = FMM( oA24, oB24, nmin, level);
+iC25 = FMM( oA25, oB25, nmin, level);
+iC26 = FMM( oA26, oB26, nmin, level);
+iC27 = FMM( oA27, oB27, nmin, level);
+iC28 = FMM( oA28, oB28, nmin, level);
+iC29 = FMM( oA29, oB29, nmin, level);
+iC30 = FMM( oA30, oB30, nmin, level);
+iC31 = FMM( oA31, oB31, nmin, level);
+iC32 = FMM( oA32, oB32, nmin, level);
+iC33 = FMM( oA33, oB33, nmin, level);
+iC34 = FMM( oA34, oB34, nmin, level);
+iC35 = FMM( oA35, oB35, nmin, level);
+iC36 = FMM( oA36, oB36, nmin, level);
+iC37 = FMM( oA37, oB37, nmin, level);
+iC38 = FMM( oA38, oB38, nmin, level);
+iC39 = FMM( oA39, oB39, nmin, level);
 b2 = iC31-iC27;
 v54 = iC29+iC24;
 v50 = iC21+iC17;
