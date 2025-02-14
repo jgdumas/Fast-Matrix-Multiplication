@@ -1,7 +1,5 @@
 %	Comparing accuracy of fast 3x3x6-recursive matrix multiplications
-%	Reference:
-%	J-G. Dumas, C. Pernet, A. Sedoglavic
-%	Next level
+%	Authors: J-G. Dumas, C. Pernet, A. Sedoglavic
 
 rng(1);
 t = 4;    % Number of points
