@@ -7,7 +7,7 @@
 #    Strassen's algorithm is not optimally accurate.
 #    https://hal.science/hal-04441653]
 
-# Generation of FMM_{3,3,6}.m
+# Generation of FMM_{3,3,6}.m FMM_{3,6,3}.m FMM_{6,3,3}.m
 
 # Program Automatically obtained with the PLinOpt library
 #   https://github.com/jgdumas/plinopt
@@ -25,6 +25,9 @@
 #          data/P_3x6x3_accurate.sms data/P_3x6x3.sms
 #          data/P_6x3x3_accurate.sms data/P_6x3x3.sms
 
+##########
+# Checking the matrix multiplications:
+
 MMchecker data/L_3x3x6.sms data/R_3x3x6.sms data/P_3x3x6.sms
 MMchecker data/L_3x6x3.sms data/R_3x6x3.sms data/P_3x6x3.sms
 MMchecker data/L_6x3x3.sms data/R_6x3x3.sms data/P_6x3x3.sms
@@ -34,9 +37,29 @@ MMchecker data/L_6x3x3_accurate.sms data/R_6x3x3_accurate.sms data/P_6x3x3_accur
 
 ##########
 # Pre-computation of the straight-line programs:
-x3
+
+optimizer -O 100000 data/L_3x3x6.sms | compacter -s > data/L_3x3x6.slp
+optimizer -O 100000 data/R_3x3x6.sms | compacter -s > data/R_3x3x6.slp
+optimizer -O 100000 data/P_3x3x6.sms | compacter -s > data/P_3x3x6.slp
+optimizer -O 100000 data/L_3x6x3.sms | compacter -s > data/L_3x6x3.slp
+optimizer -O 100000 data/R_3x6x3.sms | compacter -s > data/R_3x6x3.slp
+optimizer -O 100000 data/P_3x6x3.sms | compacter -s > data/P_3x6x3.slp
+optimizer -O 100000 data/L_6x3x3.sms | compacter -s > data/L_6x3x3.slp
+optimizer -O 100000 data/R_6x3x3.sms | compacter -s > data/R_6x3x3.slp
+optimizer -O 100000 data/P_6x3x3.sms | compacter -s > data/P_6x3x3.slp
+
+optimizer -O 100000 data/L_3x3x6_accurate.sms | compacter -s > data/L_3x3x6_accurate.slp
+optimizer -O 100000 data/R_3x3x6_accurate.sms | compacter -s > data/R_3x3x6_accurate.slp
+optimizer -O 100000 data/P_3x3x6_accurate.sms | compacter -s > data/P_3x3x6_accurate.slp
+optimizer -O 100000 data/L_3x6x3_accurate.sms | compacter -s > data/L_3x6x3_accurate.slp
+optimizer -O 100000 data/R_3x6x3_accurate.sms | compacter -s > data/R_3x6x3_accurate.slp
+optimizer -O 100000 data/P_3x6x3_accurate.sms | compacter -s > data/P_3x6x3_accurate.slp
+optimizer -O 100000 data/L_6x3x3_accurate.sms | compacter -s > data/L_6x3x3_accurate.slp
+optimizer -O 100000 data/R_6x3x3_accurate.sms | compacter -s > data/R_6x3x3_accurate.slp
+optimizer -O 100000 data/P_6x3x3_accurate.sms | compacter -s > data/P_6x3x3_accurate.slp
 
 ##########
+# Checking the straight-line programs:
 
 PMchecker -M data/L_3x3x6.sms data/L_3x3x6.slp
 PMchecker -M data/L_3x6x3.sms data/L_3x6x3.slp
