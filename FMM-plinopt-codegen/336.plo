@@ -1,0 +1,104 @@
+#####################################################################
+# Fast-Matrix-Multiplication library
+#   https://github.com/jgdumas/Fast-Matrix-Multiplication
+#   Accurate fast matrix multiplications via <3,3,6> recursion
+#   Authors:
+#   [J-G. Dumas, C. Pernet, A. Sedoglavic;
+#    Strassen's algorithm is not optimally accurate.
+#    https://hal.science/hal-04441653]
+
+# Generation of FMM_{3,3,6}.m
+
+# Program Automatically obtained with the PLinOpt library
+#   https://github.com/jgdumas/plinopt
+#   (run this program within the installed 'plinopt' directory)
+
+# linear algorithms description is provided via associated
+# PLinOpt L (left), R (right), P (product) matrices, which are:
+#   left : data/L_3x3x6_accurate.sms data/L_3x3x6.sms
+#          data/L_3x6x3_accurate.sms data/L_3x6x3.sms
+#          data/L_6x3x3_accurate.sms data/L_6x3x3.sms
+#   right: data/R_3x3x6_accurate.sms data/R_3x3x6.sms
+#          data/R_3x6x3_accurate.sms data/R_3x6x3.sms
+#          data/R_6x3x3_accurate.sms data/R_6x3x3.sms
+#   prod.: data/P_3x3x6_accurate.sms data/P_3x3x6.sms
+#          data/P_3x6x3_accurate.sms data/P_3x6x3.sms
+#          data/P_6x3x3_accurate.sms data/P_6x3x3.sms
+
+MMchecker data/L_3x3x6.sms data/R_3x3x6.sms data/P_3x3x6.sms
+MMchecker data/L_3x6x3.sms data/R_3x6x3.sms data/P_3x6x3.sms
+MMchecker data/L_6x3x3.sms data/R_6x3x3.sms data/P_6x3x3.sms
+MMchecker data/L_3x3x6_accurate.sms data/R_3x3x6_accurate.sms data/P_3x3x6_accurate.sms
+MMchecker data/L_3x6x3_accurate.sms data/R_3x6x3_accurate.sms data/P_3x6x3_accurate.sms
+MMchecker data/L_6x3x3_accurate.sms data/R_6x3x3_accurate.sms data/P_6x3x3_accurate.sms
+
+##########
+# Pre-computation of the straight-line programs:
+x3
+
+##########
+
+PMchecker -M data/L_3x3x6.sms data/L_3x3x6.slp
+PMchecker -M data/L_3x6x3.sms data/L_3x6x3.slp
+PMchecker -M data/L_6x3x3.sms data/L_6x3x3.slp
+PMchecker -M data/R_3x3x6.sms data/R_3x3x6.slp
+PMchecker -M data/R_3x6x3.sms data/R_3x6x3.slp
+PMchecker -M data/R_6x3x3.sms data/R_6x3x3.slp
+PMchecker -M data/P_3x3x6.sms data/P_3x3x6.slp
+PMchecker -M data/P_3x6x3.sms data/P_3x6x3.slp
+PMchecker -M data/P_6x3x3.sms data/P_6x3x3.slp
+
+PMchecker -M data/L_3x3x6_accurate.sms data/L_3x3x6_accurate.slp
+PMchecker -M data/L_3x6x3_accurate.sms data/L_3x6x3_accurate.slp
+PMchecker -M data/L_6x3x3_accurate.sms data/L_6x3x3_accurate.slp
+PMchecker -M data/R_3x3x6_accurate.sms data/R_3x3x6_accurate.slp
+PMchecker -M data/R_3x6x3_accurate.sms data/R_3x6x3_accurate.slp
+PMchecker -M data/R_6x3x3_accurate.sms data/R_6x3x3_accurate.slp
+PMchecker -M data/P_3x3x6_accurate.sms data/P_3x3x6_accurate.slp
+PMchecker -M data/P_3x6x3_accurate.sms data/P_3x6x3_accurate.slp
+PMchecker -M data/P_6x3x3_accurate.sms data/P_6x3x3_accurate.slp
+
+
+##########
+# Gathering of all straight-line program/variables to produce a Matlab prgram:
+
+./MM.rpl data/L_3x3x6.slp data/R_3x3x6.slp data/P_3x3x6.slp 3 3 6 40 FMM
+./MM.rpl data/L_3x6x3.slp data/R_3x6x3.slp data/P_3x6x3.slp 3 6 3 40 FMM
+./MM.rpl data/L_6x3x3.slp data/R_6x3x3.slp data/P_6x3x3.slp 6 3 3 40 FMM
+./MM.rpl data/L_3x3x6_accurate.slp data/R_3x3x6_accurate.slp data/P_3x3x6_accurate.slp 3 3 6 40 FMMa
+./MM.rpl data/L_3x6x3_accurate.slp data/R_3x6x3_accurate.slp data/P_3x6x3_accurate.slp 3 6 3 40 FMMa
+./MM.rpl data/L_6x3x3_accurate.slp data/R_6x3x3_accurate.slp data/P_6x3x3_accurate.slp 6 3 3 40 FMMa
+
+cat > data/FMM.m<< EOF
+function C = FMM(A, B, nmin, level)
+  if nargin < 3, nmin = 3; end
+  if nargin < 4, level = 3; end
+  [m,k] = size(A); 
+  [k,n] = size(B);
+  if (m >= max(k,n))
+    C=FMM_6_3_3(A,B,nmin, level);
+  elseif (n >= max(m,k))
+    C=FMM_3_3_6(A,B,nmin, level);
+  else
+    C=FMM_3_6_3(A,B,nmin, level);
+  end
+end
+EOF
+
+cat > data/FMMa.m<< EOF
+function C = FMMa(A, B, nmin, level)
+  if nargin < 3, nmin = 3; end
+  if nargin < 4, level = 3; end
+  [m,k] = size(A); 
+  [k,n] = size(B);
+  if (m >= max(k,n))
+    C=FMMa_6_3_3(A,B,nmin, level);
+  elseif (n >= max(m,k))
+    C=FMMa_3_3_6(A,B,nmin, level);
+  else
+    C=FMMa_3_6_3(A,B,nmin, level);
+  end
+end
+EOF
+
+#####################################################################
