@@ -22,7 +22,7 @@ for l = 1:t
 	B = gen_mat_rect(54^l,54^l);   N(l) = size(B,2);
     disp(M(l));
     disp(N(l));
-	[e_f,e_a,e_c,e_d,t_f,t_a,t_c,t_d] = error_FMM(A,B,n_0);
+	[e_f,e_a,e_c,e_d,t_f,t_a,t_c,t_d] = error_FMM(A,B,n_0,2);
 	E_f(l) = E_f(l) + e_f/num; T_f(l) = T_f(l) + t_f/num;
 	E_a(l) = E_a(l) + e_a/num; T_a(l) = T_f(l) + t_f/num;
 	E_c(l) = E_c(l) + e_c/num; T_c(l) = T_c(l) + t_c/num;

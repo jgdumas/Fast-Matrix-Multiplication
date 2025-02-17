@@ -26,8 +26,14 @@ created for the numerical experiments of the paper:
 | `DPS_evenpow.m` 	| 12.2034 | using only powers of 2|
 | `DPS_smallrat.m` 	| 12.2034 | small rational coefficients|
 | `DPS_intermediate.m` 	| 12.0695 | fast rational |
-| `DPS_integral.m` 	| 12.0662  | large rational coefficients|
+| `DPS_integral.m` 	| 12.0662 | large rational coefficients|
 | `DPS.m` 		| 12.0660 | most accurate, with sqrt(3) |
+| `FMM_3_3_6.m`		| 395.1 | fast 3x3x6 |
+| `FMM_3_6_3.m`		| 395.1 | fast 3x6x3 |
+| `FMM_6_3_3.m`		| 395.1 | fast 6x3x3 |
+| `FMMa_3_3_6.m`	| 104.1 | fast and accurate 3x3x6 |
+| `FMMa_3_6_3.m`	| 104.1 | fast and accurate 3x6x3 |
+| `FMMa_6_3_3.m`	| 104.1 | fast and accurate 6x3x3 |
 |  |  |  |
 
 
@@ -40,7 +46,7 @@ Faster variants, using an alternative basis from:
 | :---    |     :---:     |        ---: |
 | `Strassen_aternative.m` | $5n^{\log_2(7)}$ | Strassen's algorithm, sparsified |
 | `Winograd_aternative.m` | $5n^{\log_2(7)}$ | Winograd's algorithm, sparsified |
-| `DPS_aternative.m` | $5n^{\log_2(7)}$ | DPS's algorithm, sparsified |
+| `DPS_aternative.m` | $5n^{\log_2(7)}$ | DPS's accurate algorithm, sparsified |
 |  |  |  |
 
 All "aternative" variants use left/right and inverse change of basis (`*CoB*` files) together with an inner sparse multiplication (`*mul*` files).
@@ -50,6 +56,10 @@ Accuracy comparison with symbolic matrix multiplication:
 - `accuracy_2x2_real.m`: comparing algorithms accuracy
 - `accuracy_alternative_real.m`: comparing alternative change of basis
 - `gallery_alternative_real.m`: change of basis on large condition number
+- `accuracy_3x3x6_real.m`: comparing algorithms accuracy for (3x3).(3x6) matrix ratios
+- `accuracy_3x6x3_real.m`: comparing algorithms accuracy for (3x6).(6x3) matrix ratios
+- `accuracy_6x3x3_real.m`: comparing algorithms accuracy for (6x3).(3x3) matrix ratios
+- `accuracy_54.m`: comparing algorithms accuracy <3;3;6>, <3;6;3> and <6;3;3> matrix ratios
 
 
 
@@ -64,7 +74,8 @@ Examples:
 `DPS_smallrat.plo`,
 `DPS_intermediate.plo`,
 `DPS_integral.plo`,
-`DPS_CoB.plo`.
+`DPS_CoB.plo`,
+`336.plo`.
 - [PLinOpt library](https://github.com/jgdumas/plinopt): Routines handling linear, bilinear & trilinear programs.
 
 

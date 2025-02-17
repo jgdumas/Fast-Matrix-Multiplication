@@ -1,34 +1,42 @@
-function C = FMM_6_3_3(A, B, nmin, level)
-[m,k] = size(A);
-[k,n] = size(B);
+function C = FMM_6_3_3(A, B, nmin, peeling, level)
+if nargin < 3, nmin = 3; end    % Threshold to conventional
+if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
+if nargin < 5, level = 3; end   % Verbose level
+[m,k] = size(A); [k2,n] = size(B);
+if (k2 ~= k), error('Incompatible matrix dimensions.'); end
 % Recursively cuts into nmin*6^l x nmin*3^l x nmin*3^l blocks, with decreasing maximal l
 if (m<=nmin)||(k<=nmin)||(n<=nmin)||(m<6)||(k<3)||(n<3)
   % fprintf("# MM Direct: %d x %d x %d\n",m,k,n)
   C = A*B;
 else
   C = zeros(m,n);
-  mu=nmin;ku=nmin;nu=nmin;l=0;
-  while (mu <= m) && (ku <= k) && (nu <= n)
-    l=l+1; mu=mu*6; ku=ku*3; nu=nu*3;
+  mu=m-rem(m,6);ku=k-rem(k,3);nu=n-rem(n,3);
+  l=ceil(min([log(mu)/log(6),log(ku)/log(3),log(nu)/log(3)]));
+  if (peeling == 1)
+    mu=nmin;ku=nmin;nu=nmin;l=0;
+    while (mu <= m) && (ku <= k) && (nu <= n)
+      l=l+1; mu=mu*6; ku=ku*3; nu=nu*3;
+    end
+    l=l-1;mu=nmin*6^l; ku=nmin*3^l; nu=nmin*3^l;
   end
-  l=l-1;mu=nmin*6^l; ku=nmin*3^l; nu=nmin*3^l;
   if (mu < m) || (ku < k) || (nu < n)
     % fprintf("# Core SubMatrix[%d]: %d x %d x %d\n",l,mu,ku,nu)
-    C(1:mu,1:nu)=FMM_6_3_3(A(1:mu,1:ku),B(1:ku,1:nu),nmin, level);
+    C(1:mu,1:nu)=FMM_6_3_3(A(1:mu,1:ku),B(1:ku,1:nu),nmin, peeling, level);
     if (m > mu)
       % fprintf("# MM peel m: %d x %d x %d\n",m-mu,k,n)
-      C(mu+1:m,1:n)=C(mu+1:m,1:n)+FMM(A(mu+1:m,1:k),B,nmin, level);
+      C(mu+1:m,1:n)=C(mu+1:m,1:n)+FMM(A(mu+1:m,1:k),B,nmin, peeling, level);
     end
     if (k > ku) && (mu > 0) && (nu > 0)
       % fprintf("# MM peel k: %d x %d x %d\n",mu,k-ku,nu)
-      C(1:mu,1:nu)=C(1:mu,1:nu)+FMM(A(1:mu,ku+1:k),B(ku+1:k,1:nu),nmin, level);
+      C(1:mu,1:nu)=C(1:mu,1:nu)+FMM(A(1:mu,ku+1:k),B(ku+1:k,1:nu),nmin, peeling, level);
     end
     if (n > nu) && (mu > 0)
       % fprintf("# MM peel n: %d x %d x %d\n",mu,k,n-nu)
-      C(1:mu,nu+1:n)=C(1:mu,nu+1:n)+FMM(A(1:mu,1:k),B(1:k,nu+1:n),nmin, level);
+      C(1:mu,nu+1:n)=C(1:mu,nu+1:n)+FMM(A(1:mu,1:k),B(1:k,nu+1:n),nmin, peeling, level);
     end
   else
     if l>=level, fprintf("# Core<6;3;3>[%d]: %d x %d x %d\n",l,m,k,n); end
+
 [m,n] = size(A);
 m0 = 0; m1 = 1*m/6; m2 = 2*m/6; m3 = 3*m/6; m4 = 4*m/6; m5 = 5*m/6; m6 = m;
 r0 = m0+1:m1; r1 = m1+1:m2; r2 = m2+1:m3; r3 = m3+1:m4; r4 = m4+1:m5; r5 = m5+1:m6; 
@@ -175,46 +183,47 @@ oB39 = -oB24-oB13;
 oB31 = oB19+oB6;
 oB37 = oB25-oB12;
 
-iC0 = FMM( oA0, oB0, nmin, level);
-iC1 = FMM( oA1, oB1, nmin, level);
-iC2 = FMM( oA2, oB2, nmin, level);
-iC3 = FMM( oA3, oB3, nmin, level);
-iC4 = FMM( oA4, oB4, nmin, level);
-iC5 = FMM( oA5, oB5, nmin, level);
-iC6 = FMM( oA6, oB6, nmin, level);
-iC7 = FMM( oA7, oB7, nmin, level);
-iC8 = FMM( oA8, oB8, nmin, level);
-iC9 = FMM( oA9, oB9, nmin, level);
-iC10 = FMM( oA10, oB10, nmin, level);
-iC11 = FMM( oA11, oB11, nmin, level);
-iC12 = FMM( oA12, oB12, nmin, level);
-iC13 = FMM( oA13, oB13, nmin, level);
-iC14 = FMM( oA14, oB14, nmin, level);
-iC15 = FMM( oA15, oB15, nmin, level);
-iC16 = FMM( oA16, oB16, nmin, level);
-iC17 = FMM( oA17, oB17, nmin, level);
-iC18 = FMM( oA18, oB18, nmin, level);
-iC19 = FMM( oA19, oB19, nmin, level);
-iC20 = FMM( oA20, oB20, nmin, level);
-iC21 = FMM( oA21, oB21, nmin, level);
-iC22 = FMM( oA22, oB22, nmin, level);
-iC23 = FMM( oA23, oB23, nmin, level);
-iC24 = FMM( oA24, oB24, nmin, level);
-iC25 = FMM( oA25, oB25, nmin, level);
-iC26 = FMM( oA26, oB26, nmin, level);
-iC27 = FMM( oA27, oB27, nmin, level);
-iC28 = FMM( oA28, oB28, nmin, level);
-iC29 = FMM( oA29, oB29, nmin, level);
-iC30 = FMM( oA30, oB30, nmin, level);
-iC31 = FMM( oA31, oB31, nmin, level);
-iC32 = FMM( oA32, oB32, nmin, level);
-iC33 = FMM( oA33, oB33, nmin, level);
-iC34 = FMM( oA34, oB34, nmin, level);
-iC35 = FMM( oA35, oB35, nmin, level);
-iC36 = FMM( oA36, oB36, nmin, level);
-iC37 = FMM( oA37, oB37, nmin, level);
-iC38 = FMM( oA38, oB38, nmin, level);
-iC39 = FMM( oA39, oB39, nmin, level);
+iC0 = FMM( oA0, oB0, nmin, peeling, level);
+iC1 = FMM( oA1, oB1, nmin, peeling, level);
+iC2 = FMM( oA2, oB2, nmin, peeling, level);
+iC3 = FMM( oA3, oB3, nmin, peeling, level);
+iC4 = FMM( oA4, oB4, nmin, peeling, level);
+iC5 = FMM( oA5, oB5, nmin, peeling, level);
+iC6 = FMM( oA6, oB6, nmin, peeling, level);
+iC7 = FMM( oA7, oB7, nmin, peeling, level);
+iC8 = FMM( oA8, oB8, nmin, peeling, level);
+iC9 = FMM( oA9, oB9, nmin, peeling, level);
+iC10 = FMM( oA10, oB10, nmin, peeling, level);
+iC11 = FMM( oA11, oB11, nmin, peeling, level);
+iC12 = FMM( oA12, oB12, nmin, peeling, level);
+iC13 = FMM( oA13, oB13, nmin, peeling, level);
+iC14 = FMM( oA14, oB14, nmin, peeling, level);
+iC15 = FMM( oA15, oB15, nmin, peeling, level);
+iC16 = FMM( oA16, oB16, nmin, peeling, level);
+iC17 = FMM( oA17, oB17, nmin, peeling, level);
+iC18 = FMM( oA18, oB18, nmin, peeling, level);
+iC19 = FMM( oA19, oB19, nmin, peeling, level);
+iC20 = FMM( oA20, oB20, nmin, peeling, level);
+iC21 = FMM( oA21, oB21, nmin, peeling, level);
+iC22 = FMM( oA22, oB22, nmin, peeling, level);
+iC23 = FMM( oA23, oB23, nmin, peeling, level);
+iC24 = FMM( oA24, oB24, nmin, peeling, level);
+iC25 = FMM( oA25, oB25, nmin, peeling, level);
+iC26 = FMM( oA26, oB26, nmin, peeling, level);
+iC27 = FMM( oA27, oB27, nmin, peeling, level);
+iC28 = FMM( oA28, oB28, nmin, peeling, level);
+iC29 = FMM( oA29, oB29, nmin, peeling, level);
+iC30 = FMM( oA30, oB30, nmin, peeling, level);
+iC31 = FMM( oA31, oB31, nmin, peeling, level);
+iC32 = FMM( oA32, oB32, nmin, peeling, level);
+iC33 = FMM( oA33, oB33, nmin, peeling, level);
+iC34 = FMM( oA34, oB34, nmin, peeling, level);
+iC35 = FMM( oA35, oB35, nmin, peeling, level);
+iC36 = FMM( oA36, oB36, nmin, peeling, level);
+iC37 = FMM( oA37, oB37, nmin, peeling, level);
+iC38 = FMM( oA38, oB38, nmin, peeling, level);
+iC39 = FMM( oA39, oB39, nmin, peeling, level);
+
 b1 = iC24+iC3;
 b4 = iC31+iC16+iC1;
 b8 = iC2-iC30;
