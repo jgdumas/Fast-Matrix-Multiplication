@@ -21,7 +21,6 @@ else
    M3 = DPS_CoBL(A(j,i), nmin);
    M4 = DPS_CoBL(A(j,j), nmin);
 
-
 T1=M4*SQRT3o3;
 T2=M3-M2;
 T3=M1+M4;
