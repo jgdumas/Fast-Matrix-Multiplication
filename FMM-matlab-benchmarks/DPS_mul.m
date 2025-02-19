@@ -17,21 +17,21 @@ else
    S1 = A(j,i) - A(j,j);
    S2 = A(i,i) + A(j,j);
    S3 = A(i,j) + A(j,j);
-   T1 = B(j,i) - B(j,j);
+   T1 = B(j,j) - B(j,i);
    T2 = B(i,i) - B(j,j);
    T3 = B(i,j) + B(j,j);
 
    M1 = DPS_mul( S1, B(i,i), nmin);
-   M2 = DPS_mul( A(j,i), -B(i,j), nmin);
+   M2 = DPS_mul( A(j,i), B(i,j), nmin);
    M3 = DPS_mul( A(i,j), B(j,i), nmin);
-   M4 = DPS_mul( -A(i,i), T1, nmin);
+   M4 = DPS_mul( A(i,i), T1, nmin);
    M5 = DPS_mul( A(j,j), B(j,j), nmin);
    M6 = DPS_mul( S2, T2, nmin);
    M7 = DPS_mul( S3, T3, nmin);
 
    C11 = M6+M7;
    C12 = M3-M1;
-   C21 = M2+M4;
+   C21 = M4-M2;
    C22 = M1+M4+M5+M6;
 
    C = [ C11 C12; C21 C22 ];

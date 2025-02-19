@@ -1,7 +1,6 @@
-#####################################################################
 # Fast-Matrix-Multiplication library
 #   https://github.com/jgdumas/Fast-Matrix-Multiplication
-#   Accurate fast matrix multiplications via 2x2 recursion
+#   Accurate fast matrix multiplications via recursion
 #   Authors:
 #   [J-G. Dumas, C. Pernet, A. Sedoglavic;
 #    Strassen's algorithm is not optimally accurate.
@@ -19,44 +18,51 @@
 #   right: data/Ro.sms
 #   prod.: data/Po.sms
 
+MMchecker data/Lo.sms data/Ro.sms data/Po.sms 128 3 1013
 
 ##########
-# Pre-computation of the lhs:
-#   replace 1013 by sqrt(3)
-#   replace [i0;i1;i2;i3] by [A(i,i);A(i,j);A(j,i);A(j,j)]
-#   replace [o0;o1;o2;o3;o4;o5;o6] by [PA0,PA1,PA2,PA3,PA4,PA5,PA6]
+# Pre-computation of the lhs straight-line program:
 
-optimizer -E -N data/Lo.sms | compacter -s
+optimizer -E -N data/Lo.sms | compacter -s > data/Lo.slp
 
 # 7	additions	instead of 14 	0.564344s (1.90303 cpu) [3]
 # 4	multiplications	instead of 19
 ##########
 
+PMchecker -M data/Lo.sms data/Lo.slp
 
 ##########
-# Pre-computation of the rhs:
-#   replace 1013 by sqrt(3)
-#   replace [i0;i1;i2;i3] by [B(i,i);B(i,j);B(j,i);B(j,j)]
-#   replace [o0;o1;o2;o3;o4;o5;o6] by [PB0,PB1,PB2,PB3,PB4,PB5,PB6]
+# Pre-computation of the rhs straight-line program:
 
-optimizer -E -N data/Ro.sms | compacter -s
+optimizer -E -N data/Ro.sms | compacter -s > data/Ro.slp
 
 # 7	additions	instead of 14 	1.16858s (3.85641 cpu) [3]
 # 4	multiplications	instead of 19
 ##########
 
+PMchecker -M data/Ro.sms data/Ro.slp
 
 ##########
-# Pre-computation of the product:
-#   replace 1013 by sqrt(3)
-#   replace [i0;i1;i2;i3;i4,i5,i6] by [d1,d2,d3,d4,d5,d6,d7]
-#   replace [o0;o1;o2;o3] by [C11,C12,C21,C22]
+# Pre-computation of the product straight-line program:
 
-matrix-transpose data/Po.sms | optimizer -E -N | transpozer | compacter -s
+matrix-transpose data/Po.sms | optimizer -E -N | transpozer | compacter -s > data/Po.slp
 
-# 10	additions (7+3)
-# 4	multiplications
+# 10	additions (7+3)	instead of 17	1.30323s (3.98992 cpu) [3]
+# 4	multiplications	instead of 19
 ##########
 
+PMchecker -M data/Po.sms data/Po.slp
+
+##########
+# Gathering of all straight-line program/variables to produce a Matlab program:
+
+MM.rpl data/Lo.slp data/Ro.slp data/Po.slp 2 2 2 7 data/DPS
+##########
+
+##########
+# 1013 is a placeholder for sqrt(3)
+
+sed -i 's/2026/2\*1013/g;s/1013/sqrt(3)/g' data/DPS_2_2_2.m
+##########
 
 #####################################################################
