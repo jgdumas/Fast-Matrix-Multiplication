@@ -63,8 +63,8 @@ int VariableReplacer(std::ostream& sout, std::istream& SLP,
     const size_t n(atoi(argv[++offset]));	 // Matrix column dimension
     const size_t s(m*n);
     const size_t r(atoi(argv[++offset]));	 // Tensor rank
-    ++offset;								 // Input or Output matrix
-    const bool isin(argc>offset?atoi(argv[offset]):true);
+    ++offset;								 // Input (1) or Output (0) matrix
+    const size_t iotype(argc>offset?atoi(argv[offset]):0);
 
 
     std::clog << "%  replace := --> =" << std::endl;
@@ -75,7 +75,7 @@ int VariableReplacer(std::ostream& sout, std::istream& SLP,
     assert(ichar != inchar[0]);
     assert(jchar != inchar[0]);
 
-    if (isin) {
+    if (iotype == 1) {
         sout << "[m,n] = size(" << rechar << ");" << std::endl;
         sout << "m0 = 0;";
         for(size_t k(1); k<m; ++k) {
@@ -112,17 +112,19 @@ int VariableReplacer(std::ostream& sout, std::istream& SLP,
                                          target.str());
         }
 
-    } else {
+    }
+
+    if (iotype == 0) {
         unvectorize(program, inchar, rechar, r);
     }
 
-    unvectorize(program, ouchar, rechar, (isin?r:s) );
+    unvectorize(program, ouchar, rechar, (iotype==1?r:s) );
 
 
     sout << program  << std::endl;
 
-    if (! isin) {
-        sout << "C = [";
+    if (iotype == 0) {
+        sout << rechar << " = [";
         size_t k(0);
         for(size_t i(0); i<m; ++i) {
             for(size_t j(0); j<n; ++j, ++k) {
