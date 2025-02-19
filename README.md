@@ -66,7 +66,12 @@ Accuracy comparison with symbolic matrix multiplication:
 --------------------------------------------------------------------------------
 **`FMM-plinopt-codegen`, Progam generation via the PLinOpt library**:
 
-Command-line scritps generating optimized matlab programs.
+- [PLinOpt library](https://github.com/jgdumas/plinopt): Routines handling linear, bilinear & trilinear programs.
+
+Command-line scritps generating optimized Matlab programs:
+- `replacer`: regex replacement of variable names in straight-line programs
+- `MM.rpl`: Matlab Matrix Multiplication generator from Straight-Line Programs
+- `CoB.rpl`: Matlab change of basis generator from Straight-Line Program
 
 Examples:
 `DPS.plo`,
@@ -74,10 +79,8 @@ Examples:
 `DPS_smallrat.plo`,
 `DPS_intermediate.plo`,
 `DPS_integral.plo`,
-`DPS_CoB.plo`,
+`DPS_alternative.plo`,
 `336.plo`.
-- [PLinOpt library](https://github.com/jgdumas/plinopt): Routines handling linear, bilinear & trilinear programs.
-
 
 
 --------------------------------------------------------------------------------

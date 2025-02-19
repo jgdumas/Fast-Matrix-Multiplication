@@ -1,34 +1,34 @@
 function M = DPS_CoBL(A, nmin)
-%          Left change of basis of the sparsification
-%          of DPS's algorithm via alternative basis.
-
-if nargin < 2, nmin = 8; end
-n = length(A);
-if n ~= 2^( log2(n) )
-   error('The matrix dimension must be a power of 2.')
-end
-if n <= nmin
+if nargin < 2, nmin = 8; end     % Threshold to conventional
+[m,n] = size(A);
+if (m <= nmin)||(n <= nmin)
    M=A;
 else
-   m = n/2; i = 1:m; j = m+1:n;
+SQRT3o2=sqrt(3)/2;
+SQRT3o3=sqrt(3)/3;
+SQRT3f2o3=sqrt(3)*2/3;
 
-   SQRT3o2=sqrt(3)/2;
-   SQRT3o3=sqrt(3)/3;
-   SQRT3f2o3=sqrt(3)*2/3;
+[m,n] = size(A);
+m0 = 0; m1 = 1*m/2; m2 = m;
+ r0 = m0+1:m1; r1 = m1+1:m2;
+n0 = 0; n1 = 1*n/2; n2 = n;
+ c0 = n0+1:n1; c1 = n1+1:n2;
+tA0 = A(r0,c0);
+tA1 = A(r0,c1);
+tA2 = A(r1,c0);
+tA3 = A(r1,c1);
 
-   M1 = DPS_CoBL(A(i,i), nmin);
-   M2 = DPS_CoBL(A(i,j), nmin);
-   M3 = DPS_CoBL(A(j,i), nmin);
-   M4 = DPS_CoBL(A(j,j), nmin);
 
-T1=M4*SQRT3o3;
-T2=M3-M2;
-T3=M1+M4;
+iM0 = DPS_CoBL( tA0, nmin);
+iM1 = DPS_CoBL( tA1, nmin);
+iM2 = DPS_CoBL( tA2, nmin);
+iM3 = DPS_CoBL( tA3, nmin);
 
-S1=M4*SQRT3f2o3;
-S2=M2+T1;
-S3=M3-T1;
-S4=T2/2-T3*SQRT3o2;
+r4 = iM3*SQRT3o3;
+oM0 = (iM2-iM1)/2-(iM0+iM3)*SQRT3o2;
+oM1 = iM2-r4;
+oM2 = iM1+r4;
+oM3 = iM3*SQRT3f2o3;
 
-   M = [ S1 S2; S3 S4];
+M = [ oM0 oM1 ; oM2 oM3 ] ;
 end

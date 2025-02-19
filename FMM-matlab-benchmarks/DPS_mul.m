@@ -1,39 +1,14 @@
-function C = DPS_mul(A, B, nmin)
-%          Sparse multiplication of the sparsification
-%          of DPS's algorithm via alternative basis.
-
-if nargin < 3, nmin = 8; end
-
-n = length(A);
-if n ~= 2^( log2(n) )
-   error('The matrix dimension must be a power of 2.')
-end
-
-if n <= nmin
-   C = A*B;
-else
-   m = n/2; i = 1:m; j = m+1:n;
-
-   S1 = A(j,i) - A(j,j);
-   S2 = A(i,i) + A(j,j);
-   S3 = A(i,j) + A(j,j);
-   T1 = B(j,j) - B(j,i);
-   T2 = B(i,i) - B(j,j);
-   T3 = B(i,j) + B(j,j);
-
-   M1 = DPS_mul( S1, B(i,i), nmin);
-   M2 = DPS_mul( A(j,i), B(i,j), nmin);
-   M3 = DPS_mul( A(i,j), B(j,i), nmin);
-   M4 = DPS_mul( A(i,i), T1, nmin);
-   M5 = DPS_mul( A(j,j), B(j,j), nmin);
-   M6 = DPS_mul( S2, T2, nmin);
-   M7 = DPS_mul( S3, T3, nmin);
-
-   C11 = M6+M7;
-   C12 = M3-M1;
-   C21 = M4-M2;
-   C22 = M1+M4+M5+M6;
-
-   C = [ C11 C12; C21 C22 ];
-
+function C = DPS_mul(A, B, nmin, peeling, level)
+%          Computes the product C = A*B, with fast core: <2;2;2>.
+%          nmin   : threshold switch to conventional.
+%          peeling: static peeling (1, by default) or dynamic (2).
+%          level  : logging level.
+  if nargin < 3, nmin = 3; end    % Threshold to conventional
+  if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
+  [m,k] = size(A); [k2,n] = size(B);
+  if (k2 ~= k), error('Incompatible matrix dimensions.'); end
+  if nargin < 5                   % Min level for verbose output
+    level = min([floor(log(m/nmin)/log(2)),floor(log(k/nmin)/log(2)),floor(log(n/nmin)/log(2))]);
+  end
+  C=DPS_mul_2_2_2(A,B,nmin,peeling,level);
 end

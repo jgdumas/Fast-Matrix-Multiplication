@@ -9,6 +9,7 @@ function C = DPS_smallrat(A, B, nmin)
 %          Reference:
 %          J-G. Dumas, C. Pernet, A. Sedoglavic
 %          Strassen's algorithm is not optimally accurate, Feb. 2024
+%          ISSAC 2024, Raleigh, NC USA, pp. 254-263.
 %          https://hal.science/hal-04441653
 
 if nargin < 3, nmin = 8; end
