@@ -4,7 +4,8 @@
 #   Accurate fast matrix multiplications via 2x2 recursion
 #   Authors:
 #   [J-G. Dumas, C. Pernet, A. Sedoglavic;
-#    Strassen's algorithm is not optimally accurate.
+#    Strassen's algorithm is not optimally accurate;
+#    ISSAC 2024, Raleigh, NC USA, pp. 254-263.
 #    https://hal.science/hal-04441653]
 
 # Generation of DPS_CoBL.m DPS_CoBR.m DPS_ICoB.m
@@ -61,5 +62,20 @@ matrix-transpose data/CPo.sms | optimizer -E -N | transpozer | compacter -s > da
 ##########
 
 PMchecker -M data/CPo.sms data/CPo.slp
+
+##########
+# Gathering of straight-line programs to produce a Matlab programs:
+
+./CoB.rpl data/CLo.slp 2 2 data/DPS_CoBL
+./CoB.rpl data/CRo.slp 2 2 data/DPS_CoBR
+./CoB.rpl data/CPo.slp 2 2 data/DPS_ICoB
+
+##########
+# 1013 is a placeholder for sqrt(3)
+
+sed -i 's/2026/2\*1013/g;s/1013/sqrt(3)/g;s/sqrt(3)\*2\/3/SQRT3f2o3/g;s/2\*sqrt(3)\/3/SQRT3f2o3/g;s/sqrt(3)\/2/SQRT3o2/g;s/sqrt(3)\/3/SQRT3o3/g;s/else/&\nSQRT3o2=sqrt(3)\/2;\nSQRT3o3=sqrt(3)\/3;\nSQRT3f2o3=sqrt(3)\*2\/3;\n/' data/DPS_CoBL.m data/DPS_CoBR.m data/DPS_ICoB.m
+
+
+##########
 
 #####################################################################

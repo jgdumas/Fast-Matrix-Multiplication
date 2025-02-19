@@ -3,7 +3,8 @@
 #   Accurate fast matrix multiplications via recursion
 #   Authors:
 #   [J-G. Dumas, C. Pernet, A. Sedoglavic;
-#    Strassen's algorithm is not optimally accurate.
+#    Strassen's algorithm is not optimally accurate;
+#    ISSAC 2024, Raleigh, NC USA, pp. 254-263.
 #    https://hal.science/hal-04441653]
 
 # Generation of DPS.m
@@ -62,7 +63,7 @@ MM.rpl data/Lo.slp data/Ro.slp data/Po.slp 2 2 2 7 data/DPS
 ##########
 # 1013 is a placeholder for sqrt(3)
 
-sed -i 's/2026/2\*1013/g;s/1013/sqrt(3)/g' data/DPS_2_2_2.m
+sed -i 's/2026/2\*1013/g;s/1013/sqrt(3)/g;s/sqrt(3)\*2\/3/SQRT3f2o3/g;s/2\*sqrt(3)\/3/SQRT3f2o3/g;s/sqrt(3)\/2/SQRT3o2/g;s/sqrt(3)\/3/SQRT3o3/g;s/function .*/&\nSQRT3o2=sqrt(3)\/2;\nSQRT3o3=sqrt(3)\/3;\nSQRT3f2o3=sqrt(3)\*2\/3;\n/' data/DPS_2_2_2.m
 ##########
 
 #####################################################################

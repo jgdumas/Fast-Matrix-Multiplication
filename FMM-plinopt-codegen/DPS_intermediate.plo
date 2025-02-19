@@ -4,7 +4,8 @@
 #   Accurate fast matrix multiplications via 2x2 recursion
 #   Authors:
 #   [J-G. Dumas, C. Pernet, A. Sedoglavic;
-#    Strassen's algorithm is not optimally accurate.
+#    Strassen's algorithm is not optimally accurate;
+#    ISSAC 2024, Raleigh, NC USA, pp. 254-263.
 #    https://hal.science/hal-04441653]
 
 # Generation of DPS_intermediate.m

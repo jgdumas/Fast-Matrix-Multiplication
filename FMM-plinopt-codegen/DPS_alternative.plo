@@ -4,42 +4,52 @@
 #   Accurate fast matrix multiplications via 2x2 recursion
 #   Authors:
 #   [J-G. Dumas, C. Pernet, A. Sedoglavic;
-#    Strassen's algorithm is not optimally accurate.
+#    Strassen's algorithm is not optimally accurate;
+#    ISSAC 2024, Raleigh, NC USA, pp. 254-263.
 #    https://hal.science/hal-04441653]
 
 # Generation of DPS_alternative.m
+#   Sparsification from:
+#   [G. Beniamini, N. Cheng, O. Holtz, E. Karstadt, O. Schwartz;
+#    Sparsifying the Operators of Fast Matrix Multiplication Algorithms.
+#    https://arxiv.org/abs/2008.03759]
 
 # Automatically obtained with the PLinOpt library
 #   https://github.com/jgdumas/plinopt
 
 # Associated L,R,P matrices with PLinOpt are:
-#   left : data/La.sms
-#   right: data/Ra.sms
-#   prod.: data/Pa.sms
+#   left : data/Lo.sms
+#   right: data/Ro.sms
+#   prod.: data/Po.sms
 
 ##########
-# Pre-computation of the lhs straight-line program:
-optimizer -E -N data/La.sms| compacter -s > data/La.slp
-# 3	additions	instead of 3 	0.0868759s (0.327302 cpu) [3]
-# 0	multiplications	instead of 0
-PMchecker -M data/La.sms data/La.slp
+# Sparsification of the matrices
+
+(factorizer -S data/Lo.sms > data/CLo.sms) |& grep -v '#' > data/La.sms
+(factorizer -S data/Ro.sms > data/CRo.sms) |& grep -v '#' > data/Ra.sms
+(matrix-transpose data/Po.sms | factorizer -S > data/tCPo.sms) |& grep -v '#' > data/tPa.sms
+matrix-transpose data/tCPo.sms > data/CPo.sms
+matrix-transpose data/tPa.sms > data/Pa.sms
+
+##########DPS_mul
+# Generation of alternative basis Matlab bilinear program: DPS_mul.m  DPS_mul_2_2_2.m 
+./DPS_mul.plo
+
 
 ##########
-# Pre-computation of the rhs straight-line program:
-optimizer -E -N data/Ra.sms| compacter -s > data/Ra.slp
-# 3	additions	instead of 3 	0.0858929s (0.326958 cpu) [3]
-# 0	multiplications	instead of 0
-PMchecker -M data/Ra.sms data/Ra.slp
+# Generation of the change of basis Matlab programs: DPS_CoBL.m  DPS_CoBR.m  DPS_ICoB.m
+./DPS_CoB.plo
 
 ##########
-# Pre-computation of the product straight-line program:
-matrix-transpose data/Pa.sms | optimizer -E -N | transpozer | compacter -s > data/Pa.slp
-# 6	additions (3+3)
-# 0	multiplications
-PMchecker -M data/Pa.sms data/Pa.slp
+# Matrix multiplication algorithm via an alternative basis
 
-##########
-# Gathering of all straight-line program/variables to produce a Matlab prgram:
-MM.rpl data/La.slp data/Ra.slp data/Pa.slp 2 2 2 7 data/DPS_mul
+cat > data/DPS_alternative.m<< EOF
+function C = DPS_alternative(A, B, nmin)
+%          Sparsification of DPS's algorithm via alternative basis.
 
-#####################################################################
+   U = DPS_CoBL(A, nmin);	% Left change of basis
+   V = DPS_CoBR(B, nmin);	% Right change of basis
+   W = DPS_mul(U, V, nmin); % Sparse multiplication
+   C = DPS_ICoB(W, nmin);   % Inverse change of basis
+end
+EOF

@@ -1,0 +1,66 @@
+#!/bin/csh
+# ==========================================================================
+# Fast-Matrix-Multiplication library
+# Authors: J-G. Dumas, C. Pernet, A. Sedoglavic
+# ==========================================================================
+# ==========================================================================
+# Matlab change of basis generator from Straight-Line Program
+# ==========================================================================
+# Usage: C.slp m n name
+#   C.slp linear operator with (m.n) inputs and (m.n) outputs
+#   produces a Matlab programs: 'name.m'
+# ==========================================================================
+# Examples:
+# ./CoB.rpl data/CLo.slp 2 2 data/DPS_CoBL
+# ==========================================================================
+
+set Cslp = $1		# linear map
+set m = $2		# row dimension
+set n = $3		# column dimension
+@ r = ( $m * $n )
+set PathFname = $4	# Function name
+set Fname = `basename ${PathFname}`	# Function name
+
+echo "# Writing core algorithm to ${PathFname}.m"
+
+
+# Function header
+cat > ${PathFname}.m<< EOF
+function M = $Fname(A, nmin)
+if nargin < 2, nmin = 8; end     % Threshold to conventional
+[m,n] = size(A);
+if (m <= nmin)||(n <= nmin)
+   M=A;
+else
+EOF
+
+# Cutting in blocks
+set identity = ""
+set j = 0
+while ( $j < $r )
+  set tmp = ''$identity't'$j':=i'$j
+  set identity = ''$tmp';'
+  @ j++
+end
+
+# Assigning blocks
+echo $identity | sed 's/;/&\n/g' | ./replacer i t A $m $n $r 1 >> ${PathFname}.m
+
+
+set endr = $r
+@ endr--
+# Recursive calss
+echo "% Recursive calls iM0..$endr = $Fname( tA0..$endr, nmin)"
+set j = 0
+while ( $j < $r )
+   echo "iM$j = $Fname( tA$j, nmin);" >> ${PathFname}.m
+   @ j++
+end
+echo >> ${PathFname}.m
+
+# Assigning output
+./replacer $Cslp i o M $m $n $r 0 >> ${PathFname}.m
+
+
+echo "end" >> ${PathFname}.m
+
