@@ -1,7 +1,6 @@
-#####################################################################
 # Fast-Matrix-Multiplication library
 #   https://github.com/jgdumas/Fast-Matrix-Multiplication
-#   Accurate fast matrix multiplications via 2x2 recursion
+#   Accurate fast matrix multiplications via recursion
 #   Authors:
 #   [J-G. Dumas, C. Pernet, A. Sedoglavic;
 #    Strassen's algorithm is not optimally accurate.
@@ -55,7 +54,7 @@ matrix-transpose data/Po.sms | optimizer -E -N | transpozer | compacter -s > dat
 PMchecker -M data/Po.sms data/Po.slp
 
 ##########
-# Gathering of all straight-line program/variables to produce a Matlab prgram:
+# Gathering of all straight-line program/variables to produce a Matlab program:
 
 MM.rpl data/Lo.slp data/Ro.slp data/Po.slp 2 2 2 7 data/DPS
 ##########
