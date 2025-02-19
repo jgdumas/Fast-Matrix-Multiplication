@@ -13,11 +13,8 @@ else
   mu=m-rem(m,3);ku=k-rem(k,6);nu=n-rem(n,3);
   l=ceil(min([log(mu)/log(3),log(ku)/log(6),log(nu)/log(3)]));
   if (peeling == 1)
-    mu=nmin;ku=nmin;nu=nmin;l=0;
-    while (mu <= m) && (ku <= k) && (nu <= n)
-      l=l+1; mu=mu*3; ku=ku*6; nu=nu*3;
-    end
-    l=l-1;mu=nmin*3^l; ku=nmin*6^l; nu=nmin*3^l;
+    l = min([floor(log(m/nmin)/log(3)),floor(log(k/nmin)/log(6)),floor(log(n/nmin)/log(3))]);
+    mu=nmin*2^l; ku=nmin*2^l; nu=nmin*2^l;
   end
   if (mu < m) || (ku < k) || (nu < n)
     % fprintf("# Core SubMatrix[%d]: %d x %d x %d\n",l,mu,ku,nu)
