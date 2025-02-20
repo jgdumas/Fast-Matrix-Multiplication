@@ -103,7 +103,7 @@ if ( -f ${PathFname}.m ) then
     endif
 endif
 
-echo "Writing high-level MM routine to ${PathFname}.m"
+echo "# Writing high-level MM routine to ${PathFname}.m"
 
 cat > ${PathFname}.m<< EOF
 function C = $Fname(A, B, nmin, peeling, level)

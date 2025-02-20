@@ -68,20 +68,23 @@ Accuracy comparison with symbolic matrix multiplication:
 
 - [PLinOpt library](https://github.com/jgdumas/plinopt): Routines handling linear, bilinear & trilinear programs.
 
-Command-line scritps generating optimized Matlab programs:
+Command-line scripts generating optimized Matlab programs from L,R,P matrices:
+- `sms2matlab.sh`: L.sms R.sms P.sms filename
+
+
+Examples:
+- `sms2matlab.sh data/Lo.sms data/Ro.sms data/Po.sms data/DPS -p 3 1013`
+- `sms2matlab.sh data/Ld.sms data/Rd.sms data/Pd.sms data/DPS_evenpow`
+- `sms2matlab.sh data/Lr.sms data/Rr.sms data/Pr.sms data/DPS_smallrat`
+- `sms2matlab.sh data/Lj.sms data/Rj.sms data/Pj.sms data/DPS_intermediate`
+- `sms2matlab.sh data/Li.sms data/Ri.sms data/Pi.sms data/DPS_integral`
+- `DPS_alternative.plo`
+- `336.plo`
+
+Tools:
 - `replacer`: regex replacement of variable names in straight-line programs
 - `MM.rpl`: Matlab Matrix Multiplication generator from Straight-Line Programs
 - `CoB.rpl`: Matlab change of basis generator from Straight-Line Program
-
-Examples:
-`DPS.plo`,
-`DPS_evenpow.plo`,
-`DPS_smallrat.plo`,
-`DPS_intermediate.plo`,
-`DPS_integral.plo`,
-`DPS_alternative.plo`,
-`336.plo`.
-
 
 --------------------------------------------------------------------------------
 **`FMM-maple-proofs`, Proofs of accuracy bounds in Maple**:
