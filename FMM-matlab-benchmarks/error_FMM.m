@@ -13,7 +13,7 @@ function [e_f,e_a,e_c,e_d,t_f,t_a,t_c,t_d] = error_FMM(A,B,n_0,peeling)
     t_a = toc;
     e_a = diffe_real(C_a,E)/scale;
     tic
-    C_c = recursive(A,B,128,128,128);
+    C_c = recursive(A,B,2,2,2);
     t_c = toc;
     e_c = diffe_real(C_c,E)/scale;
     tic

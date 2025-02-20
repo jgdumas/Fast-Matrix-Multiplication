@@ -22,7 +22,7 @@ parfor l = 1:t
     n = n_b + inc*l;
     m(l) = n;    disp(l);
     for k = 1:num
-        A = gen_mat_SW(n);        N(l) = size(A,2);   
+        A = gen_mat_SW(n);        N(l) = size(A,2);
         B = gen_mat_SW(n);
         [e_w,e_s,e_v4,e_jg,e_ra,e_j5,e_a3,e_8,t_w,t_s,t_v4,t_jg,t_ra,t_j5,t_a3,t_8] = error_2x2_real(A,B,n_0);
         E_W(l) = E_W(l) + e_w/num;        E_4(l) = E_4(l) + e_v4/num;       E_J(l) = E_J(l) + e_jg/num;
@@ -30,7 +30,7 @@ parfor l = 1:t
         E_3(l) = E_3(l) + e_a3/num;       E_R(l) = E_R(l) + e_ra/num;
         T_W(l) = T_W(l) + t_w/num;        T_4(l) = T_4(l) + t_v4/num;       T_J(l) = T_J(l) + t_jg/num;
         T_S(l) = T_S(l) + t_s/num;        T_8(l) = T_8(l) + t_8/num;        T_5(l) = T_5(l) + t_j5/num;
-        T_3(l) = T_3(l) + t_a3/num;       T_R(l) = T_R(l) + t_ra/num; 
+        T_3(l) = T_3(l) + t_a3/num;       T_R(l) = T_R(l) + t_ra/num;
     end
 end
 
