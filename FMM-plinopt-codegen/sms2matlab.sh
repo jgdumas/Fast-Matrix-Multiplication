@@ -64,7 +64,6 @@ Rsms=$2
 Psms=$3
 File=$4
 
-
 ##########
 # Extract dimensions
 
@@ -83,16 +82,26 @@ r=`grep -v '#' ${Lsms} | head -1 | cut -d' ' -f 1`
 
 
 ##########
+# Generator of SLPs from 3 (2 direct and 1 transposed) sms matrices
+function sms2slp {
+    local Lsms=$1
+    local Rsms=$2
+    local Psms=$3
+    local MMCHECK=$4
+    local SQRT=$5
+    local PLACE=$6
+
+##########
 # Do represent a matrix multiplication algorithm
 
 if [[ "$MMCHECK" -eq 1 ]]; then
-  MMFLAGS=""
+  local MMFLAGS=""
   if [[ "$SQRT" -ne 0 ]]; then
-    MMFLAGS="128 ${SQRT} ${PLACE}"
+    local MMFLAGS="128 ${SQRT} ${PLACE}"
   fi
-  echo "MMchecker $1 $2 $3 ${MMFLAGS} "
+  echo "MMchecker ${Lsms} ${Rsms} ${Psms} ${MMFLAGS} "
 
-  mkn=`MMchecker $1 $2 $3 ${MMFLAGS} |& grep '#'`
+  local mkn=`MMchecker ${Lsms} ${Rsms} ${Psms} ${MMFLAGS} |& grep '#'`
   echo $mkn
   if [[ "$mkn" == *"ERROR"* ]]; then
     exit 1;
@@ -100,8 +109,6 @@ if [[ "$MMCHECK" -eq 1 ]]; then
 else
   echo "<$m;$k;$n> algorithm of rank $r."
 fi
-
-
 
 Lmat=`dirname $Lsms`/`basename $Lsms .sms`
 Rmat=`dirname $Lsms`/`basename $Rsms .sms`
@@ -137,6 +144,12 @@ do
 	exit 1;
     fi
 done
+}
+
+##########
+# Do generate the SLPs:
+
+sms2slp ${Lsms} ${Rsms} ${Psms} ${MMCHECK} ${SQRT} ${PLACE}
 
 ##########
 # Gathering of all straight-line program/variables to produce a Matlab program:
