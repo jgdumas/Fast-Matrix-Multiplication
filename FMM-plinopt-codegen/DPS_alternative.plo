@@ -33,12 +33,12 @@ matrix-transpose data/tPa.sms > data/Pa.sms
 
 ##########DPS_mul
 # Generation of alternative basis Matlab bilinear program: DPS_mul.m  DPS_mul_2_2_2.m 
-./DPS_mul.plo
+./sms2matlab.sh  -p 3 1013 -nc data/La.sms data/Ra.sms data/Pa.sms data/DPS_mul
 
 
 ##########
 # Generation of the change of basis Matlab programs: DPS_CoBL.m  DPS_CoBR.m  DPS_ICoB.m
-./DPS_CoB.plo
+./sms2matlab.sh  -p 3 1013 -c data/CLo.sms data/CRo.sms data/CPo.sms data/DPS
 
 ##########
 # Matrix multiplication algorithm via an alternative basis

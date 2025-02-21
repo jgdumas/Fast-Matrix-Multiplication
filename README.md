@@ -78,6 +78,8 @@ Examples:
 - `sms2matlab.sh data/Lr.sms data/Rr.sms data/Pr.sms data/DPS_smallrat`
 - `sms2matlab.sh data/Lj.sms data/Rj.sms data/Pj.sms data/DPS_intermediate`
 - `sms2matlab.sh data/Li.sms data/Ri.sms data/Pi.sms data/DPS_integral`
+- `sms2matlab.sh -nc data/La.sms data/Ra.sms data/Pa.sms data/DPS_mul`
+- `sms2matlab.sh -p 3 1013 -c data/CLo.sms data/CRo.sms data/CPo.sms data/DPS`
 - `DPS_alternative.plo`
 - `336.plo`
 

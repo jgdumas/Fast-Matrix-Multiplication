@@ -17,6 +17,7 @@
 MATS=()
 OPTFLAGS="-E -N"
 MMCHECK=1
+CoBTYPE=0
 SQRT=0
 PLACE=0
 while [[ $# -gt 0 ]]; do
@@ -26,11 +27,16 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
-    -m|-mmc|--MMcheck)
+    -m|-mm|-mmc|--MMcheck)
       MMCHECK=1
       shift # past argument
       ;;
-    -nm|-nmm|-nmmc|-nc|--NoMMcheck)
+    -c|-cob|--CoB)
+      MMCHECK=0
+      CoBTYPE=1
+      shift # past argument
+      ;;
+    -n|-nm|-nmm|-nmmc|-nc|--NoMMcheck)
       MMCHECK=0
       shift # past argument
       ;;
@@ -42,8 +48,10 @@ while [[ $# -gt 0 ]]; do
       shift # past value
       ;;
     -h|--h|-help|--help|-*|--*)
-      echo "Usage: sms2matlab.sh [-O #|-p # #|-m|-n] L.sms R.sms P.sms name"
+      echo "Usage: sms2matlab.sh [-O #|-p # #|-m|-n|-c] L.sms R.sms P.sms name"
       echo "  generates matlab program name.m from L,R,P matrices."
+      echo "  -m: L,R,P are a matrix multiplication algorithm (default)."
+      echo "  -c: L,R,P are change of bases matrices (default MM)."
       echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
       echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
       echo "  -p S P: P replaces sqrt(S) in sms files (default none)."
@@ -152,16 +160,30 @@ done
 sms2slp ${Lsms} ${Rsms} ${Psms} ${MMCHECK} ${SQRT} ${PLACE}
 
 ##########
-# Gathering of all straight-line program/variables to produce a Matlab program:
-
-echo "Generating ${File}.m with ${m}x${k}x${n} of rank ${r}:"
-./MM.rpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File}
-
+# Function replacing the placeholder by sqrt, with precomputed constants
+function PlaceHolder {
+    local SQRT=$1
+    local PLACE=$2
+    shift 2
+    if [[ "$SQRT" -ne 0 ]]; then
+	DBLP=$(( ${PLACE} * 2 ))
+	sed -i "s/${DBLP}/2\*${PLACE}/g;s/${PLACE}/sqrt(${SQRT})/g;s/sqrt(${SQRT})\*2\/3/SQRT${SQRT}f2o3/g;s/2\*sqrt(${SQRT})\/3/SQRT${SQRT}f2o3/g;s/sqrt(${SQRT})\/2/SQRT${SQRT}o2/g;s/sqrt(${SQRT})\/3/SQRT${SQRT}o3/g;s/function .*/&\nSQRT${SQRT}o2=sqrt(${SQRT})\/2;\nSQRT${SQRT}o3=sqrt(${SQRT})\/3;\nSQRT${SQRT}f2o3=sqrt(${SQRT})\*2\/3;\n/" $*
+    fi
+}
 
 ##########
-# Replacing the placeholder by sqrt, with precomputed constants
+# Gathering of all straight-line program/variables to produce a Matlab program:
 
-if [[ "$SQRT" -ne 0 ]]; then
-    DBLP=$(( ${PLACE} * 2 ))
-    sed -i "s/${DBLP}/2\*${PLACE}/g;s/${PLACE}/sqrt(${SQRT})/g;s/sqrt(${SQRT})\*2\/3/SQRT${SQRT}f2o3/g;s/2\*sqrt(${SQRT})\/3/SQRT${SQRT}f2o3/g;s/sqrt(${SQRT})\/2/SQRT${SQRT}o2/g;s/sqrt(${SQRT})\/3/SQRT${SQRT}o3/g;s/function .*/&\nSQRT${SQRT}o2=sqrt(${SQRT})\/2;\nSQRT${SQRT}o3=sqrt(${SQRT})\/3;\nSQRT${SQRT}f2o3=sqrt(${SQRT})\*2\/3;\n/" ${File}_${m}_${k}_${n}.m
+if [[ "$CoBTYPE" -eq 1 ]]; then
+    echo "Generating ${File}}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m change of bases:"
+    ./CoB.rpl ${Lslp} ${m} ${k} ${File}_CoBL
+    ./CoB.rpl ${Rslp} ${k} ${n} ${File}_CoBR
+    ./CoB.rpl ${Pslp} ${m} ${n} ${File}_ICoB
+
+    PlaceHolder ${SQRT} ${PLACE} ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m
+else
+    echo "Generating ${File}.m with ${m}x${k}x${n} of rank ${r}:"
+    ./MM.rpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File}
+
+    PlaceHolder ${SQRT} ${PLACE} ${File}_${m}_${k}_${n}.m
 fi

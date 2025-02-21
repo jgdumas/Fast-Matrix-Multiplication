@@ -1,4 +1,8 @@
 function C = DPS_mul_2_2_2(A, B, nmin, peeling, level)
+SQRT3o2=sqrt(3)/2;
+SQRT3o3=sqrt(3)/3;
+SQRT3f2o3=sqrt(3)*2/3;
+
 if nargin < 3, nmin = 3; end    % Threshold to conventional
 if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
 if nargin < 5, level = 3; end   % Verbose level
@@ -39,11 +43,11 @@ m0 = 0; m1 = 1*m/2; m2 = m;
  r0 = m0+1:m1; r1 = m1+1:m2;
 n0 = 0; n1 = 1*n/2; n2 = n;
  c0 = n0+1:n1; c1 = n1+1:n2;
-oA0 = A(r0,c1)-A(r0,c0);
+oA0 = A(r1,c0)-A(r0,c0);
 oA5 = A(r0,c0)+A(r1,c1);
-oA6 = A(r0,c0)+A(r1,c0);
-oA1 = A(r0,c1);
-oA2 = A(r1,c0);
+oA6 = A(r0,c0)+A(r0,c1);
+oA1 = A(r1,c0);
+oA2 = A(r0,c1);
 oA3 = A(r1,c1);
 oA4 = A(r0,c0);
 
@@ -67,11 +71,10 @@ iC3 = DPS_mul( oA3, oB3, nmin, peeling, level);
 iC4 = DPS_mul( oA4, oB4, nmin, peeling, level);
 iC5 = DPS_mul( oA5, oB5, nmin, peeling, level);
 iC6 = DPS_mul( oA6, oB6, nmin, peeling, level);
-
-oC1 = iC6+iC5;
-oC2 = iC3+iC1;
+oC2 = iC6+iC5;
+oC0 = iC3+iC1;
 oC3 = iC2-iC0;
-oC0 = iC5+iC4+iC3+iC0;
+oC1 = iC5+iC4+iC3+iC0;
 
 C = [ oC0 oC1 ; oC2 oC3 ] ;
   end
