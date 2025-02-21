@@ -16,6 +16,7 @@
 # Parsing args
 MATS=()
 OPTFLAGS="-E -N"
+MMCHECK=1
 SQRT=0
 PLACE=0
 while [[ $# -gt 0 ]]; do
@@ -25,6 +26,14 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
+    -m|-mmc|--MMcheck)
+      MMCHECK=1
+      shift # past argument
+      ;;
+    -nm|-nmm|-nmmc|-nc|--NoMMcheck)
+      MMCHECK=0
+      shift # past argument
+      ;;
     -p|--placeholder)
       SQRT="$2"
       PLACE="$3"
@@ -33,8 +42,9 @@ while [[ $# -gt 0 ]]; do
       shift # past value
       ;;
     -h|--h|-help|--help|-*|--*)
-      echo "Usage: sms2matlab.sh [-O #|-p # #] L.sms R.sms P.sms name"
+      echo "Usage: sms2matlab.sh [-O #|-p # #|-m|-n] L.sms R.sms P.sms name"
       echo "  generates matlab program name.m from L,R,P matrices."
+      echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
       echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
       echo "  -p S P: P replaces sqrt(S) in sms files (default none)."
       exit 1
@@ -54,28 +64,44 @@ Rsms=$2
 Psms=$3
 File=$4
 
+
 ##########
-# Do represent a matrix multiplication algorithm
+# Extract dimensions
 
-MMFLAGS=""
-if [[ "$SQRT" -ne 0 ]]; then
-    MMFLAGS="128 ${SQRT} ${PLACE}"
-fi
-echo "MMchecker $1 $2 $3 ${MMFLAGS} "
+Ld=(`grep -v '#' ${Lsms} | head -1 | cut -d' ' -f 1,2`)
+Rd=(`grep -v '#' ${Rsms} | head -1 | cut -d' ' -f 1,2`)
+Pd=(`grep -v '#' ${Psms} | head -1 | cut -d' ' -f 1,2`)
 
-mkn=`MMchecker $1 $2 $3 ${MMFLAGS} |& grep '#'`
-echo $mkn
-if [[ "$mkn" == *"ERROR"* ]]; then
-    exit 1;
-fi
+n=`echo "sqrt(${Rd[1]}*${Pd[0]}/${Ld[1]})"|bc`
+m=$(( ${Pd[0]} / ${n} ))
+k=$(( ${Rd[1]} / ${n} ))
 
-m=`echo $mkn | sed 's/x/ /g' | cut -d' ' -f4`
-k=`echo $mkn | sed 's/x/ /g' | cut -d' ' -f5`
-n=`echo $mkn | sed 's/x/ /g' | cut -d' ' -f6`
+# m=`echo $mkn | sed 's/x/ /g' | cut -d' ' -f4`
+# k=`echo $mkn | sed 's/x/ /g' | cut -d' ' -f5`
+# n=`echo $mkn | sed 's/x/ /g' | cut -d' ' -f6`
 r=`grep -v '#' ${Lsms} | head -1 | cut -d' ' -f 1`
 
 
-#echo "$m x $k x $n, $r"
+##########
+# Do represent a matrix multiplication algorithm
+
+if [[ "$MMCHECK" -eq 1 ]]; then
+  MMFLAGS=""
+  if [[ "$SQRT" -ne 0 ]]; then
+    MMFLAGS="128 ${SQRT} ${PLACE}"
+  fi
+  echo "MMchecker $1 $2 $3 ${MMFLAGS} "
+
+  mkn=`MMchecker $1 $2 $3 ${MMFLAGS} |& grep '#'`
+  echo $mkn
+  if [[ "$mkn" == *"ERROR"* ]]; then
+    exit 1;
+  fi
+else
+  echo "<$m;$k;$n> algorithm of rank $r."
+fi
+
+
 
 Lmat=`dirname $Lsms`/`basename $Lsms .sms`
 Rmat=`dirname $Lsms`/`basename $Rsms .sms`
@@ -95,7 +121,7 @@ do
     Mslp=${mat}.slp
     echo "Generating ${Mslp} with flags: ${OPTFLAGS}"
     optimizer ${OPTFLAGS} ${Msms} | compacter -s > ${Mslp}
-done 
+done
 
 echo "Generating ${Pslp}, by transposition, with flags: ${OPTFLAGS}"
 matrix-transpose ${Psms} | optimizer ${OPTFLAGS} | transpozer | compacter -s > ${Pslp}
@@ -110,12 +136,12 @@ do
     if [[ "$pmc" == *"ERROR"* ]]; then
 	exit 1;
     fi
-done 
+done
 
 ##########
 # Gathering of all straight-line program/variables to produce a Matlab program:
 
-echo "Generatig ${File}.m with ${m}x${k}x$${n} of rank ${r}:"
+echo "Generating ${File}.m with ${m}x${k}x${n} of rank ${r}:"
 ./MM.rpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File}
 
 
