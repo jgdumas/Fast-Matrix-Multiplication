@@ -26,8 +26,10 @@ echo "# Writing core algorithm to ${PathFname}.m"
 
 # Function header
 cat > ${PathFname}.m<< EOF
-function M = $Fname(A, nmin)
-if nargin < 2, nmin = 8; end     % Threshold to conventional
+function M = $Fname(A, nmin, peeling, level)
+  if nargin < 3, nmin = 4; end    % Threshold to conventional
+  if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
+  if nargin < 5, level = 8; end   % Verbose level
 [m,n] = size(A);
 if (m <= nmin)||(n <= nmin)
    M=A;
@@ -50,10 +52,10 @@ echo $identity | sed 's/;/&\n/g' | ./replacer i t A $m $n $r 1 >> ${PathFname}.m
 set endr = $r
 @ endr--
 # Recursive calss
-echo "% Recursive calls iM0..$endr = $Fname( tA0..$endr, nmin)"
+echo "% Recursive calls iM0..$endr = $Fname( tA0..$endr, nmin, peeling, level)"
 set j = 0
 while ( $j < $r )
-   echo "iM$j = $Fname( tA$j, nmin);" >> ${PathFname}.m
+   echo "iM$j = $Fname( tA$j, nmin, peeling, level);" >> ${PathFname}.m
    @ j++
 end
 echo >> ${PathFname}.m

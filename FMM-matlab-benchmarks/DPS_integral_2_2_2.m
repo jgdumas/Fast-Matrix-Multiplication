@@ -69,7 +69,7 @@ iC4 = DPS_integral( oA4, oB4, nmin, peeling, level);
 iC5 = DPS_integral( oA5, oB5, nmin, peeling, level);
 iC6 = DPS_integral( oA6, oB6, nmin, peeling, level);
 
-b1 = iC5+iC0+iC4;
+b1 = iC0+iC5+iC4;
 z2 = iC2+b1;
 z1 = iC1+b1;
 oC3 = iC3+iC4-z1*18957/38165;

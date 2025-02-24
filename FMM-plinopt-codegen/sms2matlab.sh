@@ -57,6 +57,7 @@ while [[ $# -gt 0 ]]; do
       echo "  generates matlab program name.m from L,R,P matrices."
       echo "  -m: L,R,P are a matrix multiplication algorithm (default)."
       echo "  -c: L,R,P are change of bases matrices (default MM)."
+      echo "  -a: L,R,P are first factorized with alternative bases."
       echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
       echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
       echo "  -p S P: P replaces sqrt(S) in sms files (default none)."
@@ -236,16 +237,38 @@ function slp2MMm {
 
 # ==========================================================================
 ##########
-# Starting sms2matlab:
+# Function: combine two squential programs to check with linear operator
+function combPMcheck {
+    local mat=$1
+    local pri=$2
+    local pro=$3
+    local usedvar=`sed 's/[^a-Z]//g' ${pri} ${pro} | grep -o . | sort -u | tr -d "\n"`
+    local freechar=`echo "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" | sed "s/${usedvar}//g" | grep -o . | head -1`
+    sed -r "s/(o)([0-9]*)/${freechar}\2/g" ${pri} > s2m.slp
+    sed -r "s/(i)([0-9]*)/${freechar}\2/g" ${pro} >> s2m.slp
 
+    local pmc=`PMchecker -M ${mat} s2m.slp |& grep '#'`
+    echo $pmc
+    if [[ "$pmc" == *"ERROR"* ]]; then
+	echo "Combined ${pri} ${pro}: PMchecker -M ${mat} s2m.slp"
+	exit 1;
+    fi
+}
+# ==========================================================================
+
+
+
+# ==========================================================================
 ##########
-# Do generate the SLPs:
+# Starting sms2matlab:
 
 
 if [[ "$ALTBASIS" -eq 1 ]]; then
     MMcheck ${Lsms} ${Rsms} ${Psms} ${SQRT} ${PLACE}
 
 	# Factor into: sparse x CoB
+    echo "Sparsifying into ${Lmat}_A.sms ${Rmat}_A.sms ${Pmat}_A.sms;"
+    echo "      with bases ${Lmat}_C.sms ${Rmat}_C.sms ${Pmat}_C.sms."
     (factorizer -S ${Lsms} > ${Lmat}_C.sms) |& grep -v '#' > ${Lmat}_A.sms
     (factorizer -S ${Rsms} > ${Rmat}_C.sms) |& grep -v '#' > ${Rmat}_A.sms
     (matrix-transpose ${Psms} | factorizer -S > ${Pmat}_tC.sms) |& grep -v '#' > ${Pmat}_tA.sms
@@ -256,15 +279,43 @@ if [[ "$ALTBASIS" -eq 1 ]]; then
     sms2slp ${Lmat}_C ${Rmat}_C ${Pmat}_C 0 ${SQRT} ${PLACE}
     sms2slp ${Lmat}_A ${Rmat}_A ${Pmat}_A 0 ${SQRT} ${PLACE}
 
-	# Do generate the matlab programs
+    combPMcheck ${Lsms} ${Lmat}_C.slp ${Lmat}_A.slp
+    combPMcheck ${Rsms} ${Rmat}_C.slp ${Rmat}_A.slp
+    combPMcheck ${Psms} ${Pmat}_A.slp ${Pmat}_C.slp
+
+
+	# Produce the matlab programs from the SLPs
     slp2CBm ${Lmat}_C.slp ${Rmat}_C.slp ${Pmat}_C.slp ${m} ${k} ${n} ${r} ${File}
     slp2MMm ${Lmat}_A.slp ${Rmat}_A.slp ${Pmat}_A.slp ${m} ${k} ${n} ${r} ${File}_mul
+
+    Mfile=`basename ${File}`
+    echo "Generating alternative basis matlab program ${File}_alternative.m."
+cat > ${File}_alternative.m<< EOF
+function C = ${Mfile}_alternative(A, B, nmin, peeling, level)
+%          Computes the product C = A*B, sparsified via alternative basis.
+  if nargin < 3, nmin = 4; end    % Threshold to conventional
+  if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
+  if nargin < 5, level = 8; end   % Verbose level
+
+  U = ${Mfile}_CoBL(A, nmin, peeling, level);   % Left change of basis
+  V = ${Mfile}_CoBR(B, nmin, peeling, level);   % Right change of basis
+  W = ${Mfile}_mul(U, V, nmin, peeling, level); % Sparse multiplication
+  C = ${Mfile}_ICoB(W, nmin, peeling, level);   % Inverse change of basis
+end
+EOF
+
 else
+##########
+# Do generate the SLPs:
+
     sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} ${SQRT} ${PLACE}
 
     Lslp=${Lmat}.slp
     Rslp=${Rmat}.slp
     Pslp=${Pmat}.slp
+
+##########
+# Produce the matlab program from the SLPs
 
     if [[ "$CoBTYPE" -eq 1 ]]; then
 	slp2CBm ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File}

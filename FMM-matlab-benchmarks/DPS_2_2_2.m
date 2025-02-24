@@ -46,11 +46,11 @@ n0 = 0; n1 = 1*n/2; n2 = n;
 r4 = A(r1,c1)*SQRT3o3;
 oA1 = A(r1,c0)-r4;
 oA2 = A(r0,c1)+r4;
-oA3 = r4*2;
+oA3 = A(r1,c1)*SQRT3f2o3;
 oA6 = (A(r0,c1)+oA1)/2-A(r0,c0)*SQRT3o2;
 oA4 = oA6-oA2;
-oA0 = oA1-oA4;
 oA5 = oA3+oA4;
+oA0 = oA1-oA4;
 
 [m,n] = size(B);
 m0 = 0; m1 = 1*m/2; m2 = m;
@@ -58,13 +58,13 @@ m0 = 0; m1 = 1*m/2; m2 = m;
 n0 = 0; n1 = 1*n/2; n2 = n;
  c0 = n0+1:n1; c1 = n1+1:n2;
 r4 = B(r0,c1)*SQRT3o3;
-oB1 = r4-B(r0,c0);
-oB0 = r4*2;
 oB2 = r4-B(r1,c1);
-oB3 = (B(r1,c1)+oB1)/2-B(r1,c0)*SQRT3o2;
-oB4 = oB2+oB3;
+oB0 = B(r0,c1)*SQRT3f2o3;
+oB1 = r4-B(r0,c0);
+oB6 = (B(r0,c0)+oB2)/2-B(r1,c0)*SQRT3o2;
+oB4 = oB1+oB6;
 oB5 = oB0-oB4;
-oB6 = oB4-oB1;
+oB3 = oB4-oB2;
 
 iC0 = DPS( oA0, oB0, nmin, peeling, level);
 iC1 = DPS( oA1, oB1, nmin, peeling, level);
@@ -73,24 +73,15 @@ iC3 = DPS( oA3, oB3, nmin, peeling, level);
 iC4 = DPS( oA4, oB4, nmin, peeling, level);
 iC5 = DPS( oA5, oB5, nmin, peeling, level);
 iC6 = DPS( oA6, oB6, nmin, peeling, level);
-%b1 = iC5+iC3+iC4;
-%z2 = iC2+b1;
-%z0 = iC0+b1;
-%t5 = z0/2;
-%oC3 = z0*SQRT3o2;
-%oC2 = t5-iC1-iC3;
-%oC1 = t5-z2;
-%oC0 = (z2+oC2-(iC6+iC5)*2)*SQRT3o3;
 
-b2 = iC0+iC5+iC4;
-z3 = iC3+b2;
-z1 = b2-iC1;
-t5 = z3/2;
-oC3 = z3*SQRT3o2;
-oC1 = iC0-iC2-t5;
-oC2 = z1-t5;
-oC0 = (z1-oC1-(iC6+iC5)*2)*SQRT3o3;
-
+b1 = iC3+iC5+iC4;
+z2 = iC2+b1;
+z0 = iC0+b1;
+t5 = z0/2;
+oC3 = z0*SQRT3o2;
+oC2 = t5-iC1-iC3;
+oC1 = t5-z2;
+oC0 = (z2+oC2)*SQRT3o3-(iC6+iC5)*SQRT3f2o3;
 
 C = [ oC0 oC1 ; oC2 oC3 ] ;
   end
