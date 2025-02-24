@@ -32,6 +32,8 @@ set k = $5		# LHS column dimension & RHS row dimension
 set n = $6		# RHS column dimension
 set r = $7		# Tensor rank
 set PathFname = $8	# Function name
+# Warning, a 9th argument forces overwrite of ${PathFname}.m
+
 set PathCname = "${PathFname}_${m}_${k}_${n}"
 set Fname = `basename ${PathFname}`	# Function name
 set Cname = "${Fname}_${m}_${k}_${n}"
@@ -94,8 +96,7 @@ end
 end
 EOF
 
-
-if ( -f ${PathFname}.m ) then
+if ( ($#argv <= 8) && ( -f ${PathFname}.m ) )then
     echo -n "Overwrite ${PathFname}.m (y/n)? "
     set answer = $<
     if ("$answer" != "y") then

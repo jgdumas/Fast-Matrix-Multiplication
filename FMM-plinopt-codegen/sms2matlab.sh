@@ -183,7 +183,7 @@ if [[ "$CoBTYPE" -eq 1 ]]; then
     PlaceHolder ${SQRT} ${PLACE} ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m
 else
     echo "Generating ${File}.m with ${m}x${k}x${n} of rank ${r}:"
-    ./MM.rpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File}
+    ./MM.rpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File} 1
 
     PlaceHolder ${SQRT} ${PLACE} ${File}_${m}_${k}_${n}.m
 fi

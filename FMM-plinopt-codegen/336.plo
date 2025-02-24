@@ -26,75 +26,20 @@
 #          data/P_3x6x3_accurate.sms data/P_3x6x3.sms
 #          data/P_6x3x3_accurate.sms data/P_6x3x3.sms
 
-##########
-# Checking the matrix multiplications:
+./sms2matlab.sh -O 10000 data/L_3x3x6.sms data/R_3x3x6.sms data/P_3x3x6.sms data/FMM
+./sms2matlab.sh -O 10000 data/L_3x6x3.sms data/R_3x6x3.sms data/P_3x6x3.sms data/FMM
+./sms2matlab.sh -O 10000 data/L_6x3x3.sms data/R_6x3x3.sms data/P_6x3x3.sms data/FMM
 
-MMchecker data/L_3x3x6.sms data/R_3x3x6.sms data/P_3x3x6.sms
-MMchecker data/L_3x6x3.sms data/R_3x6x3.sms data/P_3x6x3.sms
-MMchecker data/L_6x3x3.sms data/R_6x3x3.sms data/P_6x3x3.sms
-MMchecker data/L_3x3x6_accurate.sms data/R_3x3x6_accurate.sms data/P_3x3x6_accurate.sms
-MMchecker data/L_3x6x3_accurate.sms data/R_3x6x3_accurate.sms data/P_3x6x3_accurate.sms
-MMchecker data/L_6x3x3_accurate.sms data/R_6x3x3_accurate.sms data/P_6x3x3_accurate.sms
-
-##########
-# Pre-computation of the straight-line programs:
-
-optimizer -O 10000 data/L_3x3x6.sms | compacter -s > data/L_3x3x6.slp
-optimizer -O 10000 data/R_3x3x6.sms | compacter -s > data/R_3x3x6.slp
-matrix-transpose data/P_3x3x6.sms | optimizer -O 10000 | transpozer | compacter -s > data/P_3x3x6.slp
-optimizer -O 10000 data/L_3x6x3.sms | compacter -s > data/L_3x6x3.slp
-optimizer -O 10000 data/R_3x6x3.sms | compacter -s > data/R_3x6x3.slp
-matrix-transpose data/P_3x6x3.sms | optimizer -O 10000 | transpozer | compacter -s > data/P_3x6x3.slp
-optimizer -O 10000 data/L_6x3x3.sms | compacter -s > data/L_6x3x3.slp
-optimizer -O 10000 data/R_6x3x3.sms | compacter -s > data/R_6x3x3.slp
-matrix-transpose data/P_6x3x3.sms | optimizer -O 10000 | transpozer | compacter -s > data/P_6x3x3.slp
-
-optimizer -O 10000 data/L_3x3x6_accurate.sms | compacter -s > data/L_3x3x6_accurate.slp
-optimizer -O 10000 data/R_3x3x6_accurate.sms | compacter -s > data/R_3x3x6_accurate.slp
-matrix-transpose data/P_3x3x6_accurate.sms | optimizer -O 10000 | transpozer | compacter -s > data/P_3x3x6_accurate.slp
-optimizer -O 10000 data/L_3x6x3_accurate.sms | compacter -s > data/L_3x6x3_accurate.slp
-optimizer -O 10000 data/R_3x6x3_accurate.sms | compacter -s > data/R_3x6x3_accurate.slp
-matrix-transpose data/P_3x6x3_accurate.sms | optimizer -O 10000 | transpozer | compacter -s > data/P_3x6x3_accurate.slp
-optimizer -O 10000 data/L_6x3x3_accurate.sms | compacter -s > data/L_6x3x3_accurate.slp
-optimizer -O 10000 data/R_6x3x3_accurate.sms | compacter -s > data/R_6x3x3_accurate.slp
-matrix-transpose data/P_6x3x3_accurate.sms | optimizer -O 10000 | transpozer | compacter -s > data/P_6x3x3_accurate.slp
-
-##########
-# Checking the straight-line programs:
-
-PMchecker -M data/L_3x3x6.sms data/L_3x3x6.slp
-PMchecker -M data/L_3x6x3.sms data/L_3x6x3.slp
-PMchecker -M data/L_6x3x3.sms data/L_6x3x3.slp
-PMchecker -M data/R_3x3x6.sms data/R_3x3x6.slp
-PMchecker -M data/R_3x6x3.sms data/R_3x6x3.slp
-PMchecker -M data/R_6x3x3.sms data/R_6x3x3.slp
-PMchecker -M data/P_3x3x6.sms data/P_3x3x6.slp
-PMchecker -M data/P_3x6x3.sms data/P_3x6x3.slp
-PMchecker -M data/P_6x3x3.sms data/P_6x3x3.slp
-
-PMchecker -M data/L_3x3x6_accurate.sms data/L_3x3x6_accurate.slp
-PMchecker -M data/L_3x6x3_accurate.sms data/L_3x6x3_accurate.slp
-PMchecker -M data/L_6x3x3_accurate.sms data/L_6x3x3_accurate.slp
-PMchecker -M data/R_3x3x6_accurate.sms data/R_3x3x6_accurate.slp
-PMchecker -M data/R_3x6x3_accurate.sms data/R_3x6x3_accurate.slp
-PMchecker -M data/R_6x3x3_accurate.sms data/R_6x3x3_accurate.slp
-PMchecker -M data/P_3x3x6_accurate.sms data/P_3x3x6_accurate.slp
-PMchecker -M data/P_3x6x3_accurate.sms data/P_3x6x3_accurate.slp
-PMchecker -M data/P_6x3x3_accurate.sms data/P_6x3x3_accurate.slp
+./sms2matlab.sh -O 10000 data/L_3x3x6_accurate.sms data/R_3x3x6_accurate.sms data/P_3x3x6_accurate.sms data/FMM
+./sms2matlab.sh -O 10000 data/L_3x6x3_accurate.sms data/R_3x6x3_accurate.sms data/P_3x6x3_accurate.sms data/FMM
+./sms2matlab.sh -O 10000 data/L_6x3x3_accurate.sms data/R_6x3x3_accurate.sms data/P_6x3x3_accurate.sms data/FMM
 
 
-##########
-# Gathering of all straight-line program/variables to produce a Matlab prgram:
-
-./MM.rpl data/L_3x3x6.slp data/R_3x3x6.slp data/P_3x3x6.slp 3 3 6 40 data/FMM
-./MM.rpl data/L_3x6x3.slp data/R_3x6x3.slp data/P_3x6x3.slp 3 6 3 40 data/FMM
-./MM.rpl data/L_6x3x3.slp data/R_6x3x3.slp data/P_6x3x3.slp 6 3 3 40 data/FMM
-./MM.rpl data/L_3x3x6_accurate.slp data/R_3x3x6_accurate.slp data/P_3x3x6_accurate.slp 3 3 6 40 data/FMMa
-./MM.rpl data/L_3x6x3_accurate.slp data/R_3x6x3_accurate.slp data/P_3x6x3_accurate.slp 3 6 3 40 data/FMMa
-./MM.rpl data/L_6x3x3_accurate.slp data/R_6x3x3_accurate.slp data/P_6x3x3_accurate.slp 6 3 3 40 data/FMMa
 
 cat > data/FMM.m<< EOF
 function C = FMM(A, B, nmin, level)
+%          Computes the product C = A*B,
+%          via <3;3;6>, <3;6;3> or <6;3;3> fast algorithms.
   if nargin < 3, nmin = 3; end
   if nargin < 4, level = 3; end
   [m,k] = size(A); 
@@ -111,6 +56,8 @@ EOF
 
 cat > data/FMMa.m<< EOF
 function C = FMMa(A, B, nmin, level)
+%          Computes the product C = A*B,
+%          via <3;3;6>, <3;6;3> or <6;3;3> fast & accurate algorithms.
   if nargin < 3, nmin = 3; end
   if nargin < 4, level = 3; end
   [m,k] = size(A); 
