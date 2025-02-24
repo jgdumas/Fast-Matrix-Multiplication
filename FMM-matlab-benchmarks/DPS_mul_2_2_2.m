@@ -43,26 +43,26 @@ m0 = 0; m1 = 1*m/2; m2 = m;
  r0 = m0+1:m1; r1 = m1+1:m2;
 n0 = 0; n1 = 1*n/2; n2 = n;
  c0 = n0+1:n1; c1 = n1+1:n2;
-oA0 = A(r1,c0)-A(r0,c0);
+oA0 = A(r1,c1)-A(r0,c1);
 oA5 = A(r0,c0)+A(r0,c1);
-oA6 = A(r0,c0)+A(r1,c1);
-oA1 = A(r1,c0);
-oA2 = A(r1,c1);
-oA3 = A(r0,c1);
-oA4 = A(r0,c0);
+oA6 = A(r0,c1)+A(r1,c0);
+oA1 = A(r1,c1);
+oA2 = A(r1,c0);
+oA3 = A(r0,c0);
+oA4 = A(r0,c1);
 
 [m,n] = size(B);
 m0 = 0; m1 = 1*m/2; m2 = m;
  r0 = m0+1:m1; r1 = m1+1:m2;
 n0 = 0; n1 = 1*n/2; n2 = n;
  c0 = n0+1:n1; c1 = n1+1:n2;
-oB3 = B(r0,c0)-B(r1,c0);
-oB5 = B(r1,c1)-B(r0,c0);
-oB6 = B(r0,c0)-B(r0,c1);
-oB0 = B(r1,c1);
-oB1 = B(r0,c1);
+oB3 = B(r1,c1)-B(r1,c0);
+oB5 = B(r0,c1)-B(r1,c1);
+oB6 = B(r1,c1)-B(r0,c0);
+oB0 = B(r0,c1);
+oB1 = B(r0,c0);
 oB2 = B(r1,c0);
-oB4 = B(r0,c0);
+oB4 = B(r1,c1);
 
 iC0 = DPS_mul( oA0, oB0, nmin, peeling, level);
 iC1 = DPS_mul( oA1, oB1, nmin, peeling, level);
@@ -72,10 +72,10 @@ iC4 = DPS_mul( oA4, oB4, nmin, peeling, level);
 iC5 = DPS_mul( oA5, oB5, nmin, peeling, level);
 iC6 = DPS_mul( oA6, oB6, nmin, peeling, level);
 
-oC1 = iC6+iC5;
-oC2 = iC3+iC1;
-oC3 = iC2-iC0;
-oC0 = iC5+iC4+iC3+iC0;
+oC3 = iC6+iC5;
+oC1 = iC3+iC1;
+oC2 = iC5+iC4+iC3+iC0;
+oC0 = iC2-iC0;
 
 C = [ oC0 oC1 ; oC2 oC3 ] ;
   end

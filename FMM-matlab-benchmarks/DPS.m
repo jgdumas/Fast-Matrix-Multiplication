@@ -16,7 +16,7 @@ function C = DPS(A, B, nmin, peeling, level)
 %          ISSAC 2024, Raleigh, NC USA, pp. 254-263.
 %          https://hal.science/hal-04441653
 
-  if nargin < 3, nmin = 3; end    % Threshold to conventional
+  if nargin < 3, nmin = 4; end    % Threshold to conventional
   if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
   [m,k] = size(A); [k2,n] = size(B);
   if (k2 ~= k), error('Incompatible matrix dimensions.'); end

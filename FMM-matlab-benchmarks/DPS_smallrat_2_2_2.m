@@ -1,7 +1,7 @@
 function C = DPS_smallrat_2_2_2(A, B, nmin, peeling, level)
-if nargin < 3, nmin = 3; end    % Threshold to conventional
+if nargin < 3, nmin = 4; end    % Threshold to conventional
 if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
-if nargin < 5, level = 3; end   % Verbose level
+if nargin < 5, level = 8; end   % Verbose level
 [m,k] = size(A); [k2,n] = size(B);
 if (k2 ~= k), error('Incompatible matrix dimensions.'); end
 % Recursively cuts into nmin*2^l x nmin*2^l x nmin*2^l blocks, with decreasing maximal l
@@ -70,7 +70,7 @@ iC4 = DPS_smallrat( oA4, oB4, nmin, peeling, level);
 iC5 = DPS_smallrat( oA5, oB5, nmin, peeling, level);
 iC6 = DPS_smallrat( oA6, oB6, nmin, peeling, level);
 
-b1 = iC0+iC6+iC4;
+b1 = iC6+iC0+iC4;
 z3 = iC3+b1;
 z1 = iC1+b1;
 t5 = z3*9/20;

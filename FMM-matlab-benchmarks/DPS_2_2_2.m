@@ -3,9 +3,9 @@ SQRT3o2=sqrt(3)/2;
 SQRT3o3=sqrt(3)/3;
 SQRT3f2o3=sqrt(3)*2/3;
 
-if nargin < 3, nmin = 3; end    % Threshold to conventional
+if nargin < 3, nmin = 4; end    % Threshold to conventional
 if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
-if nargin < 5, level = 3; end   % Verbose level
+if nargin < 5, level = 8; end   % Verbose level
 [m,k] = size(A); [k2,n] = size(B);
 if (k2 ~= k), error('Incompatible matrix dimensions.'); end
 % Recursively cuts into nmin*2^l x nmin*2^l x nmin*2^l blocks, with decreasing maximal l
@@ -44,13 +44,13 @@ m0 = 0; m1 = 1*m/2; m2 = m;
 n0 = 0; n1 = 1*n/2; n2 = n;
  c0 = n0+1:n1; c1 = n1+1:n2;
 r4 = A(r1,c1)*SQRT3o3;
-oA1 = A(r1,c0)-r4;
 oA2 = A(r0,c1)+r4;
-oA3 = A(r1,c1)*SQRT3f2o3;
-oA6 = (A(r0,c1)+oA1)/2-A(r0,c0)*SQRT3o2;
-oA4 = oA6-oA2;
+oA0 = A(r0,c0)*SQRT3o2+(A(r1,c0)+oA2)/2;
+oA1 = A(r1,c0)-r4;
+oA3 = r4*2;
+oA4 = oA1-oA0;
 oA5 = oA3+oA4;
-oA0 = oA1-oA4;
+oA6 = oA2+oA4;
 
 [m,n] = size(B);
 m0 = 0; m1 = 1*m/2; m2 = m;
@@ -58,13 +58,13 @@ m0 = 0; m1 = 1*m/2; m2 = m;
 n0 = 0; n1 = 1*n/2; n2 = n;
  c0 = n0+1:n1; c1 = n1+1:n2;
 r4 = B(r0,c1)*SQRT3o3;
-oB2 = r4-B(r1,c1);
-oB0 = B(r0,c1)*SQRT3f2o3;
 oB1 = r4-B(r0,c0);
-oB6 = (B(r0,c0)+oB2)/2-B(r1,c0)*SQRT3o2;
-oB4 = oB1+oB6;
+oB0 = r4*2;
+oB2 = r4-B(r1,c1);
+oB3 = (B(r1,c1)+oB1)/2-B(r1,c0)*SQRT3o2;
+oB4 = oB2+oB3;
 oB5 = oB0-oB4;
-oB3 = oB4-oB2;
+oB6 = oB4-oB1;
 
 iC0 = DPS( oA0, oB0, nmin, peeling, level);
 iC1 = DPS( oA1, oB1, nmin, peeling, level);
@@ -81,7 +81,7 @@ t5 = z0/2;
 oC3 = z0*SQRT3o2;
 oC2 = t5-iC1-iC3;
 oC1 = t5-z2;
-oC0 = (z2+oC2)*SQRT3o3-(iC6+iC5)*SQRT3f2o3;
+oC0 = (z2+oC2-(iC6+iC5)*2)*SQRT3o3;
 
 C = [ oC0 oC1 ; oC2 oC3 ] ;
   end

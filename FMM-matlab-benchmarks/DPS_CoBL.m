@@ -27,10 +27,10 @@ iM2 = DPS_CoBL( tA2, nmin, peeling, level);
 iM3 = DPS_CoBL( tA3, nmin, peeling, level);
 
 r4 = iM3*SQRT3o3;
-oM0 = (iM2-iM1)/2-(iM0+iM3)*SQRT3o2;
-oM1 = iM3*SQRT3f2o3;
-oM2 = iM2-r4;
-oM3 = iM1+r4;
+oM0 = iM3*SQRT3f2o3;
+oM1 = (iM2-iM1)/2-(iM0+iM3)*SQRT3o2;
+oM2 = iM1+r4;
+oM3 = iM2-r4;
 
 M = [ oM0 oM1 ; oM2 oM3 ] ;
 end

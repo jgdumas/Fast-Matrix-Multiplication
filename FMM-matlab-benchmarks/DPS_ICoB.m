@@ -26,11 +26,11 @@ iM1 = DPS_ICoB( tA1, nmin, peeling, level);
 iM2 = DPS_ICoB( tA2, nmin, peeling, level);
 iM3 = DPS_ICoB( tA3, nmin, peeling, level);
 
-oM3 = iM0*SQRT3o2;
-t5 = iM0/2;
-oM2 = t5-iM2;
-oM1 = -t5-iM3;
-oM0 = oM3-iM1*SQRT3f2o3+(iM3-iM2)*SQRT3o3;
+oM3 = iM2*SQRT3o2;
+t5 = iM2/2;
+oM2 = t5-iM1;
+oM1 = -t5-iM0;
+oM0 = oM3-iM3*SQRT3f2o3+(iM0-iM1)*SQRT3o3;
 
 M = [ oM0 oM1 ; oM2 oM3 ] ;
 end

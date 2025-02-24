@@ -1,7 +1,7 @@
 function C = DPS_integral_2_2_2(A, B, nmin, peeling, level)
-if nargin < 3, nmin = 3; end    % Threshold to conventional
+if nargin < 3, nmin = 4; end    % Threshold to conventional
 if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
-if nargin < 5, level = 3; end   % Verbose level
+if nargin < 5, level = 8; end   % Verbose level
 [m,k] = size(A); [k2,n] = size(B);
 if (k2 ~= k), error('Incompatible matrix dimensions.'); end
 % Recursively cuts into nmin*2^l x nmin*2^l x nmin*2^l blocks, with decreasing maximal l
@@ -52,12 +52,13 @@ m0 = 0; m1 = 1*m/2; m2 = m;
  r0 = m0+1:m1; r1 = m1+1:m2;
 n0 = 0; n1 = 1*n/2; n2 = n;
  c0 = n0+1:n1; c1 = n1+1:n2;
-oB3 = B(r0,c1)+B(r0,c0)*18957/33124;
+t4 = B(r0,c0)-B(r1,c0)*169/98;
 oB1 = B(r0,c0)*38165/33124;
-oB2 = B(r0,c0)*38165/66248-B(r1,c0)*38165/38416;
-oB4 = B(r1,c0)*18957/38416+B(r1,c1)*169/196+oB3/2;
-v7 = oB2+oB4;
-oB6 = oB3-v7;
+oB2 = t4*38165/66248;
+oB3 = B(r0,c0)*18957/33124+B(r0,c1);
+oB6 = B(r0,c1)/2-B(r1,c1)*169/196-t4*49/169;
+v7 = oB3-oB6;
+oB4 = v7-oB2;
 oB5 = v7-oB1;
 oB0 = -v7;
 

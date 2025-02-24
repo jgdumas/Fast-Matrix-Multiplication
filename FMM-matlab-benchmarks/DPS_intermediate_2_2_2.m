@@ -1,7 +1,7 @@
 function C = DPS_intermediate_2_2_2(A, B, nmin, peeling, level)
-if nargin < 3, nmin = 3; end    % Threshold to conventional
+if nargin < 3, nmin = 4; end    % Threshold to conventional
 if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
-if nargin < 5, level = 3; end   % Verbose level
+if nargin < 5, level = 8; end   % Verbose level
 [m,k] = size(A); [k2,n] = size(B);
 if (k2 ~= k), error('Incompatible matrix dimensions.'); end
 % Recursively cuts into nmin*2^l x nmin*2^l x nmin*2^l blocks, with decreasing maximal l
@@ -52,12 +52,13 @@ m0 = 0; m1 = 1*m/2; m2 = m;
  r0 = m0+1:m1; r1 = m1+1:m2;
 n0 = 0; n1 = 1*n/2; n2 = n;
  c0 = n0+1:n1; c1 = n1+1:n2;
-oB3 = -B(r0,c1)-B(r0,c0)*178623/295936;
+t4 = B(r1,c0)*512/289-B(r0,c0);
 oB1 = -B(r0,c0)*345665/295936;
-oB2 = B(r1,c0)*345665/334084-B(r0,c0)*345665/591872;
-oB4 = B(r1,c0)*178623/334084+B(r1,c1)*256/289-oB3/2;
-oB0 = oB2-oB4;
-oB6 = oB0-oB3;
+oB2 = t4*345665/591872;
+oB3 = -B(r0,c0)*178623/295936-B(r0,c1);
+oB6 = B(r0,c1)/2-B(r1,c1)*256/289+t4*289/1024;
+oB0 = oB3+oB6;
+oB4 = oB2-oB0;
 oB5 = oB1-oB0;
 
 iC0 = DPS_intermediate( oA0, oB0, nmin, peeling, level);
@@ -68,13 +69,13 @@ iC4 = DPS_intermediate( oA4, oB4, nmin, peeling, level);
 iC5 = DPS_intermediate( oA5, oB5, nmin, peeling, level);
 iC6 = DPS_intermediate( oA6, oB6, nmin, peeling, level);
 
-b1 = iC5+iC0+iC4;
-z2 = iC2+b1;
-z1 = iC1+b1;
-oC1 = iC3+iC4-z1*178623/345665;
-oC2 = z2-z1*167042/345665;
-oC0 = z1*295936/345665;
-oC3 = (z2-oC1)*289/512-(iC6+iC5)*345665/295936;
+b2 = iC0+iC1+iC5;
+z4 = iC4+b2;
+z3 = iC3-b2;
+oC0 = z4*295936/345665;
+oC1 = z4*167042/345665+z3;
+oC2 = z4*178623/345665+iC2-iC1;
+oC3 = (oC2-z3)*289/512-(iC6+iC5)*345665/295936;
 
 C = [ oC0 oC1 ; oC2 oC3 ] ;
   end
