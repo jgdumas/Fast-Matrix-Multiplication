@@ -34,6 +34,7 @@
 ./sms2matlab.sh -O 10000 data/L_3x6x3_accurate.sms data/R_3x6x3_accurate.sms data/P_3x6x3_accurate.sms data/FMMa
 ./sms2matlab.sh -O 10000 data/L_6x3x3_accurate.sms data/R_6x3x3_accurate.sms data/P_6x3x3_accurate.sms data/FMMa
 
+./sms2matlab.sh -a -0 100000 data/L_3x6x3.sms data/R_3x6x3.sms data/P_3x6x3.sms data/FMM363
 
 
 cat > data/FMM.m<< EOF

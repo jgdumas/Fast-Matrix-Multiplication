@@ -242,7 +242,7 @@ function combPMcheck {
     local mat=$1
     local pri=$2
     local pro=$3
-    local usedvar=`sed 's/[^a-Z]//g' ${pri} ${pro} | grep -o . | sort -u | tr -d "\n"`
+    local usedvar=`sed 's/[^[:alpha:]]//g' ${pri} ${pro} | grep -o . | sort -u | tr -d "\n"`
     local freechar=`echo "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" | sed "s/${usedvar}//g" | grep -o . | head -1`
     sed -r "s/(o)([0-9]*)/${freechar}\2/g" ${pri} > s2m.slp
     sed -r "s/(i)([0-9]*)/${freechar}\2/g" ${pro} >> s2m.slp
