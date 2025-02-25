@@ -3,7 +3,7 @@
 
 rng(1);
 t = 4;    % Number of points
-num = 11; % Number of runs for each point
+num = 9; % Number of runs for each point
 n_0 = 1;  % Basecase of the recursion
 
 E_f = zeros(t,1);E_a = zeros(t,1);E_c = zeros(t,1);E_d = zeros(t,1);

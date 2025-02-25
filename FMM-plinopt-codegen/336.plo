@@ -8,7 +8,7 @@
 #    ISSAC 2024, Raleigh, NC USA, pp. 254-263.
 #    https://hal.science/hal-04441653]
 
-# Generation of FMM_{3,3,6}.m FMM_{3,6,3}.m FMM_{6,3,3}.m
+# Automatic generation of <3;3;6>, <3;6;3>, <6;3;3>  variants
 
 # Program Automatically obtained with the PLinOpt library
 #   https://github.com/jgdumas/plinopt
@@ -26,16 +26,13 @@
 #          data/P_3x6x3_accurate.sms data/P_3x6x3.sms
 #          data/P_6x3x3_accurate.sms data/P_6x3x3.sms
 
-./sms2matlab.sh -O 10000 data/L_3x3x6.sms data/R_3x3x6.sms data/P_3x3x6.sms data/FMM
-./sms2matlab.sh -O 10000 data/L_3x6x3.sms data/R_3x6x3.sms data/P_3x6x3.sms data/FMM
-./sms2matlab.sh -O 10000 data/L_6x3x3.sms data/R_6x3x3.sms data/P_6x3x3.sms data/FMM
 
-./sms2matlab.sh -O 10000 data/L_3x3x6_accurate.sms data/R_3x3x6_accurate.sms data/P_3x3x6_accurate.sms data/FMMa
-./sms2matlab.sh -O 10000 data/L_3x6x3_accurate.sms data/R_3x6x3_accurate.sms data/P_3x6x3_accurate.sms data/FMMa
-./sms2matlab.sh -O 10000 data/L_6x3x3_accurate.sms data/R_6x3x3_accurate.sms data/P_6x3x3_accurate.sms data/FMMa
-
-./sms2matlab.sh -a -0 100000 data/L_3x6x3.sms data/R_3x6x3.sms data/P_3x6x3.sms data/FMM363
-
+########## 
+# Classical <3;3;6>, <3;6;3>, <6;3;3> algorithms
+#
+./sms2matlab.sh -O 100000 data/L_3x3x6.sms data/R_3x3x6.sms data/P_3x3x6.sms data/FMM
+./sms2matlab.sh -O 100000 data/L_3x6x3.sms data/R_3x6x3.sms data/P_3x6x3.sms data/FMM
+./sms2matlab.sh -O 100000 data/L_6x3x3.sms data/R_6x3x3.sms data/P_6x3x3.sms data/FMM
 
 cat > data/FMM.m<< EOF
 function C = FMM(A, B, nmin, peeling, level)
@@ -56,6 +53,13 @@ function C = FMM(A, B, nmin, peeling, level)
 end
 EOF
 
+##########
+# More accurate <3;3;6>, <3;6;3>, <6;3;3> algorithms
+#
+./sms2matlab.sh -O 100000 data/L_3x3x6_accurate.sms data/R_3x3x6_accurate.sms data/P_3x3x6_accurate.sms data/FMMa
+./sms2matlab.sh -O 100000 data/L_3x6x3_accurate.sms data/R_3x6x3_accurate.sms data/P_3x6x3_accurate.sms data/FMMa
+./sms2matlab.sh -O 100000 data/L_6x3x3_accurate.sms data/R_6x3x3_accurate.sms data/P_6x3x3_accurate.sms data/FMMa
+
 cat > data/FMMa.m<< EOF
 function C = FMMa(A, B, nmin, peeling, level)
 %          Computes the product C = A*B,
@@ -74,5 +78,20 @@ function C = FMMa(A, B, nmin, peeling, level)
   end
 end
 EOF
+
+########## 
+# Faster <3;3;6>, <3;6;3>, <6;3;3> algorithms via alternative bases
+#
+./sms2matlab.sh -a -O 100000 data/L_3x3x6.sms data/R_3x3x6.sms data/P_3x3x6.sms data/FMM336
+./sms2matlab.sh -a -O 100000 data/L_6x3x3.sms data/R_6x3x3.sms data/P_6x3x3.sms data/FMM633
+./sms2matlab.sh -a -O 100000 data/L_3x6x3.sms data/R_3x6x3.sms data/P_3x6x3.sms data/FMM363
+
+##########
+# Faster & more accurate <3;3;6>, <3;6;3>, <6;3;3> algorithms via alternative bases
+#
+./sms2matlab.sh -a -O 100000 data/L_3x3x6_accurate.sms data/R_3x3x6_accurate.sms data/P_3x3x6_accurate.sms data/FMMa336
+./sms2matlab.sh -a -O 100000 data/L_6x3x3_accurate.sms data/R_6x3x3_accurate.sms data/P_6x3x3_accurate.sms data/FMMa633
+./sms2matlab.sh -a -O 100000 data/L_3x6x3_accurate.sms data/R_3x6x3_accurate.sms data/P_3x6x3_accurate.sms data/FMMa363
+
 
 #####################################################################

@@ -1,0 +1,109 @@
+function M = FMM633_CoBL(A, nmin, peeling, level)
+  if nargin < 3, nmin = 4; end    % Threshold to conventional
+  if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
+  if nargin < 5, level = 8; end   % Verbose level
+[m,n] = size(A);
+if (m <= nmin)||(n <= nmin)
+   M=A;
+else
+[m,n] = size(A);
+m0 = 0; m1 = 1*m/6; m2 = 2*m/6; m3 = 3*m/6; m4 = 4*m/6; m5 = 5*m/6; m6 = m;
+ r0 = m0+1:m1; r1 = m1+1:m2; r2 = m2+1:m3; r3 = m3+1:m4; r4 = m4+1:m5; r5 = m5+1:m6;
+n0 = 0; n1 = 1*n/3; n2 = 2*n/3; n3 = n;
+ c0 = n0+1:n1; c1 = n1+1:n2; c2 = n2+1:n3;
+tA0 = A(r0,c0);
+tA1 = A(r0,c1);
+tA2 = A(r0,c2);
+tA3 = A(r1,c0);
+tA4 = A(r1,c1);
+tA5 = A(r1,c2);
+tA6 = A(r2,c0);
+tA7 = A(r2,c1);
+tA8 = A(r2,c2);
+tA9 = A(r3,c0);
+tA10 = A(r3,c1);
+tA11 = A(r3,c2);
+tA12 = A(r4,c0);
+tA13 = A(r4,c1);
+tA14 = A(r4,c2);
+tA15 = A(r5,c0);
+tA16 = A(r5,c1);
+tA17 = A(r5,c2);
+
+
+iM0 = FMM633_CoBL( tA0, nmin, peeling, level);
+iM1 = FMM633_CoBL( tA1, nmin, peeling, level);
+iM2 = FMM633_CoBL( tA2, nmin, peeling, level);
+iM3 = FMM633_CoBL( tA3, nmin, peeling, level);
+iM4 = FMM633_CoBL( tA4, nmin, peeling, level);
+iM5 = FMM633_CoBL( tA5, nmin, peeling, level);
+iM6 = FMM633_CoBL( tA6, nmin, peeling, level);
+iM7 = FMM633_CoBL( tA7, nmin, peeling, level);
+iM8 = FMM633_CoBL( tA8, nmin, peeling, level);
+iM9 = FMM633_CoBL( tA9, nmin, peeling, level);
+iM10 = FMM633_CoBL( tA10, nmin, peeling, level);
+iM11 = FMM633_CoBL( tA11, nmin, peeling, level);
+iM12 = FMM633_CoBL( tA12, nmin, peeling, level);
+iM13 = FMM633_CoBL( tA13, nmin, peeling, level);
+iM14 = FMM633_CoBL( tA14, nmin, peeling, level);
+iM15 = FMM633_CoBL( tA15, nmin, peeling, level);
+iM16 = FMM633_CoBL( tA16, nmin, peeling, level);
+iM17 = FMM633_CoBL( tA17, nmin, peeling, level);
+r18 = iM0/8;
+t18 = iM11-r18;
+r19 = iM12/8;
+t19 = iM17-r19;
+r20 = iM1/8;
+t20 = iM5-r20;
+t21 = iM10-iM3;
+t22 = iM16-t19;
+r23 = iM13/8;
+t23 = iM7-r23;
+t24 = iM4-iM10;
+t25 = iM15+t20;
+t26 = iM8-r23;
+r27 = iM14/8;
+t27 = iM7-r27;
+t28 = iM8+r27;
+t29 = t26+r19;
+t31 = t18-t22;
+r32 = iM2/8;
+t32 = iM9-r32;
+t33 = iM16+iM6+iM17;
+t34 = iM3+t22;
+t36 = t24-r20;
+t37 = t18+t21;
+t40 = t23-t31;
+t41 = iM7+r23;
+t42 = iM16+t19;
+t43 = t33-r18;
+t44 = iM11-t29;
+t47 = iM6+iM9;
+t50 = t23-iM5-t32;
+t51 = t25+t27;
+t52 = t25-iM3-r18;
+t53 = t18-t21;
+t54 = iM6+iM15+t24-r32;
+t55 = t27+iM15-t20;
+t56 = iM9-r20-iM4-t28;
+oM0 = r32+iM5+iM11-t21+t28+t33;
+oM1 = t43-t56;
+oM2 = t36+t40;
+oM3 = t34-t50;
+oM4 = -t34-t50;
+oM5 = iM5-t32+t41-t42-iM3;
+oM6 = iM4+iM10+t23+t31-r20;
+oM7 = t53-t55;
+oM8 = t44-t54;
+oM9 = t47+t52-t29;
+oM10 = t26+t47-t52-r19;
+oM11 = -t43-t56;
+oM12 = t37+t51;
+oM13 = t44+t54;
+oM14 = t51-t37;
+oM15 = t40-t36;
+oM16 = t53+t55;
+oM17 = t24-t41-t42+r20-t18;
+
+M = [ oM0 oM1 oM2 ; oM3 oM4 oM5 ; oM6 oM7 oM8 ; oM9 oM10 oM11 ; oM12 oM13 oM14 ; oM15 oM16 oM17 ] ;
+end
