@@ -4,6 +4,8 @@
 #   https://github.com/jgdumas/Fast-Matrix-Multiplication
 #   Accurate fast matrix multiplications via recursion
 # ==========================================================================
+# sms2matlab: generate matlab programs from an L,R,P bilinear algorithm
+# ==========================================================================
 #   Authors:
 #   [J-G. Dumas, C. Pernet, A. Sedoglavic;
 #    Strassen's algorithm is not optimally accurate;
@@ -15,6 +17,7 @@
 # ==========================================================================
 ##########
 # Parsing args
+#
 MATS=()
 OPTFLAGS="-E -N"
 MMCHECK=1
@@ -23,6 +26,17 @@ SQRT=0
 PLACE=0
 while [[ $# -gt 0 ]]; do
   case $1 in
+    -h|--h|-help|--help|-*|--*)
+      echo "Usage: $0 [-O #|-p # #|-m|-n|-c|-a] L.sms R.sms P.sms name"
+      echo "  generates matlab program name.m from L,R,P matrices."
+      echo "  -m: L,R,P are a matrix multiplication algorithm (default)."
+      echo "  -c: L,R,P are change of bases matrices (default MM)."
+      echo "  -a: L,R,P are first factorized with alternative bases."
+      echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
+      echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
+      echo "  -p S P: P replaces sqrt(S) in sms files (default none)."
+      exit 1
+      ;;
     -O|--Optflags)
       OPTFLAGS="-O $2"
       shift # past argument
@@ -52,17 +66,6 @@ while [[ $# -gt 0 ]]; do
       shift # past value
       shift # past value
       ;;
-    -h|--h|-help|--help|-*|--*)
-      echo "Usage: sms2matlab.sh [-O #|-p # #|-m|-n|-c] L.sms R.sms P.sms name"
-      echo "  generates matlab program name.m from L,R,P matrices."
-      echo "  -m: L,R,P are a matrix multiplication algorithm (default)."
-      echo "  -c: L,R,P are change of bases matrices (default MM)."
-      echo "  -a: L,R,P are first factorized with alternative bases."
-      echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
-      echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
-      echo "  -p S P: P replaces sqrt(S) in sms files (default none)."
-      exit 1
-      ;;
     *)
       MATS+=("$1") # save positional arg
       shift # past argument
@@ -73,6 +76,7 @@ set -- "${MATS[@]}" # restore positional parameters
 
 ##########
 # L,R,P matrices
+#
 Lsms=$1
 Rsms=$2
 Psms=$3
@@ -85,7 +89,7 @@ Pmat=`dirname $Lsms`/`basename $Psms .sms`
 
 ##########
 # Extract dimensions
-
+#
 Ld=(`grep -v '#' ${Lsms} | head -1 | cut -d' ' -f 1,2`)
 Rd=(`grep -v '#' ${Rsms} | head -1 | cut -d' ' -f 1,2`)
 Pd=(`grep -v '#' ${Psms} | head -1 | cut -d' ' -f 1,2`)
@@ -94,9 +98,6 @@ n=`echo "sqrt(${Rd[1]}*${Pd[0]}/${Ld[1]})"|bc`
 m=$(( ${Pd[0]} / ${n} ))
 k=$(( ${Rd[1]} / ${n} ))
 
-# m=`echo $mkn | sed 's/x/ /g' | cut -d' ' -f4`
-# k=`echo $mkn | sed 's/x/ /g' | cut -d' ' -f5`
-# n=`echo $mkn | sed 's/x/ /g' | cut -d' ' -f6`
 r=`grep -v '#' ${Lsms} | head -1 | cut -d' ' -f 1`
 # ==========================================================================
 
@@ -104,6 +105,7 @@ r=`grep -v '#' ${Lsms} | head -1 | cut -d' ' -f 1`
 # ==========================================================================
 ##########
 # Function: Matrix Multiplication Check
+#
 function MMcheck {
     local Lsms=$1
     local Rsms=$2
@@ -127,6 +129,7 @@ function MMcheck {
 # ==========================================================================
 ##########
 # Function: Generator of SLPs from 3 (2 direct and 1 transposed) sms matrices
+#
 function sms2slp {
     local Lmat=$1
     local Rmat=$2
@@ -135,55 +138,58 @@ function sms2slp {
     local SQRT=$5
     local PLACE=$6
 
+    local Lsms=${Lmat}.sms
+    local Rsms=${Rmat}.sms
+    local Psms=${Pmat}.sms
 
-local Lsms=${Lmat}.sms
-local Rsms=${Rmat}.sms
-local Psms=${Pmat}.sms
+    local Lslp=${Lmat}.slp
+    local Rslp=${Rmat}.slp
+    local Pslp=${Pmat}.slp
 
-local Lslp=${Lmat}.slp
-local Rslp=${Rmat}.slp
-local Pslp=${Pmat}.slp
-
-##########
-# Do represent a matrix multiplication algorithm
-
-if [[ "$MMCHECK" -eq 1 ]]; then
-    MMcheck ${Lsms} ${Rsms} ${Psms} ${SQRT} ${PLACE}
-else
-  echo "<$m;$k;$n> algorithm of rank $r."
-fi
-
-##########
-# Computation of the straight-line programs
-
-for mat in $Lmat $Rmat
-do
-    local Msms=${mat}.sms
-    local Mslp=${mat}.slp
-    echo "Generating ${Mslp} with flags: ${OPTFLAGS}"
-    optimizer ${OPTFLAGS} ${Msms} | compacter -s > ${Mslp}
-done
-
-echo "Generating ${Pslp}, by transposition, with flags: ${OPTFLAGS}"
-matrix-transpose ${Psms} | optimizer ${OPTFLAGS} | transpozer | compacter -s > ${Pslp}
-
-
-for mat in $Lmat $Rmat $Pmat
-do
-    local Msms=${mat}.sms
-    local Mslp=${mat}.slp
-    local pmc=`PMchecker -M ${Msms} ${Mslp} |& grep '#'`
-    echo $pmc
-    if [[ "$pmc" == *"ERROR"* ]]; then
-	exit 1;
+    ##########
+    # Do represent a matrix multiplication algorithm
+    #
+    if [[ "$MMCHECK" -eq 1 ]]; then
+	MMcheck ${Lsms} ${Rsms} ${Psms} ${SQRT} ${PLACE}
+    else
+	echo "<$m;$k;$n> algorithm of rank $r."
     fi
-done
+
+    ##########
+    # Computation of the straight-line programs
+    #
+    for mat in $Lmat $Rmat
+      do
+      local Msms=${mat}.sms
+      local Mslp=${mat}.slp
+      echo "Generating ${Mslp} with flags: ${OPTFLAGS}"
+      optimizer ${OPTFLAGS} ${Msms} | compacter -s > ${Mslp}
+    done
+
+    echo "Generating ${Pslp}, by transposition, with flags: ${OPTFLAGS}"
+    matrix-transpose ${Psms} | optimizer ${OPTFLAGS} | transpozer | compacter -s > ${Pslp}
+
+
+    ##########
+    # Verifications
+    #
+    for mat in $Lmat $Rmat $Pmat
+      do
+      local Msms=${mat}.sms
+      local Mslp=${mat}.slp
+      local pmc=`PMchecker -M ${Msms} ${Mslp} |& grep '#'`
+      echo $pmc
+      if [[ "$pmc" == *"ERROR"* ]]; then
+	  exit 1;
+      fi
+    done
 }
 # ==========================================================================
 
 # ==========================================================================
 ##########
 # Function: replacing the placeholder by sqrt, with precomputed constants
+#
 function PlaceHolder {
     local SQRT=$1
     local PLACE=$2
@@ -198,6 +204,7 @@ function PlaceHolder {
 # ==========================================================================
 ##########
 # Function: Gathering of all CoB SLPs to produce a Matlab program
+#
 function slp2CBm {
     local Lslp=$1
     local Rslp=$2
@@ -218,7 +225,8 @@ function slp2CBm {
 
 # ==========================================================================
 ##########
-# Function: Gathering of all MM SLPs to produce a Matlab program
+# Function: Gathering of
+#
 function slp2MMm {
     local Lslp=$1
     local Rslp=$2
@@ -252,6 +260,8 @@ function combPMcheck {
     if [[ "$pmc" == *"ERROR"* ]]; then
 	echo "Combined ${pri} ${pro}: PMchecker -M ${mat} s2m.slp"
 	exit 1;
+    else
+	\rm s2m.slp
     fi
 }
 # ==========================================================================
@@ -259,11 +269,13 @@ function combPMcheck {
 
 
 # ==========================================================================
+# ==========================================================================
 ##########
-# Starting sms2matlab:
-
-
+# Starting sms2matlab for -m/-n/-c options
+#
 if [[ "$ALTBASIS" -eq 1 ]]; then
+    # Compute with alternative bases
+
     MMcheck ${Lsms} ${Rsms} ${Psms} ${SQRT} ${PLACE}
 
 	# Factor into: sparse x CoB
@@ -279,12 +291,14 @@ if [[ "$ALTBASIS" -eq 1 ]]; then
     sms2slp ${Lmat}_C ${Rmat}_C ${Pmat}_C 0 ${SQRT} ${PLACE}
     sms2slp ${Lmat}_A ${Rmat}_A ${Pmat}_A 0 ${SQRT} ${PLACE}
 
+	# Verifications
     combPMcheck ${Lsms} ${Lmat}_C.slp ${Lmat}_A.slp
     combPMcheck ${Rsms} ${Rmat}_C.slp ${Rmat}_A.slp
     combPMcheck ${Psms} ${Pmat}_A.slp ${Pmat}_C.slp
 
+	# Produce the matlab programs from the SLPs, bith CoB and bilinear algorithm
 
-	# Produce the matlab programs from the SLPs
+ec
     slp2CBm ${Lmat}_C.slp ${Rmat}_C.slp ${Pmat}_C.slp ${m} ${k} ${n} ${r} ${File}
     slp2MMm ${Lmat}_A.slp ${Rmat}_A.slp ${Pmat}_A.slp ${m} ${k} ${n} ${r} ${File}_mul
 
@@ -305,28 +319,24 @@ end
 EOF
 
 else
-##########
-# Do generate the SLPs:
+    # Generic bilinear algorithm
 
+	# Do generate the SLPs:
     sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} ${SQRT} ${PLACE}
 
     Lslp=${Lmat}.slp
     Rslp=${Rmat}.slp
     Pslp=${Pmat}.slp
 
-##########
-# Produce the matlab program from the SLPs
-
+	# Produce the matlab program from the SLPs
     if [[ "$CoBTYPE" -eq 1 ]]; then
+	# Change of bases only
 	slp2CBm ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File}
     else
+	# Bilinear algorithm for matrix multiplication only
 	slp2MMm ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File}
     fi
 fi
 
-######################################################################
-
-
-
-##########
-#
+# ==========================================================================
+# ==========================================================================

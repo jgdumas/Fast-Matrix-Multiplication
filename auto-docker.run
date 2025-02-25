@@ -1,0 +1,26 @@
+#####################################################
+### Fast-Matrix-Multiplication               (c) 2025
+### Accuracy of Fast matrix multiplication Algorithms
+### J-G. Dumas, C. Pernet, A. Sedoglavic
+#####################################################
+
+#####################################################
+### Requirements: we suppose an existing environment,
+###   with git, cmake, c++, GMP, LinBox, Matlab, etc.
+### For instance via a virtual machine (here docker):
+# > sudo docker run -it debian:12 bash
+
+#####################################################
+### Install & run benchmarks, within the environment:
+
+apt update
+apt install wget csh bc
+cd; wget https://raw.githubusercontent.com/jgdumas/plinopt/refs/heads/main/bin/auto-docker.run
+chmod +x auto-docker.run; ./auto-docker.run
+export PATH=${PATH}:${HOME}/plinopt/bin
+cd; git clone https://github.com/jgdumas/Fast-Matrix-Multiplication.git
+cd Fast-Matrix-Multiplication/FMM-plinopt-codegen/; make
+./sms2matlab.sh -p 3 1013 ${HOME}/plinopt/data/Lo.sms ${HOME}/plinopt/data/Ro.sms ${HOME}/plinopt/data/Po.sms ../FMM-matlab-benchmarks/DPS
+./sms2matlab.sh -a -p 3 1013 ${HOME}/plinopt/data/Lo.sms ${HOME}/plinopt/data/Ro.sms ${HOME}/plinopt/data/Po.sms ../FMM-matlab-benchmarks/DPS
+cd ../FMM-matlab-benchmarks/
+matlab -batch "accuracy_alternative_real; exit"
