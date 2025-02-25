@@ -16,7 +16,7 @@ created for the numerical experiments of the paper:
 
 **Requirements**:
 - [Matlab](https://fr.mathworks.com/products/matlab.html)
-- [PLinOpt](https://fr.mathworks.com/products/matlab.html)
+- [PLinOpt](https://github.com/jgdumas/plinopt)
 
 
 **Installation**:
