@@ -26,17 +26,6 @@ SQRT=0
 PLACE=0
 while [[ $# -gt 0 ]]; do
   case $1 in
-    -h|--h|-help|--help|-*|--*)
-      echo "Usage: $0 [-O #|-p # #|-m|-n|-c|-a] L.sms R.sms P.sms name"
-      echo "  generates matlab program name.m from L,R,P matrices."
-      echo "  -m: L,R,P are a matrix multiplication algorithm (default)."
-      echo "  -c: L,R,P are change of bases matrices (default MM)."
-      echo "  -a: L,R,P are first factorized with alternative bases."
-      echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
-      echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
-      echo "  -p S P: P replaces sqrt(S) in sms files (default none)."
-      exit 1
-      ;;
     -O|--Optflags)
       OPTFLAGS="-O $2"
       shift # past argument
@@ -65,6 +54,17 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       shift # past value
+      ;;
+    -h|--h|-help|--help|-*|--*)
+      echo "Usage: $0 [-O #|-p # #|-m|-n|-c|-a] L.sms R.sms P.sms name"
+      echo "  generates matlab program name.m from L,R,P matrices."
+      echo "  -m: L,R,P are a matrix multiplication algorithm (default)."
+      echo "  -c: L,R,P are change of bases matrices (default MM)."
+      echo "  -a: L,R,P are first factorized with alternative bases."
+      echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
+      echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
+      echo "  -p S P: P replaces sqrt(S) in sms files (default none)."
+      exit 1
       ;;
     *)
       MATS+=("$1") # save positional arg
