@@ -24,22 +24,22 @@ created for the numerical experiments of the paper:
 
 --------------------------------------------------------------------------------
 **`FMM-matlab-benchmarks`, Accuracy benchmarks with Matlab**:
-| Program | Growth Factor | Description |
-| :---    |     :---:     |        ---: |
-| `strassenw.m` 	| 17.8530 | original Winograd's algorithm|
-| `strassen.m` 		| 14.8284 | original Strassen's algorithm|
-| `DPS_evenpow.m` 	| 12.2034 | using only powers of 2|
-| `DPS_smallrat.m` 	| 12.2034 | small rational coefficients|
-| `DPS_intermediate.m` 	| 12.0695 | fast rational |
-| `DPS_integral.m` 	| 12.0662 | large rational coefficients|
-| `DPS.m` 		| 12.0660 | most accurate, with sqrt(3) |
-| `FMM_3_3_6.m`		| 395.1 | fast 3x3x6 |
-| `FMM_3_6_3.m`		| 395.1 | fast 3x6x3 |
-| `FMM_6_3_3.m`		| 395.1 | fast 6x3x3 |
-| `FMMa_3_3_6.m`	| 104.1 | fast and accurate 3x3x6 |
-| `FMMa_3_6_3.m`	| 104.1 | fast and accurate 3x6x3 |
-| `FMMa_6_3_3.m`	| 104.1 | fast and accurate 6x3x3 |
-|  |  |  |
+| Program | Growth Factor | Normalized GF | Description |
+| :---    |     :---:     |        ---: |        ---: |
+| `strassenw.m` 	| 17.8530 | 2.23163| original Winograd's algorithm|
+| `strassen.m` 		| 14.8284 | 1.85355| original Strassen's algorithm|
+| `DPS_evenpow.m` 	| 12.2034 | 1.52543| using only powers of 2|
+| `DPS_smallrat.m` 	| 12.2034 | 1.52543| small rational coefficients|
+| `DPS_intermediate.m` 	| 12.0695 | 1.50869| fast rational |
+| `DPS_integral.m` 	| 12.0662 | 1.50828| large rational coefficients|
+| `DPS.m` 		| 12.0660 | 1.50825| most accurate, with sqrt(3) |
+| `FMM_3_3_6.m`		| 395.1 | 7.31667| fast 3x3x6 |
+| `FMM_3_6_3.m`		| 395.1 | 7.31667| fast 3x6x3 |
+| `FMM_6_3_3.m`		| 395.1 | 7.31667| fast 6x3x3 |
+| `FMMa_3_3_6.m`	| 104.1 | 1.92778| fast and accurate 3x3x6 |
+| `FMMa_3_6_3.m`	| 104.1 | 1.92778| fast and accurate 3x6x3 |
+| `FMMa_6_3_3.m`	| 104.1 | 1.92778| fast and accurate 6x3x3 |
+|  |  |  |  |
 
 
 
@@ -52,6 +52,9 @@ Faster variants, using an alternative basis from:
 | `Strassen_aternative.m` | $5n^{\log_2(7)}$ | Strassen's algorithm, sparsified |
 | `Winograd_aternative.m` | $5n^{\log_2(7)}$ | Winograd's algorithm, sparsified |
 | `DPS_aternative.m` | $5n^{\log_2(7)}$ | DPS's accurate algorithm, sparsified |
+| `FMMa336_alternative.m` | $O(n^{\log_{54}(40^3)})$ | Accurate & sparsified <3;3;6> algorithm |
+| `FMMa363_alternative.m` | $O(n^{\log_{54}(40^3)})$ | Accurate & sparsified <3;6;3> algorithm |
+| `FMMa633_alternative.m` | $O(n^{\log_{54}(40^3)})$ | Accurate & sparsified <6;3;3> algorithm |
 |  |  |  |
 
 All "aternative" variants use left/right and inverse change of basis (`*CoB*` files) together with an inner sparse multiplication (`*mul*` files).
@@ -71,9 +74,11 @@ Accuracy comparison with symbolic matrix multiplication:
 --------------------------------------------------------------------------------
 **`FMM-plinopt-codegen`, Progam generation via the PLinOpt library**:
 
+- [fmm.univ-lille.fr](https://fmm.univ-lille.fr/): catalogue of fast matrix multiplication algorithms.
 - [PLinOpt library](https://github.com/jgdumas/plinopt): Routines handling linear, bilinear & trilinear programs.
 
-Command-line scripts generating optimized Matlab programs from L,R,P matrices:
+
+Command-line scripts generating optimized Matlab programs from L,R,P matrices of fast algorithms:
 - `sms2matlab.sh`: L.sms R.sms P.sms filename
 
 
@@ -98,3 +103,5 @@ Tools:
 
 - `Minimal2Norm`: Proof of the Frobenius norm minimal point of Fast Matrix Multiplication in Strassen's orbit
 - `LowerBoundGamma`: Proof of a lower bound on the growth factor of Fast Matrix Multiplication in Strassen's orbit
+
+--------------------------------------------------------------------------------
