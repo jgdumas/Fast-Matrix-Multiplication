@@ -32,6 +32,8 @@ set k = $5		# LHS column dimension & RHS row dimension
 set n = $6		# RHS column dimension
 set r = $7		# Tensor rank
 set PathFname = $8	# Function name
+# Warning, a 9th argument forces overwrite of ${PathFname}.m
+
 set PathCname = "${PathFname}_${m}_${k}_${n}"
 set Fname = `basename ${PathFname}`	# Function name
 set Cname = "${Fname}_${m}_${k}_${n}"
@@ -40,9 +42,9 @@ echo "# Writing core algorithm to ${PathCname}.m"
 
 cat > ${PathCname}.m<< EOF
 function C = $Cname(A, B, nmin, peeling, level)
-if nargin < 3, nmin = 3; end    % Threshold to conventional
+if nargin < 3, nmin = 4; end    % Threshold to conventional
 if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
-if nargin < 5, level = 3; end   % Verbose level
+if nargin < 5, level = 8; end   % Verbose level
 [m,k] = size(A); [k2,n] = size(B);
 if (k2 ~= k), error('Incompatible matrix dimensions.'); end
 % Recursively cuts into nmin*${m}^l x nmin*${k}^l x nmin*${n}^l blocks, with decreasing maximal l
@@ -55,7 +57,7 @@ else
   l=ceil(min([log(mu)/log($m),log(ku)/log($k),log(nu)/log($n)]));
   if (peeling == 1)
     l = min([floor(log(m/nmin)/log($m)),floor(log(k/nmin)/log($k)),floor(log(n/nmin)/log($n))]);
-    mu=nmin*2^l; ku=nmin*2^l; nu=nmin*2^l;
+    mu=nmin*${m}^l; ku=nmin*${k}^l; nu=nmin*${n}^l;
   end
   if (mu < m) || (ku < k) || (nu < n)
     % fprintf("# Core SubMatrix[%d]: %d x %d x %d\n",l,mu,ku,nu)
@@ -94,8 +96,7 @@ end
 end
 EOF
 
-
-if ( -f ${PathFname}.m ) then
+if ( ($#argv <= 8) && ( -f ${PathFname}.m ) )then
     echo -n "Overwrite ${PathFname}.m (y/n)? "
     set answer = $<
     if ("$answer" != "y") then
@@ -103,7 +104,7 @@ if ( -f ${PathFname}.m ) then
     endif
 endif
 
-echo "Writing high-level MM routine to ${PathFname}.m"
+echo "# Writing high-level MM routine to ${PathFname}.m"
 
 cat > ${PathFname}.m<< EOF
 function C = $Fname(A, B, nmin, peeling, level)
@@ -111,11 +112,13 @@ function C = $Fname(A, B, nmin, peeling, level)
 %          nmin   : threshold switch to conventional.
 %          peeling: static peeling (1, by default) or dynamic (2).
 %          level  : logging level.
-  if nargin < 3, nmin = 3; end    % Threshold to conventional
+  if nargin < 3, nmin = 4; end    % Threshold to conventional
   if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
-  if nargin < 5, level = 3; end   % Verbose level
   [m,k] = size(A); [k2,n] = size(B);
   if (k2 ~= k), error('Incompatible matrix dimensions.'); end
+  if nargin < 5                   % Min level for verbose output
+    level = min([floor(log(m/nmin)/log($m)),floor(log(k/nmin)/log($k)),floor(log(n/nmin)/log($n))]);
+  end
   C=${Cname}(A,B,nmin,peeling,level);
 end
 EOF

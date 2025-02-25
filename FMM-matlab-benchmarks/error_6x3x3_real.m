@@ -1,4 +1,4 @@
-function [e_f,e_a,e_c,e_d,t_f,t_a,t_c,t_d] = error_6x3x3_real(A,B,n_0)
+function [e_f,e_a,e_c,e_d,e_b,e_e,t_f,t_a,t_c,t_d,t_b,t_e] = error_6x3x3_real(A,B,n_0)
 	% f fast classical 6x3x3 taken from fmm.univ-lille.fr
 	% a fast and accurate
 	% c conventional
@@ -12,6 +12,14 @@ function [e_f,e_a,e_c,e_d,t_f,t_a,t_c,t_d] = error_6x3x3_real(A,B,n_0)
     C_a = FMMa_6_3_3(A,B,n_0,1,3);
     t_a = toc;
     e_a = diffe_real(C_a,E)/scale;
+    tic
+    C_b = FMM633_alternative(A,B,n_0,1,3);
+    t_b = toc;
+    e_b = diffe_real(C_b,E)/scale;
+    tic
+    C_e = FMMa633_alternative(A,B,n_0,1,3);
+    t_e = toc;
+    e_e = diffe_real(C_e,E)/scale;
     tic
     C_c = recursive(A,B,6,3,3);
     t_c = toc;

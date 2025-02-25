@@ -13,14 +13,15 @@ function C = DPS(A, B, nmin, peeling, level)
 %          Reference:
 %          J-G. Dumas, C. Pernet, A. Sedoglavic
 %          Strassen's algorithm is not optimally accurate, Feb. 2024
+%          ISSAC 2024, Raleigh, NC USA, pp. 254-263.
 %          https://hal.science/hal-04441653
 
-  if nargin < 3, nmin = 64; end   % Threshold to conventional
+  if nargin < 3, nmin = 4; end    % Threshold to conventional
   if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
-  if nargin < 5, level = 5; end   % Verbose level
   [m,k] = size(A); [k2,n] = size(B);
   if (k2 ~= k), error('Incompatible matrix dimensions.'); end
+  if nargin < 5                   % Min level for verbose output
+    level = min([floor(log(m/nmin)/log(2)),floor(log(k/nmin)/log(2)),floor(log(n/nmin)/log(2))]);
+  end
   C=DPS_2_2_2(A,B,nmin,peeling,level);
 end
-
-

@@ -83,7 +83,7 @@ int VariableReplacer(std::ostream& sout, std::istream& SLP,
         }
         sout << " m" << m << " = m;" << std::endl;
         for(size_t k(0); k<m; ++k) {
-            sout << ichar << k << " = m" << k << "+1:m" << (k+1) << "; ";
+            sout << ' ' << ichar << k << " = m" << k << "+1:m" << (k+1) << ';';
         }
         sout << std::endl;
 
@@ -93,7 +93,7 @@ int VariableReplacer(std::ostream& sout, std::istream& SLP,
         }
         sout << " n" << n << " = n;" << std::endl;
         for(size_t k(0); k<n; ++k) {
-            sout << jchar << k << " = n" << k << "+1:n" << (k+1) << "; ";
+            sout << ' ' << jchar << k << " = n" << k << "+1:n" << (k+1) << ';';
         }
         sout << std::endl;
 

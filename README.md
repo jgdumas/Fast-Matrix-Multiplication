@@ -12,10 +12,15 @@ This is a Fork of the
 [Complex-Matrix-Multiplication](https://github.com/zhen06/Complex-Matrix-Multiplication) repository,
 created for the numerical experiments of the paper:
 - [Dai, Z., Lim, LH; Numerical stability and tensor nuclear norm. Numer. Math. 155, 345--376 (2023)](https://link.springer.com/article/10.1007/s00211-023-01377-5).
-
 - We add more accurate variants of fast matrix multiplication, especially 2x2 recursion
 
+**Requirements**:
+- [Matlab](https://fr.mathworks.com/products/matlab.html)
+- [PLinOpt](https://fr.mathworks.com/products/matlab.html)
 
+
+**Installation**:
+- See [`auto-docker.run`](https://github.com/jgdumas/Fast-Matrix-Multiplication/blob/main/auto-docker.run)
 
 --------------------------------------------------------------------------------
 **`FMM-matlab-benchmarks`, Accuracy benchmarks with Matlab**:
@@ -66,19 +71,27 @@ Accuracy comparison with symbolic matrix multiplication:
 --------------------------------------------------------------------------------
 **`FMM-plinopt-codegen`, Progam generation via the PLinOpt library**:
 
-Command-line scritps generating optimized matlab programs.
-
-Examples:
-`DPS.plo`,
-`DPS_evenpow.plo`,
-`DPS_smallrat.plo`,
-`DPS_intermediate.plo`,
-`DPS_integral.plo`,
-`DPS_CoB.plo`,
-`336.plo`.
 - [PLinOpt library](https://github.com/jgdumas/plinopt): Routines handling linear, bilinear & trilinear programs.
 
+Command-line scripts generating optimized Matlab programs from L,R,P matrices:
+- `sms2matlab.sh`: L.sms R.sms P.sms filename
 
+
+Examples:
+- `sms2matlab.sh data/Lo.sms data/Ro.sms data/Po.sms data/DPS -p 3 1013`
+- `sms2matlab.sh data/Ld.sms data/Rd.sms data/Pd.sms data/DPS_evenpow`
+- `sms2matlab.sh data/Lr.sms data/Rr.sms data/Pr.sms data/DPS_smallrat`
+- `sms2matlab.sh data/Lj.sms data/Rj.sms data/Pj.sms data/DPS_intermediate`
+- `sms2matlab.sh data/Li.sms data/Ri.sms data/Pi.sms data/DPS_integral`
+- `sms2matlab.sh -a -p 3 1013 data/Lo.sms data/Ro.sms data/Po.sms data/DPS`
+- `sms2matlab.sh -n data/La.sms data/Ra.sms data/Pa.sms data/DPS_mul`
+- `sms2matlab.sh -p 3 1013 -c data/CLo.sms data/CRo.sms data/CPo.sms data/DPS`
+- `336.plo`
+
+Tools:
+- `replacer`: regex replacement of variable names in straight-line programs
+- `MM.rpl`: Matlab Matrix Multiplication generator from Straight-Line Programs
+- `CoB.rpl`: Matlab change of basis generator from Straight-Line Program
 
 --------------------------------------------------------------------------------
 **`FMM-maple-proofs`, Proofs of accuracy bounds in Maple**:
