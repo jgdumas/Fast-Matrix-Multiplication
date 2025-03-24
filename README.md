@@ -24,22 +24,27 @@ created for the numerical experiments of the paper:
 
 --------------------------------------------------------------------------------
 **`FMM-matlab-benchmarks`, Accuracy benchmarks with Matlab**:
-| Program | Growth Factor | Normalized GF | Description |
-| :---    |     :---:     |        ---: |        ---: |
-| `strassenw.m` 	| 17.8530 | 2.23163| original Winograd's algorithm|
-| `strassen.m` 		| 14.8284 | 1.85355| original Strassen's algorithm|
-| `DPS_evenpow.m` 	| 12.2034 | 1.52543| using only powers of 2|
-| `DPS_smallrat.m` 	| 12.2034 | 1.52543| small rational coefficients|
-| `DPS_intermediate.m` 	| 12.0695 | 1.50869| fast rational |
-| `DPS_integral.m` 	| 12.0662 | 1.50828| large rational coefficients|
-| `DPS.m` 		| 12.0660 | 1.50825| most accurate, with sqrt(3) |
-| `FMM_3_3_6.m`		| 395.1 | 7.31667| fast 3x3x6 |
-| `FMM_3_6_3.m`		| 395.1 | 7.31667| fast 3x6x3 |
-| `FMM_6_3_3.m`		| 395.1 | 7.31667| fast 6x3x3 |
-| `FMMa_3_3_6.m`	| 104.1 | 1.92778| fast and accurate 3x3x6 |
-| `FMMa_3_6_3.m`	| 104.1 | 1.92778| fast and accurate 3x6x3 |
-| `FMMa_6_3_3.m`	| 104.1 | 1.92778| fast and accurate 6x3x3 |
+| Program | Growth Factor | Accuracy bound* | Description |
+| :---    |     :---:     |        :---: |        ---: |
+| `strassenw.m` 	| 17.8530 | O(n<sup>3.0000</sup>) | original Winograd's algorithm|
+| `strassen.m` 		| 14.8284 | O(n<sup>2.7716</sup>) | original Strassen's algorithm|
+| `DPS_evenpow.m` 	| 12.2034 | O(n<sup>2.5958</sup>) | using only powers of 2|
+| `DPS_smallrat.m` 	| 12.2034 | O(n<sup>2.5926</sup>) | small rational coefficients|
+| `DPS_intermediate.m` 	| 12.0695 | O(n<sup>2.5754</sup>)| fast rational |
+| `DPS_integral.m` 	| 12.0662 | O(n<sup>2.5771</sup>)| large rational coefficients|
+| `DPS.m` 		| 12.0660 | O(n<sup>2.5768</sup>) | most accurate, with sqrt(3) |
+| `FMM_3_3_6.m`		| 395.1 | O(n<sup>4.0976</sup>)| fast 3x3x6 |
+| `FMM_3_6_3.m`		| 395.1 | O(n<sup>4.0976</sup>)| fast 3x6x3 |
+| `FMM_6_3_3.m`		| 395.1 | O(n<sup>4.0976</sup>)| fast 6x3x3 |
+| `FMMa_3_3_6.m`	| 104.1 | O(n<sup>2.7267</sup>)| fast and accurate 3x3x6 |
+| `FMMa_3_6_3.m`	| 104.1 | O(n<sup>2.7267</sup>)| fast and accurate 3x6x3 |
+| `FMMa_6_3_3.m`	| 104.1 | O(n<sup>2.7267</sup>)| fast and accurate 6x3x3 |
 |  |  |  |  |
+
+
+(*) Error bound factor for the infinity norm on the output and the Euclidean norm on the input, see Table 1 in:
+[ J-G. Dumas, C. Pernet, A. Sedoglavic; Towards automated generation of fast and accurate algorithms for recursive matrix multiplication. ](https://hal.science/hal-04995684)
+
 
 
 
