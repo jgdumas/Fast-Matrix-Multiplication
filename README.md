@@ -9,20 +9,22 @@
 
 **About**:
 This is a Fork of the
-[Complex-Matrix-Multiplication](https://github.com/zhen06/Complex-Matrix-Multiplication) repository,
-created for the numerical experiments of the paper:
-- [Dai, Z., Lim, LH; Numerical stability and tensor nuclear norm. Numer. Math. 155, 345--376 (2023)](https://link.springer.com/article/10.1007/s00211-023-01377-5).
-- We add more accurate variants of fast matrix multiplication, especially 2x2 recursion
+[Complex-Matrix-Multiplication](https://github.com/zhen06/Complex-Matrix-Multiplication) repository, created for numerical experiments of the paper [Dai, Z., Lim, LH; Numerical stability and tensor nuclear norm. Numer. Math. 155, 345--376 (2023)](https://link.springer.com/article/10.1007/s00211-023-01377-5).
+- We add more accurate variants of recursive fast matrix multiplication:
+  - [FMM-matlab-benchmarks](#FMM-matlab-benchmarks), Accuracy benchmarks with [Matlab](https://mathworks.com/products/matlab.html)
+  - [FMM-plinopt-codegen](#FMM-plinopt-codegen), Progam generation via the [PLinOpt](https://github.com/jgdumas/plinopt) library
+  - [FMM-maple-proofs](#FMM-maple-proofs), Proofs of accuracy bounds in [Maple](https://www.maplesoft.com/products/Maple/)
 
 **Requirements**:
-- [Matlab](https://fr.mathworks.com/products/matlab.html)
-- [PLinOpt](https://github.com/jgdumas/plinopt)
-
+- [Matlab](https://mathworks.com/products/matlab.html), for numerical benchmarks
+- [PLinOpt](https://github.com/jgdumas/plinopt), for the automatic program generation
+- [Maple](https://www.maplesoft.com/products/Maple/), for the proofs of accuracy
 
 **Installation**:
 - See [`auto-docker.run`](https://github.com/jgdumas/Fast-Matrix-Multiplication/blob/main/auto-docker.run)
 
 --------------------------------------------------------------------------------
+<a name=FMM-matlab-benchmarks></a>
 **`FMM-matlab-benchmarks`, Accuracy benchmarks with Matlab**:
 | Program | Growth Factor | Accuracy bound* | Description |
 | :---    |     :---:     |        :---: |        ---: |
@@ -77,6 +79,7 @@ Accuracy comparison with symbolic matrix multiplication:
 
 
 --------------------------------------------------------------------------------
+<a name=FMM-plinopt-codegen></a>
 **`FMM-plinopt-codegen`, Progam generation via the PLinOpt library**:
 
 - [fmm.univ-lille.fr](https://fmm.univ-lille.fr/): catalogue of fast matrix multiplication algorithms.
@@ -104,6 +107,7 @@ Tools:
 - `CoB.rpl`: Matlab change of basis generator from Straight-Line Program
 
 --------------------------------------------------------------------------------
+<a name=FMM-maple-proofs></a>
 **`FMM-maple-proofs`, Proofs of accuracy bounds in Maple**:
 
 - `Minimal2Norm`: Proof of the Frobenius norm minimal point of Fast Matrix Multiplication in Strassen's orbit
