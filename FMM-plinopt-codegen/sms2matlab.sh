@@ -116,8 +116,8 @@ if [[ "$ALTBASIS" -eq 1 ]]; then
     MMcheck ${Lsms} ${Rsms} ${Psms} ${SQRT} ${PLACE}
 
 	# Factor into: sparse x CoB
-    echo "Sparsifying into ${Lmat}_A.sms ${Rmat}_A.sms ${Pmat}_A.sms;"
-    echo "      with bases ${Lmat}_C.sms ${Rmat}_C.sms ${Pmat}_C.sms."
+    echo "# Sparsifying into ${Lmat}_A.sms ${Rmat}_A.sms ${Pmat}_A.sms;"
+    echo "#       with bases ${Lmat}_C.sms ${Rmat}_C.sms ${Pmat}_C.sms."
     (factorizer -S ${Lsms} > ${Lmat}_C.sms) |& grep -v '#' > ${Lmat}_A.sms
     (factorizer -S ${Rsms} > ${Rmat}_C.sms) |& grep -v '#' > ${Rmat}_A.sms
     (matrix-transpose ${Psms} | factorizer -S > ${Pmat}_tC.sms) |& grep -v '#' > ${Pmat}_tA.sms
@@ -140,7 +140,7 @@ ec
     slp2MMm ${Lmat}_A.slp ${Rmat}_A.slp ${Pmat}_A.slp ${m} ${k} ${n} ${r} ${File}_mul
 
     Mfile=`basename ${File}`
-    echo "Generating alternative basis matlab program ${File}_alternative.m."
+    echo "# Generating alternative basis matlab program ${File}_alternative.m."
 cat > ${File}_alternative.m<< EOF
 function C = ${Mfile}_alternative(A, B, nmin, peeling, level)
 %          Computes the product C = A*B, sparsified via alternative basis.

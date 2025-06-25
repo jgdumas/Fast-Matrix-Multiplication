@@ -122,3 +122,5 @@ function C = $Fname(A, B, nmin, peeling, level)
   C=${Cname}(A,B,nmin,peeling,level);
 end
 EOF
+
+echo "# <${m}x${k}x${n}:${r}> MM algorithm: ${PathCname}.m & ${PathFname}.m generated."

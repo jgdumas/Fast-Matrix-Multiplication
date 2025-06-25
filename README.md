@@ -91,14 +91,14 @@ Command-line scripts generating optimized Matlab programs from L,R,P matrices of
 
 
 Examples:
-- `sms2matlab.sh data/Lo.sms data/Ro.sms data/Po.sms data/DPS -p 3 1013`
-- `sms2matlab.sh data/Ld.sms data/Rd.sms data/Pd.sms data/DPS_evenpow`
-- `sms2matlab.sh data/Lr.sms data/Rr.sms data/Pr.sms data/DPS_smallrat`
-- `sms2matlab.sh data/Lj.sms data/Rj.sms data/Pj.sms data/DPS_intermediate`
-- `sms2matlab.sh data/Li.sms data/Ri.sms data/Pi.sms data/DPS_integral`
-- `sms2matlab.sh -a -p 3 1013 data/Lo.sms data/Ro.sms data/Po.sms data/DPS`
-- `sms2matlab.sh -n data/La.sms data/Ra.sms data/Pa.sms data/DPS_mul`
-- `sms2matlab.sh -p 3 1013 -c data/CLo.sms data/CRo.sms data/CPo.sms data/DPS`
+- `sms2matlab.sh data/{L,R,P}o.sms data/DPS -p 3 1013`
+- `sms2matlab.sh data/{L,R,P}d.sms data/DPS_evenpow`
+- `sms2matlab.sh data/{L,R,P}r.sms data/DPS_smallrat`
+- `sms2matlab.sh data/{L,R,P}j.sms data/DPS_intermediate`
+- `sms2matlab.sh data/{L,R,P}i.sms data/DPS_integral`
+- `sms2matlab.sh -a -p 3 1013 data/{L,R,P}o.sms data/DPS`
+- `sms2matlab.sh -n data/{L,R,P}a.sms data/DPS_mul`
+- `sms2matlab.sh -p 3 1013 -c data/C{L,R,P}o.sms data/DPS`
 - `336.plo`
 
 Tools:

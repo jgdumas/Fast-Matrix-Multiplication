@@ -28,7 +28,7 @@ function MMcheck {
     if [[ "$SQRT" -ne 0 ]]; then
 	local MMFLAGS="128 ${SQRT} ${PLACE}"
     fi
-    echo "MMchecker ${Lsms} ${Rsms} ${Psms} ${MMFLAGS} "
+    echo "# MMchecker ${Lsms} ${Rsms} ${Psms} ${MMFLAGS}"
     local mkn=`MMchecker ${Lsms} ${Rsms} ${Psms} ${MMFLAGS} |& grep '#'`
     echo $mkn
     if [[ "$mkn" == *"ERROR"* ]]; then
@@ -63,23 +63,36 @@ function sms2slp {
     if [[ "$MMCHECK" -eq 1 ]]; then
 	MMcheck ${Lsms} ${Rsms} ${Psms} ${SQRT} ${PLACE}
     else
-	echo "<$m;$k;$n> algorithm of rank $r."
+	echo "# <$m;$k;$n> algorithm of rank $r."
     fi
 
     ##########
     # Computation of the straight-line programs
     #
-    for mat in $Lmat $Rmat
-      do
-      local Msms=${mat}.sms
-      local Mslp=${mat}.slp
-      echo "Generating ${Mslp} with flags: ${OPTFLAGS}"
-      optimizer ${OPTFLAGS} ${Msms} | compacter -s > ${Mslp}
-    done
+    BSLP=0
 
-    echo "Generating ${Pslp}, by transposition, with flags: ${OPTFLAGS}"
-    matrix-transpose ${Psms} | optimizer ${OPTFLAGS} | transpozer | compacter -s > ${Pslp}
+    if [ -f ${Lslp} ] || [ -f ${Rslp} ] || [ -f ${Lslp} ]; then
+	read -p "# Overwrite ${Lslp}, ${Rslp} and ${Pslp}? [y/N] " RESP
+	if [[ "${RESP}" == "y" ]]; then
+	    BSLP=1
+	fi
+    else
+	BSLP=1
+    fi
 
+    if [[ "$BSLP" -eq 1 ]]; then
+	# Do generate the SLPs:
+	for mat in $Lmat $Rmat
+	  do
+	  local Msms=${mat}.sms
+	  local Mslp=${mat}.slp
+	  echo "# Generating ${Mslp} with flags: ${OPTFLAGS}"
+	  optimizer ${OPTFLAGS} ${Msms} | compacter -s > ${Mslp}
+	done
+
+	echo "# Generating ${Pslp}, by transposition, with flags: ${OPTFLAGS}"
+	matrix-transpose ${Psms} | optimizer ${OPTFLAGS} | transpozer | compacter -s > ${Pslp}
+    fi
 
     ##########
     # Verifications
@@ -89,7 +102,7 @@ function sms2slp {
       local Msms=${mat}.sms
       local Mslp=${mat}.slp
       local pmc=`SLPchecker -M ${Msms} ${Mslp} |& grep '#'`
-      echo $pmc
+      echo $pmc | sed 's/#[^#]/\n&/g'
       if [[ "$pmc" == *"ERROR"* ]]; then
 	  exit 1;
       fi
@@ -125,7 +138,7 @@ function slp2CBm {
     local n=$6
     local r=$7
     local File=$8
-    echo "Generating ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m change of bases:"
+    echo "# Generating ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m change of bases:"
     ./CoB.rpl ${Lslp} ${m} ${k} ${File}_CoBL
     ./CoB.rpl ${Rslp} ${k} ${n} ${File}_CoBR
     ./CoB.rpl ${Pslp} ${m} ${n} ${File}_ICoB
@@ -148,7 +161,7 @@ function slp2MMm {
     local n=$6
     local r=$7
     local File=$8
-    echo "Generating ${File}.m with ${m}x${k}x${n} of rank ${r}:"
+    echo "# Generating ${File}.m with ${m}x${k}x${n} of rank ${r}:"
     ./MM.rpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File} 1
     PlaceHolder ${SQRT} ${PLACE} ${File}_${m}_${k}_${n}.m
 }
@@ -171,7 +184,7 @@ function combPMcheck {
     local pmc=`SLPchecker -M ${mat} s2m.slp |& grep '#'`
     echo $pmc
     if [[ "$pmc" == *"ERROR"* ]]; then
-	echo "Combined ${pri} ${pro}: SLPchecker -M ${mat} s2m.slp"
+	echo "# Combined ${pri} ${pro}: SLPchecker -M ${mat} s2m.slp"
 	exit 1;
     else
 	\rm s2m.slp
@@ -198,8 +211,6 @@ function slp2MMmpl {
     filename="${m}x${k}x${n}_${r}_${suffix}.mpl"
 
     echo "# Left SLP" > ${filename}
-
-echo "    (./replacer ${Lslp} -M i o A 3 3 40 1) >> ${filename} "
     (./replacer ${Lslp} -M i o A ${m} ${k} ${r} 1) >> ${filename}
 
     echo "# Right SLP" >> ${filename}
@@ -225,9 +236,12 @@ echo "    (./replacer ${Lslp} -M i o A 3 3 40 1) >> ${filename} "
 	success=`grep "NumErrors := 0" ${tmpfile} | wc -l`
 	if [[ "${success}" -ne 1 ]]; then
 	    echo -e "\033[1;31m**** ERRORS in: cat ${filename} | ${MAPLEPROG} ***\033[0m"
+	    exit 1;
 	else
-	   echo -e "\033[1;32mSUCCESS: ${filename} is a MM algorithm.\033[0m"
+	    echo -en "\033[1;32mSUCCESS:\033[0m "
 	fi
     fi
+
+    echo "${filename} is a MM algorithm."
 }
 # ==========================================================================

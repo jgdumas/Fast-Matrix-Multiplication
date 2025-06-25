@@ -74,40 +74,18 @@ fi
 
 
 # ==========================================================================
-# Check MM
+# Check MM & Check/Generate associated SLPs
 #
-MMcheck ${Lsms} ${Rsms} ${Psms} ${SQRT} ${PLACE}
-
-
-# ==========================================================================
-# Get associated SLPs
-#
-Lslp=${Lmat}.slp
-Rslp=${Rmat}.slp
-Pslp=${Pmat}.slp
-BSLP=0
-
-if [ -f ${Lslp} ] || [ -f ${Rslp} ] || [ -f ${Lslp} ]; then
-    read -p "Overwrite ${Lslp}, ${Rslp} and ${Pslp}? [y/N]" RESP
-    if [[ "$RESP" -eq "y" ]]; then
-	BSLP=1
-    fi
-else
-    BSLP=1
-fi
-
-if [[ "$BSLP" -eq 1 ]]; then
-	# Do generate the SLPs:
-    sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} ${SQRT} ${PLACE}
-fi
-
-
+sms2slp ${Lmat} ${Rmat} ${Pmat} 1 0 0
 
 # ==========================================================================
 # Bilinear algorithm for matrix multiplication only
 #
-slp2MMmpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File}
+Lslp=${Lmat}.slp
+Rslp=${Rmat}.slp
+Pslp=${Pmat}.slp
 
+slp2MMmpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File}
 
 
 # ==========================================================================
