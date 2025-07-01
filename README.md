@@ -86,8 +86,9 @@ Accuracy comparison with symbolic matrix multiplication:
 - [PLinOpt library](https://github.com/jgdumas/plinopt): Routines handling linear, bilinear & trilinear programs.
 
 
-Command-line scripts generating optimized Matlab programs from L,R,P matrices of fast algorithms:
+Command-line scripts generating optimized Matlab/Maple programs from L,R,P matrices of fast algorithms:
 - `sms2matlab.sh`: L.sms R.sms P.sms filename
+- `sms2maple.sh`: L.sms R.sms P.sms suffix
 
 
 Examples:
@@ -100,9 +101,11 @@ Examples:
 - `sms2matlab.sh -n data/{L,R,P}a.sms data/DPS_mul`
 - `sms2matlab.sh -p 3 1013 -c data/C{L,R,P}o.sms data/DPS`
 - `336.plo`
+- `sms2maple.sh data/4x4x4_48_rational_{L,R,P}.sms check`
 
 Tools:
-- `replacer`: regex replacement of variable names in straight-line programs
+- `replacer`: regex replacement of variable names in Straight-Line Programs
+- `functions4sms.sh`: tools for matlab/maple program generation
 - `MM.rpl`: Matlab Matrix Multiplication generator from Straight-Line Programs
 - `CoB.rpl`: Matlab change of basis generator from Straight-Line Program
 
