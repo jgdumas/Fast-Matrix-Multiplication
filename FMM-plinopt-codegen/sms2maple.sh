@@ -16,24 +16,32 @@
 
 # ==========================================================================
 ##########
-# functions for program generation
-#
-source functions4sms.sh
-
-
-# ==========================================================================
-##########
 # L,R,P matrices
 #
 Lsms=$1
 Rsms=$2
 Psms=$3
-File=$4
+Suff=check
+OPTFLAGS=
+
+if [[ $# -ge 4 ]]; then
+   Suff=$4
+fi
+if [[ $# -ge 5 ]]; then
+   OPTFLAGS="-O $5"
+fi
 
 Lmat=`dirname $Lsms`/`basename $Lsms .sms`
 Rmat=`dirname $Lsms`/`basename $Rsms .sms`
 Pmat=`dirname $Lsms`/`basename $Psms .sms`
 #echo "$Lmat $Rmat $Pmat"
+
+# ==========================================================================
+##########
+# functions for program generation
+#
+source functions4sms.sh
+
 
 
 ##########
@@ -76,7 +84,7 @@ fi
 # ==========================================================================
 # Check MM & Check/Generate associated SLPs
 #
-sms2slp ${Lmat} ${Rmat} ${Pmat} 1 0 0
+sms2slp ${Lmat} ${Rmat} ${Pmat} 1 0 0 "${OPTFLAGS}"
 
 # ==========================================================================
 # Bilinear algorithm for matrix multiplication only
@@ -85,7 +93,7 @@ Lslp=${Lmat}.slp
 Rslp=${Rmat}.slp
 Pslp=${Pmat}.slp
 
-slp2MMmpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File}
+slp2MMmpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${Suff}
 
 
 # ==========================================================================

@@ -125,8 +125,8 @@ if [[ "$ALTBASIS" -eq 1 ]]; then
     matrix-transpose ${Pmat}_tA.sms > ${Pmat}_A.sms
 
 	# Do generate the SLPs:
-    sms2slp ${Lmat}_C ${Rmat}_C ${Pmat}_C 0 ${SQRT} ${PLACE}
-    sms2slp ${Lmat}_A ${Rmat}_A ${Pmat}_A 0 ${SQRT} ${PLACE}
+    sms2slp ${Lmat}_C ${Rmat}_C ${Pmat}_C 0 ${SQRT} ${PLACE} "${OPTFLAGS}"
+    sms2slp ${Lmat}_A ${Rmat}_A ${Pmat}_A 0 ${SQRT} ${PLACE} "${OPTFLAGS}"
 
 	# Verifications
     combPMcheck ${Lsms} ${Lmat}_C.slp ${Lmat}_A.slp
@@ -159,7 +159,7 @@ else
     # Generic bilinear algorithm
 
 	# Do generate the SLPs:
-    sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} ${SQRT} ${PLACE}
+    sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} ${SQRT} ${PLACE} "${OPTFLAGS}"
 
     Lslp=${Lmat}.slp
     Rslp=${Rmat}.slp

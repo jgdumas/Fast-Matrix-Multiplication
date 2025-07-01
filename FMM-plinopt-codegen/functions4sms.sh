@@ -48,6 +48,7 @@ function sms2slp {
     local MMCHECK=$4
     local SQRT=$5
     local PLACE=$6
+    local OPTFLAGS=$7
 
     local Lsms=${Lmat}.sms
     local Rsms=${Rmat}.sms
