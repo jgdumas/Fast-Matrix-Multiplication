@@ -220,7 +220,7 @@ function slp2MMmpl {
     echo "# Inner products: ${rmun}" >> ${filename}
     for i in $(seq 0 ${rmun})
       do
-      (echo -n "p$i:=l$i * r$i; ") >> ${filename}
+      (echo -n "p${i}:=l${i}*r${i}; ") >> ${filename}
     done
     echo -e '\n'  >> ${filename}
 
