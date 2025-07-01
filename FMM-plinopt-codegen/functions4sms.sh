@@ -211,21 +211,22 @@ function slp2MMmpl {
     filename="${m}x${k}x${n}_${r}_${suffix}.mpl"
 
     echo "# Left SLP" > ${filename}
-    (./replacer ${Lslp} -M i o A ${m} ${k} ${r} 1) >> ${filename}
+    (./replacer ${Lslp} -M i o A ${m} ${k} ${r} 1 | sed 's/b/w/g;s/x/s/g;s/t/x/g;s/v/t/g;s/z/v/g;s/g/u/g;s/oA/l/g') >> ${filename}
 
     echo "# Right SLP" >> ${filename}
-    (./replacer ${Rslp} -M i o B ${k} ${n} ${r} 1) >> ${filename}
+    (./replacer ${Rslp} -M i o B ${k} ${n} ${r} 1| sed 's/t/y/g;s/b/g/g;s/x/c/g;s/v/d/g;s/g/e/g;s/z/f/g;s/r/b/g;s/oB/r/g') >> ${filename}
 
     rmun=$((r-1))
     echo "# Inner products: ${rmun}" >> ${filename}
     for i in $(seq 0 ${rmun})
       do
-      (echo -n "iC$i:=oA$i * oB$i; ") >> ${filename}
+      (echo -n "p$i:=l$i * r$i; ") >> ${filename}
     done
-    echo  >> ${filename}
+    echo -e '\n'  >> ${filename}
 
-    echo "# Post SLP" >> ${filename}
-    (./replacer ${Pslp} -M i o C ${m} ${n} ${r} 0) >> ${filename}
+    echo "C:=Matrix(${m},${n}):" >> ${filename}
+    echo -e '\n# Post SLP' >> ${filename}
+    (./replacer ${Pslp} -M i o C ${m} ${n} ${r} 0| sed 's/z/n/g;s/r/h/g;s/x/j/g;s/v/k/g;s/g/m/g;s/t/z/g;s/b/q/g;s/iC/p/g') >> ${filename}
 
     echo "# Check" >> ${filename}
     echo "Errors := LinearAlgebra:-Map(expand, C - ((Matrix(${m}, ${k}, symbol = 'A')) . (Matrix(${k}, ${n}, symbol = 'B')))); NumErrors:=LinearAlgebra:-Rank(Errors);" >> ${filename}

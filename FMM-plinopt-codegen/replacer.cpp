@@ -169,9 +169,9 @@ int MapleVariableReplacer(std::ostream& sout, std::istream& SLP,
     std::stringstream buffer; buffer << SLP.rdbuf();
     std::string program(buffer.str());
 
-    if (iotype == 0) {
-        sout << rechar << ":=Matrix(" << m << ',' << n << ");" << std::endl;
-    }
+//     if (iotype == 0) {
+//         sout << rechar << ":=Matrix(" << m << ',' << n << ");" << std::endl;
+//     }
 
     if (iotype == 1) {
         unvectorize(program, inchar, rechar, n, s);
