@@ -86,23 +86,26 @@ Accuracy comparison with symbolic matrix multiplication:
 - [PLinOpt library](https://github.com/jgdumas/plinopt): Routines handling linear, bilinear & trilinear programs.
 
 
-Command-line scripts generating optimized Matlab programs from L,R,P matrices of fast algorithms:
+Command-line scripts generating optimized Matlab/Maple programs from L,R,P matrices of fast algorithms:
 - `sms2matlab.sh`: L.sms R.sms P.sms filename
+- `sms2maple.sh`: L.sms R.sms P.sms suffix
 
 
 Examples:
-- `sms2matlab.sh data/Lo.sms data/Ro.sms data/Po.sms data/DPS -p 3 1013`
-- `sms2matlab.sh data/Ld.sms data/Rd.sms data/Pd.sms data/DPS_evenpow`
-- `sms2matlab.sh data/Lr.sms data/Rr.sms data/Pr.sms data/DPS_smallrat`
-- `sms2matlab.sh data/Lj.sms data/Rj.sms data/Pj.sms data/DPS_intermediate`
-- `sms2matlab.sh data/Li.sms data/Ri.sms data/Pi.sms data/DPS_integral`
-- `sms2matlab.sh -a -p 3 1013 data/Lo.sms data/Ro.sms data/Po.sms data/DPS`
-- `sms2matlab.sh -n data/La.sms data/Ra.sms data/Pa.sms data/DPS_mul`
-- `sms2matlab.sh -p 3 1013 -c data/CLo.sms data/CRo.sms data/CPo.sms data/DPS`
+- `sms2matlab.sh data/{L,R,P}o.sms data/DPS -p 3 1013`
+- `sms2matlab.sh data/{L,R,P}d.sms data/DPS_evenpow`
+- `sms2matlab.sh data/{L,R,P}r.sms data/DPS_smallrat`
+- `sms2matlab.sh data/{L,R,P}j.sms data/DPS_intermediate`
+- `sms2matlab.sh data/{L,R,P}i.sms data/DPS_integral`
+- `sms2matlab.sh -a -p 3 1013 data/{L,R,P}o.sms data/DPS`
+- `sms2matlab.sh -n data/{L,R,P}a.sms data/DPS_mul`
+- `sms2matlab.sh -p 3 1013 -c data/C{L,R,P}o.sms data/DPS`
 - `336.plo`
+- `sms2maple.sh data/4x4x4_48_rational_{L,R,P}.sms check`
 
 Tools:
-- `replacer`: regex replacement of variable names in straight-line programs
+- `replacer`: regex replacement of variable names in Straight-Line Programs
+- `functions4sms.sh`: tools for matlab/maple program generation
 - `MM.rpl`: Matlab Matrix Multiplication generator from Straight-Line Programs
 - `CoB.rpl`: Matlab change of basis generator from Straight-Line Program
 
