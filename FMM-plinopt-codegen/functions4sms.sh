@@ -26,7 +26,7 @@ function FMMcodegenPresent {
 	  exit 1;
       fi
     done
-    echo "# PLinOpt is up and running"
+    echo "# FMM-codegen is up and running"
 }
 
 
@@ -39,7 +39,7 @@ function PLinOptPresent {
       do
       if ! command -v ${prg} &> /dev/null
       then
-	  echo -e "\033[1;31m**** ERROR\033[0m plinopt/bin executables could not be found. \033[1;31m***\033[0m"
+	  echo -e "\033[1;31m**** ERROR\033[0m plinopt/bin executables (${prg}) could not be found. \033[1;31m***\033[0m"
 	  exit 1;
       fi
     done
