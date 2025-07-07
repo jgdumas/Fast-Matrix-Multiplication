@@ -73,7 +73,7 @@ Pmat=`dirname $Lsms`/`basename $Psms .sms`
 ##########
 # functions for program generation
 #
-source functions4sms.sh
+source `dirname $0`/functions4sms.sh
 
 ##########
 # test for PLinOpt/FMM program
