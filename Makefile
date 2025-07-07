@@ -1,0 +1,8 @@
+TOPTARGETS := all clean check
+SUBDIRS := FMM-plinopt-codegen
+
+$(TOPTARGETS): $(SUBDIRS)
+$(SUBDIRS):
+	$(MAKE) -C $@ $(MAKECMDGOALS)
+
+.PHONY: $(TOPTARGETS) $(SUBDIRS)

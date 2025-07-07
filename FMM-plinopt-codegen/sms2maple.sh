@@ -5,6 +5,7 @@
 #   Accurate fast matrix multiplications via recursion
 # ==========================================================================
 # sms2maple: generate maple programs from an L,R,P bilinear algorithm
+# exeample: `echo n | sms2maple.sh data/4x4x4_48_rational_{L,R,P}.sms check`
 # ==========================================================================
 #   Authors:
 #   [J-G. Dumas, C. Pernet, A. Sedoglavic;
@@ -12,6 +13,43 @@
 #    ISSAC 2024, Raleigh, NC USA, pp. 254-263.
 #    https://hal.science/hal-04441653]
 # ==========================================================================
+
+##########
+# Parsing args
+#
+MATS=()
+MMCHECK=1
+OPTFLAGS=""
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -O|--Optflags)
+      OPTFLAGS="-O $2"
+      shift # past argument
+      shift # past value
+      ;;
+    -m|-mm|-mmc|--MMcheck)
+      MMCHECK=1
+      shift # past argument
+      ;;
+    -n|-nm|-nmm|-nmmc|-nc|--NoMMcheck)
+      MMCHECK=0
+      shift # past argument
+      ;;
+    -h|--h|-help|--help|-*|--*)
+      echo "Usage: $0 [-O #|-m|-n] L.sms R.sms P.sms [name]"
+      echo "  generates matlab program name.m from L,R,P matrices."
+      echo "  -m: L,R,P are a matrix multiplication algorithm (default)."
+      echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
+      echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
+      exit 1
+      ;;
+    *)
+      MATS+=("$1") # save positional arg
+      shift # past argument
+      ;;
+  esac
+done
+set -- "${MATS[@]}" # restore positional parameters
 
 
 # ==========================================================================
@@ -22,13 +60,8 @@ Lsms=$1
 Rsms=$2
 Psms=$3
 Suff=check
-OPTFLAGS=
-
 if [[ $# -ge 4 ]]; then
    Suff=$4
-fi
-if [[ $# -ge 5 ]]; then
-   OPTFLAGS="-O $5"
 fi
 
 Lmat=`dirname $Lsms`/`basename $Lsms .sms`
@@ -42,6 +75,12 @@ Pmat=`dirname $Lsms`/`basename $Psms .sms`
 #
 source functions4sms.sh
 
+##########
+# test for PLinOpt/FMM program
+#
+PLinOptPresent
+FMMcodegenPresent
+FMMD=`dirname $0`
 
 
 ##########
@@ -73,7 +112,7 @@ else
 	echo "`command -v maple` is here but not running"
 	MAPLEHERE=false
     else
-	echo "maple is up and running"
+	echo "# Maple is up and running"
     fi
 fi
 if [ "${MAPLEHERE}" != true ] ; then
@@ -84,7 +123,7 @@ fi
 # ==========================================================================
 # Check MM & Check/Generate associated SLPs
 #
-sms2slp ${Lmat} ${Rmat} ${Pmat} 1 0 0 "${OPTFLAGS}"
+sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} 0 0 "${OPTFLAGS}"
 
 # ==========================================================================
 # Bilinear algorithm for matrix multiplication only

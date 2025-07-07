@@ -24,6 +24,7 @@
 # ./MM.rpl L_6x3x3_accurate.slp R_6x3x3_accurate.slp P_6x3x3_accurate.slp 6 3 3 40 FMMa
 # ==========================================================================
 
+set REPE = `dirname $0`/replacer
 set Lslp = $1		# Left linear map
 set Rslp = $2		# Right linear map
 set Pslp = $3		# Product linear map
@@ -79,8 +80,8 @@ else
 
 EOF
 
-./replacer $Lslp i o A $m $k $r 1 >> ${PathCname}.m
-./replacer $Rslp i o B $k $n $r 1 >> ${PathCname}.m
+${REPE} $Lslp i o A $m $k $r 1 >> ${PathCname}.m
+${REPE} $Rslp i o B $k $n $r 1 >> ${PathCname}.m
 
 set j = 0
 while ( $j < $r )
@@ -89,7 +90,7 @@ while ( $j < $r )
 end
 echo >> ${PathCname}.m
 
-./replacer $Pslp i o C $m $n $r 0 >> ${PathCname}.m
+${REPE} $Pslp i o C $m $n $r 0 >> ${PathCname}.m
 cat >> ${PathCname}.m<< EOF
   end
 end

@@ -15,6 +15,39 @@
 
 # ==========================================================================
 ##########
+# Function: FMM-codegen check
+#
+function FMMcodegenPresent {
+    for prg in replacer CoB.rpl MM.rpl
+      do
+      if ! command -v `dirname $0`/${prg} &> /dev/null
+      then
+	  echo -e "\033[1;31m**** ERROR\033[0m FMM code generators (${prg}) could not be found. \033[1;31m***\033[0m"
+	  exit 1;
+      fi
+    done
+    echo "# PLinOpt is up and running"
+}
+
+
+# ==========================================================================
+##########
+# Function: PLinOpt check
+#
+function PLinOptPresent {
+    for prg in MMchecker optimizer matrix-transpose SLPchecker factorizer sms2pretty columns-swap
+      do
+      if ! command -v ${prg} &> /dev/null
+      then
+	  echo -e "\033[1;31m**** ERROR\033[0m plinopt/bin executables could not be found. \033[1;31m***\033[0m"
+	  exit 1;
+      fi
+    done
+    echo "# PLinOpt is up and running"
+}
+
+# ==========================================================================
+##########
 # Function: Matrix Multiplication Check
 #
 function MMcheck {
@@ -140,9 +173,9 @@ function slp2CBm {
     local r=$7
     local File=$8
     echo "# Generating ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m change of bases:"
-    ./CoB.rpl ${Lslp} ${m} ${k} ${File}_CoBL
-    ./CoB.rpl ${Rslp} ${k} ${n} ${File}_CoBR
-    ./CoB.rpl ${Pslp} ${m} ${n} ${File}_ICoB
+    `dirname $0`/CoB.rpl ${Lslp} ${m} ${k} ${File}_CoBL
+    `dirname $0`/CoB.rpl ${Rslp} ${k} ${n} ${File}_CoBR
+    `dirname $0`/CoB.rpl ${Pslp} ${m} ${n} ${File}_ICoB
 
     PlaceHolder ${SQRT} ${PLACE} ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m
 }
@@ -163,7 +196,7 @@ function slp2MMm {
     local r=$7
     local File=$8
     echo "# Generating ${File}.m with ${m}x${k}x${n} of rank ${r}:"
-    ./MM.rpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File} 1
+    `dirname $0`/MM.rpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File} 1
     PlaceHolder ${SQRT} ${PLACE} ${File}_${m}_${k}_${n}.m
 }
 # ==========================================================================
@@ -212,10 +245,10 @@ function slp2MMmpl {
     filename="${m}x${k}x${n}_${r}_${suffix}.mpl"
 
     echo "# Left SLP" > ${filename}
-    (./replacer ${Lslp} -M i o A ${m} ${k} ${r} 1 | sed 's/b/w/g;s/x/s/g;s/t/x/g;s/v/t/g;s/z/v/g;s/g/u/g;s/oA/l/g') >> ${filename}
+    (`dirname $0`/replacer ${Lslp} -M i o A ${m} ${k} ${r} 1 | sed 's/b/w/g;s/x/s/g;s/t/x/g;s/v/t/g;s/z/v/g;s/g/u/g;s/oA/l/g') >> ${filename}
 
     echo "# Right SLP" >> ${filename}
-    (./replacer ${Rslp} -M i o B ${k} ${n} ${r} 1| sed 's/t/y/g;s/b/g/g;s/x/c/g;s/v/d/g;s/g/e/g;s/z/f/g;s/r/b/g;s/oB/r/g') >> ${filename}
+    (`dirname $0`/replacer ${Rslp} -M i o B ${k} ${n} ${r} 1| sed 's/t/y/g;s/b/g/g;s/x/c/g;s/v/d/g;s/g/e/g;s/z/f/g;s/r/b/g;s/oB/r/g') >> ${filename}
 
     rmun=$((r-1))
     echo "# Inner products: ${rmun}" >> ${filename}
@@ -227,7 +260,7 @@ function slp2MMmpl {
 
     echo "C:=Matrix(${m},${n}):" >> ${filename}
     echo -e '\n# Post SLP' >> ${filename}
-    (./replacer ${Pslp} -M i o C ${m} ${n} ${r} 0| sed 's/z/n/g;s/r/h/g;s/x/j/g;s/v/k/g;s/g/m/g;s/t/z/g;s/b/q/g;s/iC/p/g') >> ${filename}
+    (`dirname $0`/replacer ${Pslp} -M i o C ${m} ${n} ${r} 0| sed 's/z/n/g;s/r/h/g;s/x/j/g;s/v/k/g;s/g/m/g;s/t/z/g;s/b/q/g;s/iC/p/g') >> ${filename}
 
     echo "# Check" >> ${filename}
     echo "Errors := LinearAlgebra:-Map(expand, C - ((Matrix(${m}, ${k}, symbol = 'A')) . (Matrix(${k}, ${n}, symbol = 'B')))); NumErrors:=LinearAlgebra:-Rank(Errors);" >> ${filename}

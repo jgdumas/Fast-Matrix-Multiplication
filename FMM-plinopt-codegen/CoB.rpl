@@ -14,6 +14,8 @@
 # ./CoB.rpl data/CLo.slp 2 2 data/DPS_CoBL
 # ==========================================================================
 
+
+set REPE = `dirname $0`/replacer
 set Cslp = $1		# linear map
 set m = $2		# row dimension
 set n = $3		# column dimension
@@ -46,7 +48,7 @@ while ( $j < $r )
 end
 
 # Assigning blocks
-echo $identity | sed 's/;/&\n/g' | ./replacer i t A $m $n $r 1 >> ${PathFname}.m
+echo $identity | sed 's/;/&\n/g' | ${REPE} i t A $m $n $r 1 >> ${PathFname}.m
 
 
 set endr = $r
@@ -61,8 +63,7 @@ end
 echo >> ${PathFname}.m
 
 # Assigning output
-./replacer $Cslp i o M $m $n $r 0 >> ${PathFname}.m
+${REPE} $Cslp i o M $m $n $r 0 >> ${PathFname}.m
 
 
 echo "end" >> ${PathFname}.m
-
