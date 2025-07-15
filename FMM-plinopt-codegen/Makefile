@@ -8,7 +8,7 @@ all: ${BIN}
 check: mtlcheck mplcheck
 
 mtlcheck: sms2matlab.sh ${SCR} ${BIN}
-	echo n | ./sms2matlab.sh data/2x2x2_7_DPS-accurate_{L,R,P}.sms data/DPS -p 3 1013
+	echo n | ./sms2matlab.sh data/2x2x2_7_DPS-accurate_{L,R,P}.sms data/DPS -r 1013 2 3
 
 mplcheck: sms2maple.sh ${SCR} ${BIN}
 	echo n | ./sms2maple.sh data/3x3x6_40_DPS-accurate_{L,R,P}.sms check

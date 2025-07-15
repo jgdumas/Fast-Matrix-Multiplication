@@ -123,7 +123,7 @@ fi
 # ==========================================================================
 # Check MM & Check/Generate associated SLPs
 #
-sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} 0 0 "${OPTFLAGS}"
+sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} 0 0 0 "${OPTFLAGS}"
 
 # ==========================================================================
 # Bilinear algorithm for matrix multiplication only

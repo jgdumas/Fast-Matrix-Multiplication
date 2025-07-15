@@ -54,12 +54,13 @@ function MMcheck {
     local Lsms=$1
     local Rsms=$2
     local Psms=$3
-    local SQRT=$4
-    local PLACE=$5
+    local REPL=$4
+    local EXPO=$5
+    local SQRT=$6
 
     local MMFLAGS=""
     if [[ "$SQRT" -ne 0 ]]; then
-	local MMFLAGS="128 ${SQRT} ${PLACE}"
+	local MMFLAGS="-b 128 -r ${REPL} ${EXPO} ${SQRT}"
     fi
     echo "# MMchecker ${Lsms} ${Rsms} ${Psms} ${MMFLAGS}"
     local mkn=`MMchecker ${Lsms} ${Rsms} ${Psms} ${MMFLAGS} |& grep '#'`
@@ -79,9 +80,10 @@ function sms2slp {
     local Rmat=$2
     local Pmat=$3
     local MMCHECK=$4
-    local SQRT=$5
-    local PLACE=$6
-    local OPTFLAGS=$7
+    local REPL=$5
+    local EXPO=$6
+    local SQRT=$7
+    local OPTFLAGS=$8
 
     local Lsms=${Lmat}.sms
     local Rsms=${Rmat}.sms
@@ -95,7 +97,7 @@ function sms2slp {
     # Do represent a matrix multiplication algorithm
     #
     if [[ "$MMCHECK" -eq 1 ]]; then
-	MMcheck ${Lsms} ${Rsms} ${Psms} ${SQRT} ${PLACE}
+	MMcheck ${Lsms} ${Rsms} ${Psms} ${REPL} ${EXPO} ${SQRT}
     else
 	echo "# <$m;$k;$n> algorithm of rank $r."
     fi
@@ -150,11 +152,11 @@ function sms2slp {
 #
 function PlaceHolder {
     local SQRT=$1
-    local PLACE=$2
+    local REPL=$2
     shift 2
     if [[ "$SQRT" -ne 0 ]]; then
-	DBLP=$(( ${PLACE} * 2 ))
-	sed -i "s/${DBLP}/2\*${PLACE}/g;s/${PLACE}/sqrt(${SQRT})/g;s/sqrt(${SQRT})\*2\/3/SQRT${SQRT}f2o3/g;s/2\*sqrt(${SQRT})\/3/SQRT${SQRT}f2o3/g;s/sqrt(${SQRT})\/2/SQRT${SQRT}o2/g;s/sqrt(${SQRT})\/3/SQRT${SQRT}o3/g;s/function .*/&\nSQRT${SQRT}o2=sqrt(${SQRT})\/2;\nSQRT${SQRT}o3=sqrt(${SQRT})\/3;\nSQRT${SQRT}f2o3=sqrt(${SQRT})\*2\/3;\n/" $*
+	DBLP=$(( ${REPL} * 2 ))
+	sed -i "s/${DBLP}/2\*${REPL}/g;s/${REPL}/sqrt(${SQRT})/g;s/sqrt(${SQRT})\*2\/3/SQRT${SQRT}f2o3/g;s/2\*sqrt(${SQRT})\/3/SQRT${SQRT}f2o3/g;s/sqrt(${SQRT})\/2/SQRT${SQRT}o2/g;s/sqrt(${SQRT})\/3/SQRT${SQRT}o3/g;s/function .*/&\nSQRT${SQRT}o2=sqrt(${SQRT})\/2;\nSQRT${SQRT}o3=sqrt(${SQRT})\/3;\nSQRT${SQRT}f2o3=sqrt(${SQRT})\*2\/3;\n/" $*
     fi
 }
 # ==========================================================================
@@ -177,7 +179,7 @@ function slp2CBm {
     `dirname $0`/CoB.rpl ${Rslp} ${k} ${n} ${File}_CoBR
     `dirname $0`/CoB.rpl ${Pslp} ${m} ${n} ${File}_ICoB
 
-    PlaceHolder ${SQRT} ${PLACE} ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m
+    PlaceHolder ${SQRT} ${REPL} ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m
 }
 # ==========================================================================
 
@@ -197,7 +199,7 @@ function slp2MMm {
     local File=$8
     echo "# Generating ${File}.m with ${m}x${k}x${n} of rank ${r}:"
     `dirname $0`/MM.rpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File} 1
-    PlaceHolder ${SQRT} ${PLACE} ${File}_${m}_${k}_${n}.m
+    PlaceHolder ${SQRT} ${REPL} ${File}_${m}_${k}_${n}.m
 }
 # ==========================================================================
 

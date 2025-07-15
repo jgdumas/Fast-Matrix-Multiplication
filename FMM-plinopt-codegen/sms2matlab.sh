@@ -25,7 +25,8 @@ OPTFLAGS="-E -N"
 MMCHECK=1
 CoBTYPE=0
 SQRT=0
-PLACE=0
+REPL=0
+EXPO=0
 while [[ $# -gt 0 ]]; do
   case $1 in
     -O|--Optflags)
@@ -50,22 +51,24 @@ while [[ $# -gt 0 ]]; do
       ALTBASIS=1
       shift # past argument
       ;;
-    -p|--placeholder)
-      SQRT="$2"
-      PLACE="$3"
+    -r|--modular)
+      REPL="$2"
+      EXPO="$3"
+      SQRT="$4"
       shift # past argument
+      shift # past value
       shift # past value
       shift # past value
       ;;
     -h|--h|-help|--help|-*|--*)
-      echo "Usage: $0 [-O #|-p # #|-m|-n|-c|-a] L.sms R.sms P.sms name"
+      echo "Usage: $0 [-O #|-r # # #|-m|-n|-c|-a] L.sms R.sms P.sms name"
       echo "  generates matlab program name.m from L,R,P matrices."
       echo "  -m: L,R,P are a matrix multiplication algorithm (default)."
       echo "  -c: L,R,P are change of bases matrices (default MM)."
       echo "  -a: L,R,P are first factorized with alternative bases."
       echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
       echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
-      echo "  -p S P: P replaces sqrt(S) in sms files (default none)."
+      echo "  -r r e s: compute modulo (r^e-s) in sms files (default none)."
       exit 1
       ;;
     *)
@@ -112,7 +115,7 @@ r=`grep -v '#' ${Lsms} | head -1 | cut -d' ' -f 1`
 if [[ "$ALTBASIS" -eq 1 ]]; then
     # Compute with alternative bases
 
-    MMcheck ${Lsms} ${Rsms} ${Psms} ${SQRT} ${PLACE}
+    MMcheck ${Lsms} ${Rsms} ${Psms} ${REPL} ${EXPO} ${SQRT}
 
 	# Factor into: sparse x CoB
     echo "# Sparsifying into ${Lmat}_A.sms ${Rmat}_A.sms ${Pmat}_A.sms;"
@@ -124,8 +127,8 @@ if [[ "$ALTBASIS" -eq 1 ]]; then
     matrix-transpose ${Pmat}_tA.sms > ${Pmat}_A.sms
 
 	# Do generate the SLPs:
-    sms2slp ${Lmat}_C ${Rmat}_C ${Pmat}_C 0 ${SQRT} ${PLACE} "${OPTFLAGS}"
-    sms2slp ${Lmat}_A ${Rmat}_A ${Pmat}_A 0 ${SQRT} ${PLACE} "${OPTFLAGS}"
+    sms2slp ${Lmat}_C ${Rmat}_C ${Pmat}_C 0 ${REPL} ${EXPO} ${SQRT} "${OPTFLAGS}"
+    sms2slp ${Lmat}_A ${Rmat}_A ${Pmat}_A 0 ${REPL} ${EXPO} ${SQRT} "${OPTFLAGS}"
 
 	# Verifications
     combPMcheck ${Lsms} ${Lmat}_C.slp ${Lmat}_A.slp
@@ -158,7 +161,7 @@ else
     # Generic bilinear algorithm
 
 	# Do generate the SLPs:
-    sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} ${SQRT} ${PLACE} "${OPTFLAGS}"
+    sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} ${REPL} ${EXPO} ${SQRT} "${OPTFLAGS}"
 
     Lslp=${Lmat}.slp
     Rslp=${Rmat}.slp
