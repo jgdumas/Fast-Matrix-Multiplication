@@ -272,11 +272,13 @@ function slp2MMmpl {
 	cat ${filename} | ${MAPLEPROG} | tee ${tmpfile} | tail
 	success=`grep "NumErrors := 0" ${tmpfile} | wc -l`
 	if [[ "${success}" -ne 1 ]]; then
+	    cat ${tmpfile}
 	    echo -e "\033[1;31m**** ERRORS in: cat ${filename} | ${MAPLEPROG} ***\033[0m"
 	    exit 1;
 	else
 	    echo -en "\033[1;32mSUCCESS:\033[0m "
 	fi
+	\rm ${tmpfile}
     fi
 
     echo "${filename} is a MM algorithm."
