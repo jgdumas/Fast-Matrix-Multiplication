@@ -37,8 +37,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     -h|--h|-help|--help|-*|--*)
       echo "Usage: $0 [-O #|-m|-n] L.sms R.sms P.sms [name]"
-      echo "  generates matlab program name.m from L,R,P matrices."
-      echo "  -m: L,R,P are a matrix multiplication algorithm (default)."
+      echo "  generates a Maple program from L,R,P matrices."
       echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
       echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
       exit 1
