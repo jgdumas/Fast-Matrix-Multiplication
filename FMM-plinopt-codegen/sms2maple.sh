@@ -20,6 +20,9 @@
 MATS=()
 MMCHECK=1
 OPTFLAGS=""
+SQRT=0
+REPL=0
+EXPO=0
 while [[ $# -gt 0 ]]; do
   case $1 in
     -O|--Optflags)
@@ -35,11 +38,21 @@ while [[ $# -gt 0 ]]; do
       MMCHECK=0
       shift # past argument
       ;;
+    -r|--modular)
+      REPL="$2"
+      EXPO="$3"
+      SQRT="$4"
+      shift # past argument
+      shift # past value
+      shift # past value
+      shift # past value
+      ;;
     -h|--h|-help|--help|-*|--*)
-      echo "Usage: $0 [-O #|-m|-n] L.sms R.sms P.sms [name]"
+      echo "Usage: $0 [-O #|-r # # #|-m|-n] L.sms R.sms P.sms [name]"
       echo "  generates a Maple program from L,R,P matrices."
       echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
       echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
+      echo "  -r r e s: compute modulo (r^e-s) in sms files (default none)."
       exit 1
       ;;
     *)
@@ -122,7 +135,7 @@ fi
 # ==========================================================================
 # Check MM & Check/Generate associated SLPs
 #
-sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} 0 0 0 "${OPTFLAGS}"
+sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} ${REPL} ${EXPO} ${SQRT} "${OPTFLAGS}"
 
 # ==========================================================================
 # Bilinear algorithm for matrix multiplication only
@@ -131,7 +144,7 @@ Lslp=${Lmat}.slp
 Rslp=${Rmat}.slp
 Pslp=${Pmat}.slp
 
-slp2MMmpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${Suff}
+slp2MMmpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${Suff} ${REPL} ${EXPO} ${SQRT}
 
 
 # ==========================================================================

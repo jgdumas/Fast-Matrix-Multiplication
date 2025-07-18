@@ -243,6 +243,10 @@ function slp2MMmpl {
     local n=$6
     local r=$7
     local suffix=$8
+    local REPL=$9
+    local EXPO=${10}
+    local SQRT=${11}
+    MODULO=$(( ${REPL} ** ${EXPO} - ${SQRT} ))
 
     filename="${m}x${k}x${n}_${r}_${suffix}.mpl"
 
@@ -265,7 +269,12 @@ function slp2MMmpl {
     (`dirname $0`/replacer ${Pslp} -M i o C ${m} ${n} ${r} 0| sed 's/z/n/g;s/r/h/g;s/x/j/g;s/v/k/g;s/g/m/g;s/t/z/g;s/b/q/g;s/iC/p/g') >> ${filename}
 
     echo "# Check" >> ${filename}
-    echo "Errors := LinearAlgebra:-Map(expand, C - ((Matrix(${m}, ${k}, symbol = 'A')) . (Matrix(${k}, ${n}, symbol = 'B')))); NumErrors:=LinearAlgebra:-Rank(Errors);" >> ${filename}
+    modcomp="";
+    if [[ "$SQRT" -ne 0 ]]; then
+	modcomp=" mod ${MODULO}";
+    fi
+
+    echo "Errors := LinearAlgebra:-Map(expand, C - ((Matrix(${m}, ${k}, symbol = 'A')) . (Matrix(${k}, ${n}, symbol = 'B'))))"${modcomp}"; NumErrors:=LinearAlgebra:-Rank(Errors);" >> ${filename}
 
     if [ "${MAPLEHERE}" = true ] ; then
 	tmpfile=/tmp/fdt_s2m.$$
