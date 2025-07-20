@@ -9,8 +9,8 @@ rng(1);
 t = 30;   % Number of points
 num = 5;  % Number of runs for each point
 n_0 = 1;  % Basecase of the recursion
-n_b = 16; % Smallest matrix dimension
-inc = 4; % Matrix dimension increment
+n_b = 24; % Smallest matrix dimension
+inc = 8; % Matrix dimension increment
 
 E_W = zeros(t,1);E_S = zeros(t,1);E_4 = zeros(t,1);
 E_8 = zeros(t,1);E_3 = zeros(t,1);
