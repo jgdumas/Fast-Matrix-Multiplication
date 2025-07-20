@@ -1,7 +1,7 @@
 function [e_w,e_s,e_v4,e_a3,e_8,t_w,t_s,t_v4,t_a3,t_8] = error_4x4_real(A,B,n_0)
     scale = comNorm_real(A)*comNorm_real(B);
-    %E = ec(A,B);
-    E=A*B;
+    E = ec(A,B);
+    %E=A*B;
     tic
     C_w = strassenw(A,B,n_0);
     t_w = toc;

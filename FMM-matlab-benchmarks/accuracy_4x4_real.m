@@ -6,11 +6,11 @@
 %   https://hal.science/hal-04441653
 
 rng(1);
-t = 4;   % Number of points
-num = 3;  % Number of runs for each point
+t = 30;   % Number of points
+num = 5;  % Number of runs for each point
 n_0 = 1;  % Basecase of the recursion
-n_b = 20; % Smallest matrix dimension
-inc = 8; % Matrix dimension increment
+n_b = 16; % Smallest matrix dimension
+inc = 4; % Matrix dimension increment
 
 E_W = zeros(t,1);E_S = zeros(t,1);E_4 = zeros(t,1);
 E_8 = zeros(t,1);E_3 = zeros(t,1);
@@ -18,8 +18,7 @@ T_W = zeros(t,1);T_S = zeros(t,1);T_4 = zeros(t,1);
 T_8 = zeros(t,1);T_3 = zeros(t,1);
 N = zeros(t,1);m = zeros(t,1);
 
-%parfor l = 1:t
-for l = 1:t
+parfor l = 1:t
     n = n_b + inc*l;
     m(l) = n;    disp(l); disp(n);
     for k = 1:num
