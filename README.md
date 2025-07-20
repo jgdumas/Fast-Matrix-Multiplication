@@ -92,14 +92,14 @@ Command-line scripts generating optimized Matlab/Maple programs from L,R,P matri
 
 
 Examples:
-- `sms2matlab.sh data/{L,R,P}o.sms data/DPS -p 3 1013`
+- `sms2matlab.sh data/{L,R,P}o.sms data/DPS -r 1013 2 3`
 - `sms2matlab.sh data/{L,R,P}d.sms data/DPS_evenpow`
 - `sms2matlab.sh data/{L,R,P}r.sms data/DPS_smallrat`
 - `sms2matlab.sh data/{L,R,P}j.sms data/DPS_intermediate`
 - `sms2matlab.sh data/{L,R,P}i.sms data/DPS_integral`
-- `sms2matlab.sh -a -p 3 1013 data/{L,R,P}o.sms data/DPS`
+- `sms2matlab.sh -a -r 1013 2 3 data/{L,R,P}o.sms data/DPS`
 - `sms2matlab.sh -n data/{L,R,P}a.sms data/DPS_mul`
-- `sms2matlab.sh -p 3 1013 -c data/C{L,R,P}o.sms data/DPS`
+- `sms2matlab.sh -r 1013 2 3 -c data/C{L,R,P}o.sms data/DPS`
 - `336.plo`
 - `sms2maple.sh data/4x4x4_48_rational_{L,R,P}.sms check`
 

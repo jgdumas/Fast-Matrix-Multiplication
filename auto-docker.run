@@ -20,7 +20,7 @@ chmod +x auto-docker.run; ./auto-docker.run
 export PATH=${PATH}:${HOME}/plinopt/bin
 cd; git clone https://github.com/jgdumas/Fast-Matrix-Multiplication.git
 cd Fast-Matrix-Multiplication/FMM-plinopt-codegen/; make
-./sms2matlab.sh -p 3 1013 ${HOME}/plinopt/data/Lo.sms ${HOME}/plinopt/data/Ro.sms ${HOME}/plinopt/data/Po.sms ../FMM-matlab-benchmarks/DPS
-./sms2matlab.sh -a -p 3 1013 ${HOME}/plinopt/data/Lo.sms ${HOME}/plinopt/data/Ro.sms ${HOME}/plinopt/data/Po.sms ../FMM-matlab-benchmarks/DPS
+./sms2matlab.sh -r 1013 2 3 ${HOME}/plinopt/data/Lo.sms ${HOME}/plinopt/data/Ro.sms ${HOME}/plinopt/data/Po.sms ../FMM-matlab-benchmarks/DPS
+./sms2matlab.sh -a -r 1013 2 3 ${HOME}/plinopt/data/Lo.sms ${HOME}/plinopt/data/Ro.sms ${HOME}/plinopt/data/Po.sms ../FMM-matlab-benchmarks/DPS
 cd ../FMM-matlab-benchmarks/
 matlab -batch "accuracy_alternative_real; exit"

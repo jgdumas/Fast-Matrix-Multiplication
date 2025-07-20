@@ -24,9 +24,10 @@ MATS=()
 OPTFLAGS="-E -N"
 MMCHECK=1
 CoBTYPE=0
-SQRT=0
 REPL=0
 EXPO=0
+SQRT=0
+
 while [[ $# -gt 0 ]]; do
   case $1 in
     -O|--Optflags)
@@ -138,8 +139,8 @@ if [[ "$ALTBASIS" -eq 1 ]]; then
 	# Produce the matlab programs from the SLPs, bith CoB and bilinear algorithm
 
 ec
-    slp2CBm ${Lmat}_C.slp ${Rmat}_C.slp ${Pmat}_C.slp ${m} ${k} ${n} ${r} ${File}
-    slp2MMm ${Lmat}_A.slp ${Rmat}_A.slp ${Pmat}_A.slp ${m} ${k} ${n} ${r} ${File}_mul
+    slp2CBm ${Lmat}_C.slp ${Rmat}_C.slp ${Pmat}_C.slp ${m} ${k} ${n} ${r} ${REPL} ${EXPO} ${SQRT} ${File}
+    slp2MMm ${Lmat}_A.slp ${Rmat}_A.slp ${Pmat}_A.slp ${m} ${k} ${n} ${r} ${REPL} ${EXPO} ${SQRT} ${File}_mul
 
     Mfile=`basename ${File}`
     echo "# Generating alternative basis matlab program ${File}_alternative.m."
@@ -170,10 +171,10 @@ else
 	# Produce the matlab program from the SLPs
     if [[ "$CoBTYPE" -eq 1 ]]; then
 	# Change of bases only
-	slp2CBm ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File}
+	slp2CBm ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${REPL} ${EXPO} ${SQRT} ${File}
     else
 	# Bilinear algorithm for matrix multiplication only
-	slp2MMm ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File}
+	slp2MMm ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${REPL} ${EXPO} ${SQRT} ${File}
     fi
 fi
 

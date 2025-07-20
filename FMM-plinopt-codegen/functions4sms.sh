@@ -59,7 +59,7 @@ function MMcheck {
     local SQRT=$6
 
     local MMFLAGS=""
-    if [[ "$SQRT" -ne 0 ]]; then
+    if [[ "${SQRT}" -ne 0 ]]; then
 	local MMFLAGS="-b 128 -r ${REPL} ${EXPO} ${SQRT}"
     fi
     echo "# MMchecker ${Lsms} ${Rsms} ${Psms} ${MMFLAGS}"
@@ -151,12 +151,13 @@ function sms2slp {
 # Function: replacing the placeholder by sqrt, with precomputed constants
 #
 function PlaceHolder {
-    local SQRT=$1
-    local REPL=$2
-    shift 2
-    if [[ "$SQRT" -ne 0 ]]; then
+    local REPL=$1
+    local EXPO=$2
+    local SQRT=$3
+    shift 3
+    if [[ "${SQRT}" -ne 0 ]]; then
 	DBLP=$(( ${REPL} * 2 ))
-	sed -i "s/${DBLP}/2\*${REPL}/g;s/${REPL}/sqrt(${SQRT})/g;s/sqrt(${SQRT})\*2\/3/SQRT${SQRT}f2o3/g;s/2\*sqrt(${SQRT})\/3/SQRT${SQRT}f2o3/g;s/sqrt(${SQRT})\/2/SQRT${SQRT}o2/g;s/sqrt(${SQRT})\/3/SQRT${SQRT}o3/g;s/function .*/&\nSQRT${SQRT}o2=sqrt(${SQRT})\/2;\nSQRT${SQRT}o3=sqrt(${SQRT})\/3;\nSQRT${SQRT}f2o3=sqrt(${SQRT})\*2\/3;\n/" $*
+	sed -i "s/${DBLP}/2\*${REPL}/g;s/${REPL}/nthroot(${SQRT},${EXPO})/g;s/nthroot(${SQRT},${EXPO})\*2\/3/NTH${EXPO}ROOT${SQRT}f2o3/g;s/2\*nthroot(${SQRT},${EXPO})\/3/NTH${EXPO}ROOT${SQRT}f2o3/g;s/1\/nthroot(${SQRT},${EXPO})/NTH${EXPO}ROOT${SQRT}t1o/g;s/2\/nthroot(${SQRT},${EXPO})/NTH${EXPO}ROOT${SQRT}t2o/g;s/nthroot(${SQRT},${EXPO})\/2/NTH${EXPO}ROOT${SQRT}o2/g;s/nthroot(${SQRT},${EXPO})\/4/NTH${EXPO}ROOT${SQRT}o4/g;s/nthroot(${SQRT},${EXPO})\/8/NTH${EXPO}ROOT${SQRT}o8/g;s/nthroot(${SQRT},${EXPO})\/16/NTH${EXPO}ROOT${SQRT}o16/g;s/nthroot(${SQRT},${EXPO})\/3/NTH${EXPO}ROOT${SQRT}o3/g;s/nthroot(${SQRT},${EXPO})/NTH${EXPO}ROOT${SQRT}once/g;s/function .*/&\nNTH${EXPO}ROOT${SQRT}once=nthroot(${SQRT},${EXPO});\nNTH${EXPO}ROOT${SQRT}o2=nthroot(${SQRT},${EXPO})\/2;\nNTH${EXPO}ROOT${SQRT}t2o=2\/nthroot(${SQRT},${EXPO});\nNTH${EXPO}ROOT${SQRT}t1o=1\/nthroot(${SQRT},${EXPO});\nNTH${EXPO}ROOT${SQRT}o4=nthroot(${SQRT},${EXPO})\/4;\nNTH${EXPO}ROOT${SQRT}o8=nthroot(${SQRT},${EXPO})\/8;\nNTH${EXPO}ROOT${SQRT}o16=nthroot(${SQRT},${EXPO})\/16;\nNTH${EXPO}ROOT${SQRT}o3=nthroot(${SQRT},${EXPO})\/3;\nNTH${EXPO}ROOT${SQRT}f2o3=nthroot(${SQRT},${EXPO})\*2\/3;\n/" $*
     fi
 }
 # ==========================================================================
@@ -173,13 +174,16 @@ function slp2CBm {
     local k=$5
     local n=$6
     local r=$7
-    local File=$8
+    local REPL=$8
+    local EXPO=$9
+    local SQRT=${10}
+    local File=${11}
     echo "# Generating ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m change of bases:"
     `dirname $0`/CoB.rpl ${Lslp} ${m} ${k} ${File}_CoBL
     `dirname $0`/CoB.rpl ${Rslp} ${k} ${n} ${File}_CoBR
     `dirname $0`/CoB.rpl ${Pslp} ${m} ${n} ${File}_ICoB
 
-    PlaceHolder ${SQRT} ${REPL} ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m
+    PlaceHolder ${REPL} ${EXPO} ${SQRT} ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m
 }
 # ==========================================================================
 
@@ -196,10 +200,15 @@ function slp2MMm {
     local k=$5
     local n=$6
     local r=$7
-    local File=$8
+    local REPL=$8
+    local EXPO=$9
+    local SQRT=${10}
+    local File=${11}
     echo "# Generating ${File}.m with ${m}x${k}x${n} of rank ${r}:"
     `dirname $0`/MM.rpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File} 1
-    PlaceHolder ${SQRT} ${REPL} ${File}_${m}_${k}_${n}.m
+
+echo "#### PlaceHolder ${REPL} ${EXPO} ${SQRT} ${File}_${m}_${k}_${n}.m ####"
+    PlaceHolder ${REPL} ${EXPO} ${SQRT} ${File}_${m}_${k}_${n}.m
 }
 # ==========================================================================
 
@@ -270,7 +279,7 @@ function slp2MMmpl {
 
     echo "# Check" >> ${filename}
     modcomp="";
-    if [[ "$SQRT" -ne 0 ]]; then
+    if [[ "${SQRT}" -ne 0 ]]; then
 	modcomp=" mod ${MODULO}";
     fi
 
