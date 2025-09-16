@@ -22,11 +22,15 @@ source `dirname $0`/functions4sms.sh
 #
 MATS=()
 OPTFLAGS="-E -N"
+FCTFLAGS=""
 MMCHECK=1
 CoBTYPE=0
 REPL=0
 EXPO=0
 SQRT=0
+fl=0
+fr=0
+fp=0
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -52,6 +56,14 @@ while [[ $# -gt 0 ]]; do
       ALTBASIS=1
       shift # past argument
       ;;
+    -f|-k|-fact|--FactorizerFlags)
+      fl=$2
+      fr=$2
+      fp=$2
+      FCTFLAGS="-k $2"
+      shift # past argument
+      shift # past value
+      ;;
     -r|--modular)
       REPL="$2"
       EXPO="$3"
@@ -62,11 +74,12 @@ while [[ $# -gt 0 ]]; do
       shift # past value
       ;;
     -h|--h|-help|--help|-*|--*)
-      echo "Usage: $0 [-O #|-r # # #|-m|-n|-c|-a] L.sms R.sms P.sms name"
+      echo "Usage: $0 [-O #|-r # # #|-m|-n|-c|-a|-f #] L.sms R.sms P.sms name"
       echo "  generates matlab program name.m from L,R,P matrices."
       echo "  -m: L,R,P are a matrix multiplication algorithm (default)."
       echo "  -c: L,R,P are change of bases matrices (default MM)."
       echo "  -a: L,R,P are first factorized with alternative bases."
+      echo "  -f k: column dimension of factorized bases (default is column dim.)."
       echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
       echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
       echo "  -r r e s: compute modulo (r^e-s) in sms files (default none)."
@@ -103,7 +116,6 @@ Pd=(`grep -v '#' ${Psms} | head -1 | cut -d' ' -f 1,2`)
 n=`echo "sqrt(${Rd[1]}*${Pd[0]}/${Ld[1]})"|bc`
 m=$(( ${Pd[0]} / ${n} ))
 k=$(( ${Rd[1]} / ${n} ))
-
 r=`grep -v '#' ${Lsms} | head -1 | cut -d' ' -f 1`
 # ==========================================================================
 
@@ -118,14 +130,27 @@ if [[ "$ALTBASIS" -eq 1 ]]; then
 
     MMcheck ${Lsms} ${Rsms} ${Psms} ${REPL} ${EXPO} ${SQRT}
 
+    OvwrCoB=0
+    if [ -f ${Lmat}_A.sms ] || [ -f ${Rmat}_A.sms ] || [ -f ${Pmat}_A.sms ] || [ -f ${Lmat}_C.sms ] || [ -f ${Rmat}_C.sms ] || [ -f ${Pmat}_C.sms ]; then
+	read -p "# Overwrite ${Lmat}_A.sms, ${Rmat}_A.sms, ${Pmat}_A.sms, ${Lmat}_C.sms, ${Rmat}_C.sms, ${Pmat}_C.sms? [y/N] " RESP
+	if [[ "${RESP}" == "y" ]]; then
+	    OvwrCoB=1
+	fi
+    else
+	OvwrCoB=1
+    fi
+
+    if [[ "$OvwrCoB" -eq 1 ]]; then
 	# Factor into: sparse x CoB
-    echo "# Sparsifying into ${Lmat}_A.sms ${Rmat}_A.sms ${Pmat}_A.sms;"
-    echo "#       with bases ${Lmat}_C.sms ${Rmat}_C.sms ${Pmat}_C.sms."
-    (factorizer -S ${Lsms} > ${Lmat}_C.sms) |& grep -v '#' > ${Lmat}_A.sms
-    (factorizer -S ${Rsms} > ${Rmat}_C.sms) |& grep -v '#' > ${Rmat}_A.sms
-    (matrix-transpose ${Psms} | factorizer -S > ${Pmat}_tC.sms) |& grep -v '#' > ${Pmat}_tA.sms
-    matrix-transpose ${Pmat}_tC.sms > ${Pmat}_C.sms
-    matrix-transpose ${Pmat}_tA.sms > ${Pmat}_A.sms
+	echo "# Sparsifying into ${Lmat}_A.sms ${Rmat}_A.sms ${Pmat}_A.sms; ${FCTFLAGS}"
+	echo "#       with bases ${Lmat}_C.sms ${Rmat}_C.sms ${Pmat}_C.sms."
+	(factorizer -S ${FCTFLAGS} ${Lsms} > ${Lmat}_C.sms) |& grep -v '#' > ${Lmat}_A.sms
+	(factorizer -S ${FCTFLAGS} ${Rsms} > ${Rmat}_C.sms) |& grep -v '#' > ${Rmat}_A.sms
+
+	(matrix-transpose ${Psms} | factorizer -S ${FCTFLAGS} > ${Pmat}_tC.sms) |& grep -v '#' > ${Pmat}_tA.sms
+	matrix-transpose ${Pmat}_tC.sms > ${Pmat}_C.sms
+	matrix-transpose ${Pmat}_tA.sms > ${Pmat}_A.sms
+    fi
 
 	# Do generate the SLPs:
     sms2slp ${Lmat}_C ${Rmat}_C ${Pmat}_C 0 ${REPL} ${EXPO} ${SQRT} "${OPTFLAGS}"
@@ -136,14 +161,24 @@ if [[ "$ALTBASIS" -eq 1 ]]; then
     combPMcheck ${Rsms} ${Rmat}_C.slp ${Rmat}_A.slp
     combPMcheck ${Psms} ${Pmat}_A.slp ${Pmat}_C.slp
 
-	# Produce the matlab programs from the SLPs, bith CoB and bilinear algorithm
+	# Produce the matlab programs from the SLPs, with CoB and bilinear algorithm
 
-ec
-    slp2CBm ${Lmat}_C.slp ${Rmat}_C.slp ${Pmat}_C.slp ${m} ${k} ${n} ${r} ${REPL} ${EXPO} ${SQRT} ${File}
-    slp2MMm ${Lmat}_A.slp ${Rmat}_A.slp ${Pmat}_A.slp ${m} ${k} ${n} ${r} ${REPL} ${EXPO} ${SQRT} ${File}_mul
+    slp2CBm ${Lmat}_C.slp ${Rmat}_C.slp ${Pmat}_C.slp ${m} ${k} ${n} ${fl} ${fr} ${fp} ${REPL} ${EXPO} ${SQRT} ${File}
+    if [[ "${fl}" -eq 0 ]]; then
+	fl=$((m*k))
+    fi
+    if [[ "${fr}" -eq 0 ]]; then
+	fr=$((k*n))
+    fi
+    if [[ "${fp}" -eq 0 ]]; then
+	fp=$((m*n))
+    fi
+    slp2MMm ${Lmat}_A.slp ${Rmat}_A.slp ${Pmat}_A.slp ${m} ${k} ${n} ${r} ${fl} ${fr} ${fp} ${REPL} ${EXPO} ${SQRT} ${File}_mul
 
     Mfile=`basename ${File}`
     echo "# Generating alternative basis matlab program ${File}_alternative.m."
+
+## CAT .......................
 cat > ${File}_alternative.m<< EOF
 function C = ${Mfile}_alternative(A, B, nmin, peeling, level)
 %          Computes the product C = A*B, sparsified via alternative basis.
@@ -157,6 +192,10 @@ function C = ${Mfile}_alternative(A, B, nmin, peeling, level)
   C = ${Mfile}_ICoB(W, nmin, peeling, level);   % Inverse change of basis
 end
 EOF
+## ....................... EOF
+
+echo -e "\033[1;32mSUCCESS: ${File}_alternative.m generated.\033[0m "
+
 
 else
     # Generic bilinear algorithm
@@ -171,10 +210,10 @@ else
 	# Produce the matlab program from the SLPs
     if [[ "$CoBTYPE" -eq 1 ]]; then
 	# Change of bases only
-	slp2CBm ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${REPL} ${EXPO} ${SQRT} ${File}
+	slp2CBm ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${fl} ${fr} ${fp} ${REPL} ${EXPO} ${SQRT} ${File}
     else
 	# Bilinear algorithm for matrix multiplication only
-	slp2MMm ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${REPL} ${EXPO} ${SQRT} ${File}
+	slp2MMm ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${fl} ${fr} ${fp} ${REPL} ${EXPO} ${SQRT} ${File}
     fi
 fi
 

@@ -62,7 +62,6 @@ function MMcheck {
     if [[ "${SQRT}" -ne 0 ]]; then
 	local MMFLAGS="-b 128 -r ${REPL} ${EXPO} ${SQRT}"
     fi
-    echo "# MMchecker ${Lsms} ${Rsms} ${Psms} ${MMFLAGS}"
     local mkn=`MMchecker ${Lsms} ${Rsms} ${Psms} ${MMFLAGS} |& grep '#'`
     echo $mkn
     if [[ "$mkn" == *"ERROR"* ]]; then
@@ -157,6 +156,7 @@ function PlaceHolder {
     shift 3
     if [[ "${SQRT}" -ne 0 ]]; then
 	DBLP=$(( ${REPL} * 2 ))
+	echo "#### PlaceHolder ${REPL} ${EXPO} ${SQRT} ${DBLP} ####"
 	sed -i "s/${DBLP}/2\*${REPL}/g;s/${REPL}/nthroot(${SQRT},${EXPO})/g;s/nthroot(${SQRT},${EXPO})\*2\/3/NTH${EXPO}ROOT${SQRT}f2o3/g;s/2\*nthroot(${SQRT},${EXPO})\/3/NTH${EXPO}ROOT${SQRT}f2o3/g;s/1\/nthroot(${SQRT},${EXPO})/NTH${EXPO}ROOT${SQRT}t1o/g;s/2\/nthroot(${SQRT},${EXPO})/NTH${EXPO}ROOT${SQRT}t2o/g;s/nthroot(${SQRT},${EXPO})\/2/NTH${EXPO}ROOT${SQRT}o2/g;s/nthroot(${SQRT},${EXPO})\/4/NTH${EXPO}ROOT${SQRT}o4/g;s/nthroot(${SQRT},${EXPO})\/8/NTH${EXPO}ROOT${SQRT}o8/g;s/nthroot(${SQRT},${EXPO})\/16/NTH${EXPO}ROOT${SQRT}o16/g;s/nthroot(${SQRT},${EXPO})\/3/NTH${EXPO}ROOT${SQRT}o3/g;s/nthroot(${SQRT},${EXPO})/NTH${EXPO}ROOT${SQRT}once/g;s/function .*/&\nNTH${EXPO}ROOT${SQRT}once=nthroot(${SQRT},${EXPO});\nNTH${EXPO}ROOT${SQRT}o2=nthroot(${SQRT},${EXPO})\/2;\nNTH${EXPO}ROOT${SQRT}t2o=2\/nthroot(${SQRT},${EXPO});\nNTH${EXPO}ROOT${SQRT}t1o=1\/nthroot(${SQRT},${EXPO});\nNTH${EXPO}ROOT${SQRT}o4=nthroot(${SQRT},${EXPO})\/4;\nNTH${EXPO}ROOT${SQRT}o8=nthroot(${SQRT},${EXPO})\/8;\nNTH${EXPO}ROOT${SQRT}o16=nthroot(${SQRT},${EXPO})\/16;\nNTH${EXPO}ROOT${SQRT}o3=nthroot(${SQRT},${EXPO})\/3;\nNTH${EXPO}ROOT${SQRT}f2o3=nthroot(${SQRT},${EXPO})\*2\/3;\n/" $*
     fi
 }
@@ -173,17 +173,21 @@ function slp2CBm {
     local m=$4
     local k=$5
     local n=$6
-    local r=$7
-    local REPL=$8
-    local EXPO=$9
-    local SQRT=${10}
-    local File=${11}
+    local fl=$7
+    local fr=$8
+    local fp=$9
+    local REPL=${10}
+    local EXPO=${11}
+    local SQRT=${12}
+    local File=${13}
     echo "# Generating ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m change of bases:"
-    `dirname $0`/CoB.rpl ${Lslp} ${m} ${k} ${File}_CoBL
-    `dirname $0`/CoB.rpl ${Rslp} ${k} ${n} ${File}_CoBR
-    `dirname $0`/CoB.rpl ${Pslp} ${m} ${n} ${File}_ICoB
+    `dirname $0`/CoB.rpl ${Lslp} ${m} ${k} ${fl} L ${File}_CoBL
+    `dirname $0`/CoB.rpl ${Rslp} ${k} ${n} ${fr} R ${File}_CoBR
+    `dirname $0`/CoB.rpl ${Pslp} ${m} ${n} ${fp} P ${File}_ICoB
 
     PlaceHolder ${REPL} ${EXPO} ${SQRT} ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m
+    echo -e "\033[1;32mSUCCESS: ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m generated.\033[0m"
+
 }
 # ==========================================================================
 
@@ -200,15 +204,20 @@ function slp2MMm {
     local k=$5
     local n=$6
     local r=$7
-    local REPL=$8
-    local EXPO=$9
-    local SQRT=${10}
-    local File=${11}
-    echo "# Generating ${File}.m with ${m}x${k}x${n} of rank ${r}:"
-    `dirname $0`/MM.rpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${File} 1
+    local fl=$8
+    local fr=$9
+    local fp=${10}
+    local REPL=${11}
+    local EXPO=${12}
+    local SQRT=${13}
+    local File=${14}
 
-echo "#### PlaceHolder ${REPL} ${EXPO} ${SQRT} ${File}_${m}_${k}_${n}.m ####"
+    echo "# Generating ${File}.m with ${m}x${k}x${n} of rank ${r}:"
+    `dirname $0`/MM.rpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${fl} ${fr} ${fp} ${File} 1
+
     PlaceHolder ${REPL} ${EXPO} ${SQRT} ${File}_${m}_${k}_${n}.m
+    echo -e "\033[1;32mSUCCESS: ${File}.m generated.\033[0m"
+
 }
 # ==========================================================================
 
