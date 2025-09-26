@@ -6,12 +6,13 @@
 # ==========================================================================
 # Matlab change of basis generator from Straight-Line Program
 # ==========================================================================
-# Usage: C.slp m n name
-#   C.slp linear operator with (m.n) inputs and (m.n) outputs
-#   produces a Matlab programs: 'name.m'
+# Usage: C.slp m n f i name
+#   C.slp linear operator with (m.n) inputs and f outputs
+#    (i is O/1 for normal/inverse), produces a Matlab programs: 'name.m'
 # ==========================================================================
 # Examples:
-# ./CoB.rpl data/CLo.slp 2 2 data/DPS_CoBL
+# ./CoB.rpl data/CLo.slp 2 2 4 0 data/DPS_CoBL
+# ./CoB.rpl data/CPo.slp 2 2 4 1 data/DPS_ICoB
 # ==========================================================================
 
 
@@ -20,50 +21,83 @@ set Cslp = $1		# linear map
 set m = $2		# row dimension
 set n = $3		# column dimension
 @ r = ( $m * $n )
-set PathFname = $4	# Function name
+set f = $4		# column dimension
+if ("${f}" == "0") then
+    set f = $r
+endif
+set LRPtype = $5	# L, R or P
+set PathFname = $6	# Function name
 set Fname = `basename ${PathFname}`	# Function name
 
-echo "# Writing core algorithm to ${PathFname}.m"
+echo "# Writing core algorithm <${m}x${n}|${r}:${f}> of ${Cslp} to ${PathFname}.m"
 
 
 # Function header
+
+## CAT .......................
 cat > ${PathFname}.m<< EOF
 function M = $Fname(A, nmin, peeling, level)
-  if nargin < 3, nmin = 4; end    % Threshold to conventional
-  if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
-  if nargin < 5, level = 8; end   % Verbose level
+  if nargin < 2, nmin = 4; end    % Threshold to conventional
+  if nargin < 3, peeling = 1; end % Static (1) or Dynamic (2) peeling
+  if nargin < 4, level = 8; end   % Verbose level
 [m,n] = size(A);
-if (m <= nmin)||(n <= nmin)
+EOF
+## ....................... EOF
+
+
+if ("${LRPtype}" == "P" && "${f}" != "${r}") then
+    echo "if (n<=nmin)||(n<$n)" >> ${PathFname}.m
+else
+    echo "if (m<=nmin)||(n<=nmin)||(m<$m)||(n<$n)" >> ${PathFname}.m
+endif
+
+## CAT .......................
+cat >> ${PathFname}.m<< EOF
    M=A;
 else
 EOF
+## ....................... EOF
 
 # Cutting in blocks
+set numrec=$r
+if ("${LRPtype}" == "P") then
+    set numrec=$f
+endif
+
 set identity = ""
 set j = 0
-while ( $j < $r )
+while ( $j < $numrec )
   set tmp = ''$identity't'$j':=i'$j
   set identity = ''$tmp';'
   @ j++
 end
 
 # Assigning blocks
-echo $identity | sed 's/;/&\n/g' | ${REPE} i t A $m $n $r 1 >> ${PathFname}.m
+if ("${LRPtype}" == "P" && "${f}" != "${r}") then
+    echo $identity | sed 's/;/&\n/g' | ${REPE} i t A 1 $f $r 1 >> ${PathFname}.m
+else
+    echo $identity | sed 's/;/&\n/g' | ${REPE} i t A $m $n $r 1 >> ${PathFname}.m
+endif
 
-
-set endr = $r
+set endr = $numrec
 @ endr--
-# Recursive calss
+# Recursive calls
 echo "% Recursive calls iM0..$endr = $Fname( tA0..$endr, nmin, peeling, level)"
 set j = 0
-while ( $j < $r )
+while ( $j < $numrec )
    echo "iM$j = $Fname( tA$j, nmin, peeling, level);" >> ${PathFname}.m
    @ j++
 end
 echo >> ${PathFname}.m
 
 # Assigning output
-${REPE} $Cslp i o M $m $n $r 0 >> ${PathFname}.m
+if ("${LRPtype}" == "P" || "${f}" == "${r}") then
+    ${REPE} $Cslp i o M $m $n $f 0 >> ${PathFname}.m
+else if ("${LRPtype}" == "L") then
+    ${REPE} $Cslp i o M 1 $f $r 0 >> ${PathFname}.m
+else
+    ${REPE} $Cslp i o M $f 1 $r 0 >> ${PathFname}.m
+endif
 
 
 echo "end" >> ${PathFname}.m

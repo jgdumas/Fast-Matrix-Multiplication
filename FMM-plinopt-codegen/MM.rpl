@@ -1,4 +1,4 @@
-#!/bin/csh
+#!/bin/csh -f
 # ==========================================================================
 # Fast-Matrix-Multiplication library
 # Authors: J-G. Dumas, C. Pernet, A. Sedoglavic
@@ -15,13 +15,13 @@
 #   produces 2 Matlab programs: 'name.m' and 'name_m_k_n.m'
 # ==========================================================================
 # Examples:
-# ./MM.rpl /tmp/Lw.slp /tmp/Rw.slp /tmp/Pw.slp 2 2 2 7 SW
-# ./MM.rpl L_3x3x6_52.slp R_3x3x6_106.slp P_3x3x6_107.slp 3 3 6 40 FMM
-# ./MM.rpl L_3x6x3.slp R_3x6x3.slp P_3x6x3.slp 3 6 3 40 FMM
-# ./MM.rpl L_6x3x3.slp R_6x3x3.slp P_6x3x3.slp 6 3 3 40 FMM
-# ./MM.rpl L_3x3x6_accurate.slp R_3x3x6_accurate.slp P_3x3x6_accurate.slp 3 3 6 40 FMMa
-# ./MM.rpl L_3x6x3_accurate.slp R_3x6x3_accurate.slp P_3x6x3_accurate.slp 3 6 3 40 FMMa
-# ./MM.rpl L_6x3x3_accurate.slp R_6x3x3_accurate.slp P_6x3x3_accurate.slp 6 3 3 40 FMMa
+# ./MM.rpl /tmp/Lw.slp /tmp/Rw.slp /tmp/Pw.slp 2 2 2 7 4 4 4 SW
+# ./MM.rpl L_3x3x6_52.slp R_3x3x6_106.slp P_3x3x6_107.slp 3 3 6 40 9 18 18 FMM
+# ./MM.rpl L_3x6x3.slp R_3x6x3.slp P_3x6x3.slp 3 6 3 40 18 18 9 FMM
+# ./MM.rpl L_6x3x3.slp R_6x3x3.slp P_6x3x3.slp 6 3 3 40 18 9 18 FMM
+# ./MM.rpl L_3x3x6_accurate.slp R_3x3x6_accurate.slp P_3x3x6_accurate.slp 3 3 6 40 9 18 18 FMMa
+# ./MM.rpl L_3x6x3_accurate.slp R_3x6x3_accurate.slp P_3x6x3_accurate.slp 3 6 3 40 18 18 9 FMMa
+# ./MM.rpl L_6x3x3_accurate.slp R_6x3x3_accurate.slp P_6x3x3_accurate.slp 6 3 3 40 18 9 18 FMMa
 # ==========================================================================
 
 set REPE = `dirname $0`/replacer
@@ -32,15 +32,23 @@ set m = $4		# LHS row dimension
 set k = $5		# LHS column dimension & RHS row dimension
 set n = $6		# RHS column dimension
 set r = $7		# Tensor rank
-set PathFname = $8	# Function name
-# Warning, a 9th argument forces overwrite of ${PathFname}.m
+set fl = $8
+set fr = $9
+set fp = ${10}
+set PathFname = ${11}	# Function name
+# Warning, a 12th argument forces overwrite of ${PathFname}.m
 
 set PathCname = "${PathFname}_${m}_${k}_${n}"
 set Fname = `basename ${PathFname}`	# Function name
 set Cname = "${Fname}_${m}_${k}_${n}"
 
-echo "# Writing core algorithm to ${PathCname}.m"
+@ mk = ( $m * $k )
+@ kn = ( $k * $n )
+@ mn = ( $m * $n )
 
+echo "# Writing core <${m}:${fl}x${k}:${fr}x${n}:${fp}|${r}> algorithm to ${PathCname}.m"
+
+## CAT .......................
 cat > ${PathCname}.m<< EOF
 function C = $Cname(A, B, nmin, peeling, level)
 if nargin < 3, nmin = 4; end    % Threshold to conventional
@@ -48,6 +56,12 @@ if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
 if nargin < 5, level = 8; end   % Verbose level
 [m,k] = size(A); [k2,n] = size(B);
 if (k2 ~= k), error('Incompatible matrix dimensions.'); end
+EOF
+## ....................... EOF
+
+
+## CAT .......................
+cat > ${PathCname}.h1.m<< EOF
 % Recursively cuts into nmin*${m}^l x nmin*${k}^l x nmin*${n}^l blocks, with decreasing maximal l
 if (m<=nmin)||(k<=nmin)||(n<=nmin)||(m<$m)||(k<$k)||(n<$n)
   % fprintf("# MM Direct: %d x %d x %d\n",m,k,n)
@@ -79,9 +93,38 @@ else
     if l>=level, fprintf("# Core<$m;$k;$n>[%d]: %d x %d x %d\n",l,m,k,n); end
 
 EOF
+## ....................... EOF
 
-${REPE} $Lslp i o A $m $k $r 1 >> ${PathCname}.m
-${REPE} $Rslp i o B $k $n $r 1 >> ${PathCname}.m
+
+## CAT .......................
+cat > ${PathCname}.h2.m<< EOF
+% Warning size should be multiple of $k
+if (k<=nmin)||(k<$k)
+% fprintf("# MM Direct: %d x %d x %d\n",m,k,n)
+  C = A*B;
+else
+EOF
+## ....................... EOF
+
+
+if ( "${fp}" == "0" || "${fp}" == "${mn}" ) then
+    cat ${PathCname}.h1.m >> ${PathCname}.m
+else
+    cat ${PathCname}.h2.m >> ${PathCname}.m
+endif
+
+\rm ${PathCname}.h1.m ${PathCname}.h2.m
+
+if ("${fl}" == "0" || "${fl}" == "${mk}") then
+    ${REPE} $Lslp i o A $m $k $r 1 >> ${PathCname}.m
+else
+    ${REPE} $Lslp i o A 1 ${fl} $r 1 >> ${PathCname}.m
+endif
+if ("${fr}" == "0" || "${fr}" == "${kn}") then
+    ${REPE} $Rslp i o B $k $n $r 1 >> ${PathCname}.m
+else
+    ${REPE} $Rslp i o B ${fr} 1 $r 1 >> ${PathCname}.m
+endif
 
 set j = 0
 while ( $j < $r )
@@ -90,14 +133,29 @@ while ( $j < $r )
 end
 echo >> ${PathCname}.m
 
-${REPE} $Pslp i o C $m $n $r 0 >> ${PathCname}.m
+if ( "${fp}" == "0" || "${fp}" == "${mn}" ) then
+    ${REPE} $Pslp i o C $m $n $r 0 >> ${PathCname}.m
+
+## CAT .......................
 cat >> ${PathCname}.m<< EOF
   end
 end
 end
 EOF
+## ....................... EOF
 
-if ( ($#argv <= 8) && ( -f ${PathFname}.m ) )then
+else
+    ${REPE} $Pslp i o C 1 ${fp} $r 0 >> ${PathCname}.m
+
+## CAT .......................
+cat >> ${PathCname}.m<< EOF
+end
+EOF
+## ....................... EOF
+
+endif
+
+if ( ($#argv <= 11) && ( -f ${PathFname}.m ) ) then
     echo -n "Overwrite ${PathFname}.m (y/n)? "
     set answer = $<
     if ("$answer" != "y") then
@@ -106,7 +164,7 @@ if ( ($#argv <= 8) && ( -f ${PathFname}.m ) )then
 endif
 
 echo "# Writing high-level MM routine to ${PathFname}.m"
-
+## CAT .......................
 cat > ${PathFname}.m<< EOF
 function C = $Fname(A, B, nmin, peeling, level)
 %          Computes the product C = A*B, with fast core: <$m;$k;$n>.
@@ -123,5 +181,6 @@ function C = $Fname(A, B, nmin, peeling, level)
   C=${Cname}(A,B,nmin,peeling,level);
 end
 EOF
+## ....................... EOF
 
 echo "# <${m}x${k}x${n}:${r}> MM algorithm: ${PathCname}.m & ${PathFname}.m generated."
