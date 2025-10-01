@@ -19,6 +19,7 @@
 #
 MATS=()
 MMCHECK=1
+Suff=check
 OPTFLAGS=""
 SQRT=0
 REPL=0
@@ -50,6 +51,7 @@ while [[ $# -gt 0 ]]; do
     -h|--h|-help|--help|-*|--*)
       echo "Usage: $0 [-O #|-r # # #|-m|-n] L.sms R.sms P.sms [name]"
       echo "  generates a Maple program from L,R,P matrices."
+      echo "  [name]: the program suffix (default '${Suff}')."
       echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
       echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
       echo "  -r r e s: compute modulo (r^e-s) in sms files (default none)."
@@ -71,7 +73,6 @@ set -- "${MATS[@]}" # restore positional parameters
 Lsms=$1
 Rsms=$2
 Psms=$3
-Suff=check
 if [[ $# -ge 4 ]]; then
    Suff=$4
 fi

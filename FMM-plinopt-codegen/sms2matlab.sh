@@ -21,7 +21,7 @@ source `dirname $0`/functions4sms.sh
 # Parsing args
 #
 MATS=()
-OPTFLAGS="-E -N"
+OPTFLAGS="-O 10"
 FCTFLAGS=""
 MMCHECK=1
 CoBTYPE=0
@@ -144,10 +144,10 @@ if [[ "$ALTBASIS" -eq 1 ]]; then
 	# Factor into: sparse x CoB
 	echo "# Sparsifying into ${Lmat}_A.sms ${Rmat}_A.sms ${Pmat}_A.sms; ${FCTFLAGS}"
 	echo "#       with bases ${Lmat}_C.sms ${Rmat}_C.sms ${Pmat}_C.sms."
-	(factorizer -S ${FCTFLAGS} ${Lsms} > ${Lmat}_C.sms) |& grep -v '#' > ${Lmat}_A.sms
-	(factorizer -S ${FCTFLAGS} ${Rsms} > ${Rmat}_C.sms) |& grep -v '#' > ${Rmat}_A.sms
+	(factorizer -S ${OPTFLAGS} ${FCTFLAGS} ${Lsms} > ${Lmat}_C.sms) |& grep -v '#' > ${Lmat}_A.sms
+	(factorizer -S ${OPTFLAGS} ${FCTFLAGS} ${Rsms} > ${Rmat}_C.sms) |& grep -v '#' > ${Rmat}_A.sms
 
-	(matrix-transpose ${Psms} | factorizer -S ${FCTFLAGS} > ${Pmat}_tC.sms) |& grep -v '#' > ${Pmat}_tA.sms
+	(matrix-transpose ${Psms} | factorizer -S ${OPTFLAGS} ${FCTFLAGS} > ${Pmat}_tC.sms) |& grep -v '#' > ${Pmat}_tA.sms
 	matrix-transpose ${Pmat}_tC.sms > ${Pmat}_C.sms
 	matrix-transpose ${Pmat}_tA.sms > ${Pmat}_A.sms
     fi

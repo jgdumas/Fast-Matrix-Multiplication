@@ -1,4 +1,4 @@
-%   Comparing accuracy of fast 2x2-recursive matrix multiplications
+%   Comparing accuracy of fast 4x4-recursive matrix multiplications
 %   Reference:
 %   J-G. Dumas, C. Pernet, A. Sedoglavic
 %   Strassen's algorithm is not optimally accurate, Feb. 2024
