@@ -17,7 +17,7 @@ mtlcheck: sms2matlab.sh ${SCR} ${BIN}
 mplcheck: sms2maple.sh ${SCR} ${BIN}
 	echo n | ./sms2maple.sh data/3x3x6_40_DPS-accurate_{L,R,P}.sms check
 	echo n | ./sms2maple.sh data/4x4x4_48_rational_{L,R,P}.sms check
-	echo n | ./sms2maple.sh data/4x4x4_48-accurate_{L,R,P}.sms
+	echo n | ./sms2maple.sh data/4x4x4_48-accurate_{L,R,P}.sms check
 	echo n | ./sms2maple.sh data/3x4x7_63_rational_{L,R,P}.sms check
 
 clean:

@@ -1,8 +1,4 @@
-# Initial profile: 16 4 4 8 16 16 4 16 8 4 16 8 4 4 8 16 8 16 8 16 4 8 4 16 8 16 4 8 16 4 4 8 16 8 8 16 4 8 4 8 16 4 4 8 16 16 4 8 =448
-# Found [7], R/CB profile: <49, 444>
-# Found [9], R/CB profile: <49, 440>
-# Alternate basis profile: [1;36m16 8 4 8 16 4 8 4 16 4 16 16 16 8 16 16 8 4 4 8 8 4 4 4 4 16 8 4 16 4 16 4 16 4 8 8 16 4 16 8 8 8 8 16 16 4 8 =440[0m
-# Sparse residuum profile: [1;36m1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 =49[0m
+# Left alt. basis of <4x4x4:48>, https://hal.science/hal-05112145
 48 47 R
 1 13 1
 2 19 1
@@ -54,6 +50,3 @@
 47 6 1
 48 43 1
 0 0 0
-
-##############################
-# [1;32mSUCCESS: consistent factorization![0m [1;36m48x47 by 47x16 with 49 non-zeroes (440 alt.) instead of 448[0m: 0.0308781s (0.60858 cpu) [1]
