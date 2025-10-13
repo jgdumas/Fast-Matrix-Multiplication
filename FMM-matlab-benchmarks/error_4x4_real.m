@@ -1,4 +1,4 @@
-function [e_w,e_s,e_v4,e_o,e_a,e_f,e_8,t_w,t_s,t_v4,t_o,t_a,t_f,t_8] = error_4x4_real(A,B,n_0)
+function [e_w,e_s,e_v4,e_b,e_o,e_a,e_f,e_8,t_w,t_s,t_v4,t_b,t_o,t_a,t_f,t_8] = error_4x4_real(A,B,n_0)
     scale = comNorm_real(A)*comNorm_real(B);
     E = ec(A,B);
     %E=A*B;
@@ -18,6 +18,10 @@ function [e_w,e_s,e_v4,e_o,e_a,e_f,e_8,t_w,t_s,t_v4,t_o,t_a,t_f,t_8] = error_4x4
     C_o = DPS48o(A,B,n_0);
     t_o = toc;
     e_o = diffe_real(C_o,E)/scale;
+    tic
+    C_b = DPS48(A,B,n_0);
+    t_b = toc;
+    e_b = diffe_real(C_b,E)/scale;
     tic
     C_a = DPS48a_alternative(A,B,n_0,0);
     t_a = toc;
