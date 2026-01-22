@@ -354,7 +354,7 @@ function slp2PMmpl {
 
     echo "C:=Vector(${n}):" >> ${filename}
     echo -e '\n# Post SLP' >> ${filename}
-    (`dirname $0`/replacer ${Pslp} -M i o C ${n} 1 ${r} 0| sed 's/z/n/g;s/r/h/g;s/x/j/g;s/v/k/g;s/g/m/g;s/t/z/g;s/b/q/g;s/iC/p/g') >> ${filename}
+    (`dirname $0`/replacer ${Pslp} -M i o C ${n} 1 ${r} 0| sed 's/z/n/g;s/r/h/g;s/x/j/g;s/v/k/g;s/g/m/g;s/t/z/g;s/b/n/g;s/iC/p/g') >> ${filename}
 
     echo "# Check" >> ${filename}
 
@@ -363,12 +363,12 @@ function slp2PMmpl {
 	modcomp=" mod ${MODU}";
     fi
 
-    echo "Errors := expand(PolynomialTools:-FromCoefficientVector(C, X) - PolynomialTools:-FromCoefficientVector(Vector(${m}, symbol = 'A'), X)*PolynomialTools:-FromCoefficientVector(Vector(${k}, symbol = 'B'), X)) ${modcomp};" >> ${filename}
+    echo "Result := expand(PolynomialTools:-FromCoefficientVector(C, X) - PolynomialTools:-FromCoefficientVector(Vector(${m}, symbol = 'A'), X)*PolynomialTools:-FromCoefficientVector(Vector(${k}, symbol = 'B'), X)) ${modcomp};" >> ${filename}
 
     if [[ "${MODP}" -gt 0 ]]; then
-	echo "NumErrors:=Rem(Errors,${IRRED},X) ${modcomp};" >> ${filename}
+	echo "NumErrors:=Rem(Result,${IRRED},X) ${modcomp};" >> ${filename}
    else
-	echo "NumErrors:=Errors;" >> ${filename}
+	echo "NumErrors:=Result;" >> ${filename}
     fi
    
 

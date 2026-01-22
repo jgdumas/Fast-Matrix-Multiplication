@@ -51,6 +51,8 @@ while [[ $# -gt 0 ]]; do
     -I|--Ireducible)
       MODP=1
       IRRED="$2"
+      MMCHECK=0
+      PMCHECK=1
       shift # past argument
       shift # past value
       ;;
