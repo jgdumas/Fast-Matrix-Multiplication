@@ -83,6 +83,7 @@ function sms2slp {
     local EXPO=$6
     local SQRT=$7
     local OPTFLAGS=$8
+    local MODU=$9
 
     local Lsms=${Lmat}.sms
     local Rsms=${Rmat}.sms
@@ -132,11 +133,16 @@ function sms2slp {
     ##########
     # Verifications
     #
+    MODFLAGS=""
+    if [[ "$MODU" -gt 0 ]]; then
+	MODFLAGS="-q ${MODU}"
+    fi
+
     for mat in $Lmat $Rmat $Pmat
       do
       local Msms=${mat}.sms
       local Mslp=${mat}.slp
-      local pmc=`SLPchecker -M ${Msms} ${Mslp} |& grep '#'`
+      local pmc=`SLPchecker ${MODFLAGS} -M ${Msms} ${Mslp} |& grep '#'`
       echo $pmc | sed 's/#[^#]/\n&/g'
       if [[ "$pmc" == *"ERROR"* ]]; then
 	  exit 1;
@@ -327,10 +333,11 @@ function slp2PMmpl {
     local n=$6
     local r=$7
     local suffix=$8
+    local MODP=$9
+    local IRRED="${10}"
 
     filename="$(( $m - 1 ))o$(( $k - 1 ))o$(( $n - 1 ))_${r}_${suffix}.mpl"
 
-    echo "(`dirname $0`/replacer ${Lslp} -M i o A ${m} 1 ${r} 1"
     echo "# Left SLP" > ${filename}
     (`dirname $0`/replacer ${Lslp} -M i o A ${m} 1 ${r} 1 | sed 's/b/w/g;s/x/s/g;s/t/x/g;s/v/t/g;s/z/v/g;s/g/u/g;s/oA/l/g') >> ${filename}
 
@@ -350,12 +357,21 @@ function slp2PMmpl {
     (`dirname $0`/replacer ${Pslp} -M i o C ${n} 1 ${r} 0| sed 's/z/n/g;s/r/h/g;s/x/j/g;s/v/k/g;s/g/m/g;s/t/z/g;s/b/q/g;s/iC/p/g') >> ${filename}
 
     echo "# Check" >> ${filename}
+
     modcomp="";
-    if [[ "${SQRT}" -ne 0 ]]; then
-	modcomp=" mod ${MODULO}";
+    if [[ "${MODU}" -gt 0 ]]; then
+	modcomp=" mod ${MODU}";
     fi
 
-    echo "NumErrors := expand(PolynomialTools:-FromCoefficientVector(C, X) - PolynomialTools:-FromCoefficientVector(Vector(${m}, symbol = 'A'), X)*PolynomialTools:-FromCoefficientVector(Vector(${k}, symbol = 'B'), X));" >> ${filename}
+    echo "Errors := expand(PolynomialTools:-FromCoefficientVector(C, X) - PolynomialTools:-FromCoefficientVector(Vector(${m}, symbol = 'A'), X)*PolynomialTools:-FromCoefficientVector(Vector(${k}, symbol = 'B'), X)) ${modcomp};" >> ${filename}
+
+    if [[ "${MODP}" -gt 0 ]]; then
+	echo "NumErrors:=Rem(Errors,${IRRED},X) ${modcomp};" >> ${filename}
+   else
+	echo "NumErrors:=Errors;" >> ${filename}
+    fi
+   
+
     if [ "${MAPLEHERE}" = true ] ; then
 	tmpfile=/tmp/fdt_s2m.$$
 	cat ${filename} | ${MAPLEPROG} | tee ${tmpfile} | tail

@@ -24,6 +24,10 @@ OPTFLAGS=""
 SQRT=0
 REPL=0
 EXPO=0
+MODU=0
+MODP=0
+IRRED="Empty"
+
 while [[ $# -gt 0 ]]; do
   case $1 in
     -O|--Optflags)
@@ -43,6 +47,17 @@ while [[ $# -gt 0 ]]; do
       MMCHECK=0
       PMCHECK=1
       shift # past argument
+      ;;
+    -I|--Ireducible)
+      MODP=1
+      IRRED="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -q|--prime)
+      MODU="$2"
+      shift # past argument
+      shift # past value
       ;;
     -r|--modular)
       REPL="$2"
@@ -69,7 +84,6 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 set -- "${MATS[@]}" # restore positional parameters
-
 
 # ==========================================================================
 ##########
@@ -127,7 +141,7 @@ fi
 # ==========================================================================
 # Check MM & Check/Generate associated SLPs
 #
-sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} ${REPL} ${EXPO} ${SQRT} "${OPTFLAGS}"
+sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} ${REPL} ${EXPO} ${SQRT} "${OPTFLAGS}" ${MODU}
 
 # ==========================================================================
 # Bilinear algorithm for matrix multiplication only
@@ -150,7 +164,7 @@ if [[ "$PMCHECK" -eq 1 ]]; then
     n=${Pd[0]}
     r=${Ld[0]}
 
-    slp2PMmpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${Suff}
+    slp2PMmpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${Suff} ${MODP} "${IRRED}"
 else
     n=`echo "sqrt(${Rd[1]}*${Pd[0]}/${Ld[1]})"|bc`
     m=$(( ${Pd[0]} / ${n} ))
