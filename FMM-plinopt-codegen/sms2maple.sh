@@ -39,6 +39,11 @@ while [[ $# -gt 0 ]]; do
       MMCHECK=0
       shift # past argument
       ;;
+    -p|-pm|--PMcheck)
+      MMCHECK=0
+      PMCHECK=1
+      shift # past argument
+      ;;
     -r|--modular)
       REPL="$2"
       EXPO="$3"
@@ -97,20 +102,6 @@ FMMD=`dirname $0`
 
 
 ##########
-# Extract dimensions
-#
-Ld=(`grep -v '#' ${Lsms} | head -1 | cut -d' ' -f 1,2`)
-Rd=(`grep -v '#' ${Rsms} | head -1 | cut -d' ' -f 1,2`)
-Pd=(`grep -v '#' ${Psms} | head -1 | cut -d' ' -f 1,2`)
-
-n=`echo "sqrt(${Rd[1]}*${Pd[0]}/${Ld[1]})"|bc`
-m=$(( ${Pd[0]} / ${n} ))
-k=$(( ${Rd[1]} / ${n} ))
-
-r=`grep -v '#' ${Lsms} | head -1 | cut -d' ' -f 1`
-
-
-##########
 # test for maple program
 #
 MAPLEPROG=maple
@@ -145,7 +136,30 @@ Lslp=${Lmat}.slp
 Rslp=${Rmat}.slp
 Pslp=${Pmat}.slp
 
-slp2MMmpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${Suff} ${REPL} ${EXPO} ${SQRT}
+
+##########
+# Extract dimensions
+#
+Ld=(`grep -v '#' ${Lsms} | head -1 | cut -d' ' -f 1,2`)
+Rd=(`grep -v '#' ${Rsms} | head -1 | cut -d' ' -f 1,2`)
+Pd=(`grep -v '#' ${Psms} | head -1 | cut -d' ' -f 1,2`)
+
+if [[ "$PMCHECK" -eq 1 ]]; then
+    m=${Ld[1]}
+    k=${Rd[1]}
+    n=${Pd[0]}
+    r=${Ld[0]}
+
+    slp2PMmpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${Suff}
+else
+    n=`echo "sqrt(${Rd[1]}*${Pd[0]}/${Ld[1]})"|bc`
+    m=$(( ${Pd[0]} / ${n} ))
+    k=$(( ${Rd[1]} / ${n} ))
+    r=`grep -v '#' ${Lsms} | head -1 | cut -d' ' -f 1`
+
+    slp2MMmpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${Suff} ${REPL} ${EXPO} ${SQRT}
+fi
+
 
 
 # ==========================================================================

@@ -311,3 +311,65 @@ function slp2MMmpl {
     echo "${filename} is a MM algorithm."
 }
 # ==========================================================================
+
+
+
+# ==========================================================================
+##########
+# Function: Gathering of SLPs to form a Maple program
+#
+function slp2PMmpl {
+    local Lslp=$1
+    local Rslp=$2
+    local Pslp=$3
+    local m=$4
+    local k=$5
+    local n=$6
+    local r=$7
+    local suffix=$8
+
+    filename="$(( $m - 1 ))o$(( $k - 1 ))o$(( $n - 1 ))_${r}_${suffix}.mpl"
+
+    echo "(`dirname $0`/replacer ${Lslp} -M i o A ${m} 1 ${r} 1"
+    echo "# Left SLP" > ${filename}
+    (`dirname $0`/replacer ${Lslp} -M i o A ${m} 1 ${r} 1 | sed 's/b/w/g;s/x/s/g;s/t/x/g;s/v/t/g;s/z/v/g;s/g/u/g;s/oA/l/g') >> ${filename}
+
+    echo "# Right SLP" >> ${filename}
+    (`dirname $0`/replacer ${Rslp} -M i o B ${k} 1 ${r} 1| sed 's/t/y/g;s/b/g/g;s/x/c/g;s/v/d/g;s/g/e/g;s/z/f/g;s/r/b/g;s/oB/r/g') >> ${filename}
+
+    rmun=$((r-1))
+    echo "# Inner products: ${rmun}" >> ${filename}
+    for i in $(seq 0 ${rmun})
+      do
+      (echo -n "p${i}:=l${i}*r${i}; ") >> ${filename}
+    done
+    echo -e '\n'  >> ${filename}
+
+    echo "C:=Vector(${n}):" >> ${filename}
+    echo -e '\n# Post SLP' >> ${filename}
+    (`dirname $0`/replacer ${Pslp} -M i o C ${n} 1 ${r} 0| sed 's/z/n/g;s/r/h/g;s/x/j/g;s/v/k/g;s/g/m/g;s/t/z/g;s/b/q/g;s/iC/p/g') >> ${filename}
+
+    echo "# Check" >> ${filename}
+    modcomp="";
+    if [[ "${SQRT}" -ne 0 ]]; then
+	modcomp=" mod ${MODULO}";
+    fi
+
+    echo "NumErrors := expand(PolynomialTools:-FromCoefficientVector(C, X) - PolynomialTools:-FromCoefficientVector(Vector(${m}, symbol = 'A'), X)*PolynomialTools:-FromCoefficientVector(Vector(${k}, symbol = 'B'), X));" >> ${filename}
+    if [ "${MAPLEHERE}" = true ] ; then
+	tmpfile=/tmp/fdt_s2m.$$
+	cat ${filename} | ${MAPLEPROG} | tee ${tmpfile} | tail
+	success=`grep "NumErrors := 0" ${tmpfile} | wc -l`
+	if [[ "${success}" -ne 1 ]]; then
+	    cat ${tmpfile}
+	    echo -e "\033[1;31m**** ERRORS in: cat ${filename} | ${MAPLEPROG} ***\033[0m"
+	    exit 1;
+	else
+	    echo -en "\033[1;32mSUCCESS:\033[0m "
+	fi
+	\rm ${tmpfile}
+    fi
+
+    echo "${filename} is a polynomial multiplication algorithm."
+}
+# ==========================================================================

@@ -41,17 +41,25 @@ std::string& appendchar(std::string& program, const std::string& input,
 // Replaces 1D-numbered 'input' (from 'length' to '0') to:
 //          2D-numbered 'replace', row-major, (s/n) times n
 std::string& unvectorize(std::string& program, const std::string& input,
-                         const std::string& replace, const size_t n,
-                         const size_t s, const char comment) {
+			 const std::string& replace, const size_t n,
+			 const size_t s, const char comment) {
 
-    std::clog << comment << " Unvectorize " << input << "0.." << (s-1) << " --> "
-	      << replace << "[1.." << (s/n) << ',' << "1.." << n << ']'
-	      << std::endl;
+    std::clog << comment << " Unvectorize " << input << "0.." << (s-1)
+	      << " --> " << replace;
+    if (n == 1)
+	std::clog << "[1.." << s;
+    else
+	std::clog << "[1.." << (s/n) << ',' << "1.." << n;
+    std::clog << ']' << std::endl;
+
     for(int k(s); --k >= 0;) {
 	size_t i(k/n), j(k%n);
 	const std::string source(input+std::to_string(k));
 	std::stringstream target;
-	target << replace << '[' << (i+1) << ',' << (j+1) << ']';
+	if (n == 1)
+	    target << replace << '[' << (k+1) << ']';
+	else
+	    target << replace << '[' << (i+1) << ',' << (j+1) << ']';
 
 //         std::clog << comment << "  replace " << source << " --> " << target.str() << std::endl;
 	program = std::regex_replace(program,
@@ -131,7 +139,7 @@ int MatlabVariableReplacer(std::ostream& sout, std::istream& SLP,
     }
 
     if (iotype == 0) {
-        appendchar(program, inchar, rechar, r, comment);
+	appendchar(program, inchar, rechar, r, comment);
     }
 
     appendchar(program, ouchar, rechar, (iotype==1?r:s), comment);
@@ -177,13 +185,13 @@ int MapleVariableReplacer(std::ostream& sout, std::istream& SLP,
 //     }
 
     if (iotype == 1) {
-        unvectorize(program, inchar, rechar, n, s, comment);
+	unvectorize(program, inchar, rechar, n, s, comment);
     }
 
     appendchar(program, (iotype==1 ? ouchar : inchar), rechar, r, comment);
 
     if (iotype == 0) {
-        unvectorize(program, ouchar, rechar, n, s, comment);
+	unvectorize(program, ouchar, rechar, n, s, comment);
     }
 
     sout << program  << std::endl;
@@ -221,21 +229,21 @@ int VariableReplacer(std::ostream& sout, std::istream& SLP,
 int main(int argc, char **argv) {
     if ( (argc<7) || (argv[1] == "-h")) {
 	    std::clog << "Usage: " << argv[0]
-                  << " [stdin|file.slp] [-M|-L] i o A m n r [0|1]\n"
-                  << " WARNING, with -L&0: variables m#/n#/r#/c# are reserved (forbidden in SLP)\n"
-                  << " -M/-L: maple/matlab output\n"
-                  << " i/o/A: input/ouput/additional character\n"
-                  << " m/n/r: (mxn, 2D) and (r, 1D) replacements\n"
-                  << " 0: o is replaced by A numbered (#mxn), i by iA numbered (#r)\n"
-                  << " 1: i is replaced by A numbered (#mxn), o by oA numbered (#r)\n";
+		  << " [stdin|file.slp] [-M|-L] i o A m n r [0|1]\n"
+		  << " WARNING, with -L&0: variables m#/n#/r#/c# are reserved (forbidden in SLP)\n"
+		  << " -M/-L: maple/matlab output\n"
+		  << " i/o/A: input/ouput/additional character\n"
+		  << " m/n/r: (mxn, 2D) and (r, 1D) replacements\n"
+		  << " 0: o is replaced by A numbered (#mxn), i by iA numbered (#r)\n"
+		  << " 1: i is replaced by A numbered (#mxn), o by oA numbered (#r)\n";
 	    exit(-1);
     }
 
     std::ifstream filename(argv[1]);
     if ( filename ) {
-        return VariableReplacer(std::cout, filename, argc, argv, 1);
+	return VariableReplacer(std::cout, filename, argc, argv, 1);
     } else {
-        return VariableReplacer(std::cout, std::cin, argc, argv, 0);
+	return VariableReplacer(std::cout, std::cin, argc, argv, 0);
     }
 
 }
