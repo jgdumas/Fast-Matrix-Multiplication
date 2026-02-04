@@ -48,7 +48,7 @@ while [[ $# -gt 0 ]]; do
       PMCHECK=1
       shift # past argument
       ;;
-    -I|--Ireducible)
+    -I|--Irreducible)
       MODP=1
       IRRED="$2"
       MMCHECK=0
@@ -71,12 +71,15 @@ while [[ $# -gt 0 ]]; do
       shift # past value
       ;;
     -h|--h|-help|--help|-*|--*)
-      echo "Usage: $0 [-O #|-r # # #|-m|-n] L.sms R.sms P.sms [name]"
+      echo "Usage: $0 [-O #|-q #|-r # # #|-m|-n] L.sms R.sms P.sms [name]"
       echo "  generates a Maple program from L,R,P matrices."
       echo "  [name]: the program suffix (default '${Suff}')."
-      echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
       echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
+      echo "  -q q: compute modulo q (default none)."
       echo "  -r r e s: compute modulo (r^e-s) in sms files (default none)."
+      echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
+      echo "  -p: L,R,P are checked as a poly. mul. (default mat. mul.)."
+      echo "  -I I(X): compute modulo I(X) (default none)."
       exit 1
       ;;
     *)
