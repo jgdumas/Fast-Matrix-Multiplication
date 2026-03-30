@@ -146,7 +146,7 @@ fi
 # ==========================================================================
 # Check MM & Check/Generate associated SLPs
 #
-sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} ${REPL} ${EXPO} ${SQRT} "${OPTFLAGS}" ${MODU}
+sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} ${REPL} ${EXPO} ${SQRT} ${MODU} "${OPTFLAGS}"
 
 # ==========================================================================
 # Bilinear algorithm for matrix multiplication only
@@ -176,7 +176,7 @@ else
     k=$(( ${Rd[1]} / ${n} ))
     r=`grep -v '#' ${Lsms} | head -1 | cut -d' ' -f 1`
 
-    slp2MMmpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${Suff} ${REPL} ${EXPO} ${SQRT}
+    slp2MMmpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${Suff} ${REPL} ${EXPO} ${SQRT} ${MODU}
 fi
 
 

@@ -57,10 +57,15 @@ function MMcheck {
     local REPL=$4
     local EXPO=$5
     local SQRT=$6
+    local MODU=$7
 
     local MMFLAGS=""
-    if [[ "${SQRT}" -ne 0 ]]; then
-	local MMFLAGS="-b 128 -r ${REPL} ${EXPO} ${SQRT}"
+    if [[ "$MODU" -gt 0 ]]; then
+	MMFLAGS="-q ${MODU}"
+    else
+	if [[ "${SQRT}" -ne 0 ]]; then
+	    local MMFLAGS="-b 128 -r ${REPL} ${EXPO} ${SQRT}"
+	fi
     fi
     local mkn=`MMchecker ${Lsms} ${Rsms} ${Psms} ${MMFLAGS} |& grep '#'`
     echo $mkn
@@ -82,8 +87,8 @@ function sms2slp {
     local REPL=$5
     local EXPO=$6
     local SQRT=$7
-    local OPTFLAGS=$8
-    local MODU=$9
+    local MODU=$8
+    local OPTFLAGS=$9
 
     local Lsms=${Lmat}.sms
     local Rsms=${Rmat}.sms
@@ -94,10 +99,18 @@ function sms2slp {
     local Pslp=${Pmat}.slp
 
     ##########
+    # Verifications
+    #
+    MODFLAGS=""
+    if [[ "$MODU" -gt 0 ]]; then
+	MODFLAGS="-q ${MODU}"
+    fi
+
+    ##########
     # Do represent a matrix multiplication algorithm
     #
     if [[ "$MMCHECK" -eq 1 ]]; then
-	MMcheck ${Lsms} ${Rsms} ${Psms} ${REPL} ${EXPO} ${SQRT}
+	MMcheck ${Lsms} ${Rsms} ${Psms} ${REPL} ${EXPO} ${SQRT} ${MODU}
     else
 	echo "# <$m;$k;$n> algorithm of rank $r."
     fi
@@ -128,14 +141,6 @@ function sms2slp {
 
 	echo "# Generating ${Pslp}, by transposition, with flags: ${OPTFLAGS}"
 	matrix-transpose ${Psms} | optimizer ${OPTFLAGS} | transpozer | compacter -s > ${Pslp}
-    fi
-
-    ##########
-    # Verifications
-    #
-    MODFLAGS=""
-    if [[ "$MODU" -gt 0 ]]; then
-	MODFLAGS="-q ${MODU}"
     fi
 
     for mat in $Lmat $Rmat $Pmat
@@ -270,6 +275,7 @@ function slp2MMmpl {
     local REPL=$9
     local EXPO=${10}
     local SQRT=${11}
+    local MODU=${12}
     MODULO=$(( ${REPL} ** ${EXPO} - ${SQRT} ))
 
     filename="${m}x${k}x${n}_${r}_${suffix}.mpl"
@@ -294,8 +300,12 @@ function slp2MMmpl {
 
     echo "# Check" >> ${filename}
     modcomp="";
-    if [[ "${SQRT}" -ne 0 ]]; then
-	modcomp=" mod ${MODULO}";
+    if [[ "${MODU}" -gt 0 ]]; then
+	modcomp=" mod ${MODU}";
+    else
+	if [[ "${SQRT}" -ne 0 ]]; then
+	    modcomp=" mod ${MODULO}";
+	fi
     fi
 
     echo "Errors := LinearAlgebra:-Map(expand, C - ((Matrix(${m}, ${k}, symbol = 'A')) . (Matrix(${k}, ${n}, symbol = 'B'))))"${modcomp}"; NumErrors:=LinearAlgebra:-Rank(Errors);" >> ${filename}

@@ -28,6 +28,7 @@ CoBTYPE=0
 REPL=0
 EXPO=0
 SQRT=0
+MODU=0
 fl=0
 fr=0
 fp=0
@@ -64,6 +65,11 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
+    -q|--prime)
+      MODU="$2"
+      shift # past argument
+      shift # past value
+      ;;
     -r|--modular)
       REPL="$2"
       EXPO="$3"
@@ -82,6 +88,7 @@ while [[ $# -gt 0 ]]; do
       echo "  -f k: column dimension of factorized bases (default is column dim.)."
       echo "  -m/-n: L,R,P are checked/not checked as a mat. mul. (default no)."
       echo "  -O N: optimizer with N loops (default is ${OPTFLAGS})."
+      echo "  -q q: compute modulo q (default none)."
       echo "  -r r e s: compute modulo (r^e-s) in sms files (default none)."
       exit 1
       ;;
@@ -128,7 +135,7 @@ r=`grep -v '#' ${Lsms} | head -1 | cut -d' ' -f 1`
 if [[ "$ALTBASIS" -eq 1 ]]; then
     # Compute with alternative bases
 
-    MMcheck ${Lsms} ${Rsms} ${Psms} ${REPL} ${EXPO} ${SQRT}
+    MMcheck ${Lsms} ${Rsms} ${Psms} ${REPL} ${EXPO} ${SQRT} ${MODU}
 
     OvwrCoB=0
     if [ -f ${Lmat}_A.sms ] || [ -f ${Rmat}_A.sms ] || [ -f ${Pmat}_A.sms ] || [ -f ${Lmat}_C.sms ] || [ -f ${Rmat}_C.sms ] || [ -f ${Pmat}_C.sms ]; then
@@ -153,8 +160,8 @@ if [[ "$ALTBASIS" -eq 1 ]]; then
     fi
 
 	# Do generate the SLPs:
-    sms2slp ${Lmat}_C ${Rmat}_C ${Pmat}_C 0 ${REPL} ${EXPO} ${SQRT} "${OPTFLAGS}"
-    sms2slp ${Lmat}_A ${Rmat}_A ${Pmat}_A 0 ${REPL} ${EXPO} ${SQRT} "${OPTFLAGS}"
+    sms2slp ${Lmat}_C ${Rmat}_C ${Pmat}_C 0 ${REPL} ${EXPO} ${SQRT} ${MODU} "${OPTFLAGS}"
+    sms2slp ${Lmat}_A ${Rmat}_A ${Pmat}_A 0 ${REPL} ${EXPO} ${SQRT} ${MODU} "${OPTFLAGS}"
 
 	# Verifications
     combPMcheck ${Lsms} ${Lmat}_C.slp ${Lmat}_A.slp
@@ -201,7 +208,7 @@ else
     # Generic bilinear algorithm
 
 	# Do generate the SLPs:
-    sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} ${REPL} ${EXPO} ${SQRT} "${OPTFLAGS}"
+    sms2slp ${Lmat} ${Rmat} ${Pmat} ${MMCHECK} ${REPL} ${EXPO} ${SQRT} ${MODU} "${OPTFLAGS}"
 
     Lslp=${Lmat}.slp
     Rslp=${Rmat}.slp
