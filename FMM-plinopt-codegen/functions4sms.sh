@@ -120,7 +120,7 @@ function sms2slp {
     #
     BSLP=0
 
-    if [ -f ${Lslp} ] || [ -f ${Rslp} ] || [ -f ${Lslp} ]; then
+    if [ -f ${Lslp} ] || [ -f ${Rslp} ] || [ -f ${Pslp} ]; then
 	read -p "# Overwrite ${Lslp}, ${Rslp} and ${Pslp}? [y/N] " RESP
 	if [[ "${RESP}" == "y" ]]; then
 	    BSLP=1
