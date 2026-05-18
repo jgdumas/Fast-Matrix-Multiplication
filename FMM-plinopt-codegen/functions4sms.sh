@@ -15,6 +15,16 @@
 
 # ==========================================================================
 ##########
+# Color codes
+#
+GRE='\033[1;32m'
+RED='\033[1;41m' # RED='\033[1;31m'
+BLU='\033[0;36m'
+NC='\033[0m'    # No Color
+# ==========================================================================
+
+# ==========================================================================
+##########
 # Function: FMM-codegen check
 #
 function FMMcodegenPresent {
@@ -22,7 +32,7 @@ function FMMcodegenPresent {
       do
       if ! command -v `dirname $0`/${prg} &> /dev/null
       then
-	  echo -e "\033[1;31m**** ERROR\033[0m FMM code generators (${prg}) could not be found. \033[1;31m***\033[0m"
+	  echo -e "${RED}**** ERROR${NC} FMM code generators (${prg}) could not be found. ${RED}***${NC}"
 	  exit 1;
       fi
     done
@@ -39,7 +49,7 @@ function PLinOptPresent {
       do
       if ! command -v ${prg} &> /dev/null
       then
-	  echo -e "\033[1;31m**** ERROR\033[0m plinopt/bin executables (${prg}) could not be found. \033[1;31m***\033[0m"
+	  echo -e "${RED}**** ERROR${NC} plinopt/bin executables (${prg}) could not be found. ${RED}***${NC}"
 	  exit 1;
       fi
     done
@@ -141,6 +151,9 @@ function sms2slp {
 
 	echo "# Generating ${Pslp}, by transposition, with flags: ${OPTFLAGS}"
 	matrix-transpose ${Psms} | optimizer ${OPTFLAGS} | transpozer | compacter -s > ${Pslp}
+    else
+	echo "# Using ${Lslp}, ${Rslp} and ${Pslp}."
+
     fi
 
     for mat in $Lmat $Rmat $Pmat
@@ -197,7 +210,7 @@ function slp2CBm {
     `dirname $0`/CoB.rpl ${Pslp} ${m} ${n} ${fp} P ${File}_ICoB
 
     PlaceHolder ${REPL} ${EXPO} ${SQRT} ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m
-    echo -e "\033[1;32mSUCCESS: ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m generated.\033[0m"
+    echo -e "${GRE}SUCCESS: ${File}_CoBL.m ${File}_CoBR.m ${File}_ICoB.m generated.${NC}"
 
 }
 # ==========================================================================
@@ -227,7 +240,7 @@ function slp2MMm {
     `dirname $0`/MM.rpl ${Lslp} ${Rslp} ${Pslp} ${m} ${k} ${n} ${r} ${fl} ${fr} ${fp} ${File} 1
 
     PlaceHolder ${REPL} ${EXPO} ${SQRT} ${File}_${m}_${k}_${n}.m
-    echo -e "\033[1;32mSUCCESS: ${File}.m generated.\033[0m"
+    echo -e "${GRE}SUCCESS: ${File}.m generated.${NC}"
 
 }
 # ==========================================================================
@@ -252,6 +265,7 @@ function combPMcheck {
 	echo "# Combined ${pri} ${pro}: SLPchecker -M ${mat} s2m.slp"
 	exit 1;
     else
+	echo -e "# ${GRE}SUCCESS: correct combination of ${pri} ${pro} for ${mat}.${NC}"
 	\rm s2m.slp
     fi
 }
@@ -287,7 +301,7 @@ function slp2MMmpl {
     (`dirname $0`/replacer ${Rslp} -M i o B ${k} ${n} ${r} 1| sed 's/t/y/g;s/b/g/g;s/x/c/g;s/v/d/g;s/g/e/g;s/z/f/g;s/r/b/g;s/oB/r/g') >> ${filename}
 
     rmun=$((r-1))
-    echo "# Inner products: ${rmun}" >> ${filename}
+    echo "# Inner products: ${r}" >> ${filename}
     for i in $(seq 0 ${rmun})
       do
       (echo -n "p${i}:=l${i}*r${i}; ") >> ${filename}
@@ -316,10 +330,10 @@ function slp2MMmpl {
 	success=`grep "NumErrors := 0" ${tmpfile} | wc -l`
 	if [[ "${success}" -ne 1 ]]; then
 	    cat ${tmpfile}
-	    echo -e "\033[1;31m**** ERRORS in: cat ${filename} | ${MAPLEPROG} ***\033[0m"
+	    echo -e "${RED}**** ERRORS in: cat ${filename} | ${MAPLEPROG} ***${NC}"
 	    exit 1;
 	else
-	    echo -en "\033[1;32mSUCCESS:\033[0m "
+	    echo -en "${GRE}SUCCESS:${NC} "
 	fi
 	\rm ${tmpfile}
     fi
@@ -388,10 +402,10 @@ function slp2PMmpl {
 	success=`grep "NumErrors := 0" ${tmpfile} | wc -l`
 	if [[ "${success}" -ne 1 ]]; then
 	    cat ${tmpfile}
-	    echo -e "\033[1;31m**** ERRORS in: cat ${filename} | ${MAPLEPROG} ***\033[0m"
+	    echo -e "${RED}**** ERRORS in: cat ${filename} | ${MAPLEPROG} ***${NC}"
 	    exit 1;
 	else
-	    echo -en "\033[1;32mSUCCESS:\033[0m "
+	    echo -en "${GRE}SUCCESS:${NC} "
 	fi
 	\rm ${tmpfile}
     fi

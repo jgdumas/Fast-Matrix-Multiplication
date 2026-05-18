@@ -113,6 +113,31 @@ Rmat=`dirname $Lsms`/`basename $Rsms .sms`
 Pmat=`dirname $Lsms`/`basename $Psms .sms`
 #echo "$Lmat $Rmat $Pmat"
 
+
+LAmat="`dirname $Lsms`/`basename $Lsms _L.sms`-ALT_L"
+RAmat="`dirname $Rsms`/`basename $Rsms _R.sms`-ALT_R"
+PAmat="`dirname $Psms`/`basename $Psms _P.sms`-ALT_P"
+LCmat="`dirname $Lsms`/`basename $Lsms _L.sms`-CoB_L"
+RCmat="`dirname $Rsms`/`basename $Rsms _R.sms`-CoB_R"
+PCmat="`dirname $Psms`/`basename $Psms _P.sms`-CoB_P"
+LAsms="${LAmat}.sms"
+RAsms="${RAmat}.sms"
+PAsms="${PAmat}.sms"
+LCsms="${LCmat}.sms"
+RCsms="${RCmat}.sms"
+PCsms="${PCmat}.sms"
+LAslp="${LAmat}.slp"
+RAslp="${RAmat}.slp"
+PAslp="${PAmat}.slp"
+LCslp="${LCmat}.slp"
+RCslp="${RCmat}.slp"
+PCslp="${PCmat}.slp"
+
+# echo "### $LAsms $RAsms $PAsms"
+# echo "### $LCsms $RCsms $PCsms"
+# echo "### $LAslp $RAslp $PAslp"
+# echo "### $LCslp $RCslp $PCslp"
+
 ##########
 # Extract dimensions
 #
@@ -138,8 +163,8 @@ if [[ "$ALTBASIS" -eq 1 ]]; then
     MMcheck ${Lsms} ${Rsms} ${Psms} ${REPL} ${EXPO} ${SQRT} ${MODU}
 
     OvwrCoB=0
-    if [ -f ${Lmat}_A.sms ] || [ -f ${Rmat}_A.sms ] || [ -f ${Pmat}_A.sms ] || [ -f ${Lmat}_C.sms ] || [ -f ${Rmat}_C.sms ] || [ -f ${Pmat}_C.sms ]; then
-	read -p "# Overwrite ${Lmat}_A.sms, ${Rmat}_A.sms, ${Pmat}_A.sms, ${Lmat}_C.sms, ${Rmat}_C.sms, ${Pmat}_C.sms? [y/N] " RESP
+    if [ -f ${LAsms} ] || [ -f ${RAsms} ] || [ -f ${PAsms} ] || [ -f ${LCsms} ] || [ -f ${RCsms} ] || [ -f ${PCsms} ]; then
+	read -p "# Overwrite ${LAsms}, ${RAsms}, ${PAsms}, ${LCsms}, ${RCsms}, ${PCsms}? [y/N] " RESP
 	if [[ "${RESP}" == "y" ]]; then
 	    OvwrCoB=1
 	fi
@@ -149,28 +174,30 @@ if [[ "$ALTBASIS" -eq 1 ]]; then
 
     if [[ "$OvwrCoB" -eq 1 ]]; then
 	# Factor into: sparse x CoB
-	echo "# Sparsifying into ${Lmat}_A.sms ${Rmat}_A.sms ${Pmat}_A.sms; ${FCTFLAGS}"
-	echo "#       with bases ${Lmat}_C.sms ${Rmat}_C.sms ${Pmat}_C.sms."
-	(factorizer -S ${OPTFLAGS} ${FCTFLAGS} ${Lsms} > ${Lmat}_C.sms) |& grep -v '#' > ${Lmat}_A.sms
-	(factorizer -S ${OPTFLAGS} ${FCTFLAGS} ${Rsms} > ${Rmat}_C.sms) |& grep -v '#' > ${Rmat}_A.sms
+	echo "# Sparsifying into ${LAsms} ${RAsms} ${PAsms}; ${FCTFLAGS}"
+	echo "#       with bases ${LCsms} ${RCsms} ${PCsms}."
+	(factorizer -S ${OPTFLAGS} ${FCTFLAGS} ${Lsms} > ${LCsms}) |& grep -v '#' > ${LAsms}
+	(factorizer -S ${OPTFLAGS} ${FCTFLAGS} ${Rsms} > ${RCsms}) |& grep -v '#' > ${RAsms}
 
-	(matrix-transpose ${Psms} | factorizer -S ${OPTFLAGS} ${FCTFLAGS} > ${Pmat}_tC.sms) |& grep -v '#' > ${Pmat}_tA.sms
-	matrix-transpose ${Pmat}_tC.sms > ${Pmat}_C.sms
-	matrix-transpose ${Pmat}_tA.sms > ${Pmat}_A.sms
+	(matrix-transpose ${Psms} | factorizer -S ${OPTFLAGS} ${FCTFLAGS} > ${PCmat}_tC.sms) |& grep -v '#' > ${PCmat}_tA.sms
+	matrix-transpose ${PCmat}_tC.sms > ${PCsms}
+	matrix-transpose ${PCmat}_tA.sms > ${PAsms}
+    else
+	echo "# Using ${LAsms}, ${RAsms}, ${PAsms}, ${LCsms}, ${RCsms}, ${PCsms}"s
     fi
 
 	# Do generate the SLPs:
-    sms2slp ${Lmat}_C ${Rmat}_C ${Pmat}_C 0 ${REPL} ${EXPO} ${SQRT} ${MODU} "${OPTFLAGS}"
-    sms2slp ${Lmat}_A ${Rmat}_A ${Pmat}_A 0 ${REPL} ${EXPO} ${SQRT} ${MODU} "${OPTFLAGS}"
+    sms2slp ${LCmat} ${RCmat} ${PCmat} 0 ${REPL} ${EXPO} ${SQRT} ${MODU} "${OPTFLAGS}"
+    sms2slp ${LAmat} ${RAmat} ${PAmat} 0 ${REPL} ${EXPO} ${SQRT} ${MODU} "${OPTFLAGS}"
 
 	# Verifications
-    combPMcheck ${Lsms} ${Lmat}_C.slp ${Lmat}_A.slp
-    combPMcheck ${Rsms} ${Rmat}_C.slp ${Rmat}_A.slp
-    combPMcheck ${Psms} ${Pmat}_A.slp ${Pmat}_C.slp
+    combPMcheck ${Lsms} ${LCslp} ${LAslp}
+    combPMcheck ${Rsms} ${RCslp} ${RAslp}
+    combPMcheck ${Psms} ${PAslp} ${PCslp}
 
 	# Produce the matlab programs from the SLPs, with CoB and bilinear algorithm
 
-    slp2CBm ${Lmat}_C.slp ${Rmat}_C.slp ${Pmat}_C.slp ${m} ${k} ${n} ${fl} ${fr} ${fp} ${REPL} ${EXPO} ${SQRT} ${File}
+    slp2CBm ${LCslp} ${RCslp} ${PCslp} ${m} ${k} ${n} ${fl} ${fr} ${fp} ${REPL} ${EXPO} ${SQRT} ${File}
     if [[ "${fl}" -eq 0 ]]; then
 	fl=$((m*k))
     fi
@@ -180,7 +207,7 @@ if [[ "$ALTBASIS" -eq 1 ]]; then
     if [[ "${fp}" -eq 0 ]]; then
 	fp=$((m*n))
     fi
-    slp2MMm ${Lmat}_A.slp ${Rmat}_A.slp ${Pmat}_A.slp ${m} ${k} ${n} ${r} ${fl} ${fr} ${fp} ${REPL} ${EXPO} ${SQRT} ${File}_mul
+    slp2MMm ${LAslp} ${RAslp} ${PAslp} ${m} ${k} ${n} ${r} ${fl} ${fr} ${fp} ${REPL} ${EXPO} ${SQRT} ${File}_mul
 
     Mfile=`basename ${File}`
     echo "# Generating alternative basis matlab program ${File}_alternative.m."
@@ -201,7 +228,7 @@ end
 EOF
 ## ....................... EOF
 
-echo -e "\033[1;32mSUCCESS: ${File}_alternative.m generated.\033[0m "
+echo -e "${GRE}SUCCESS: ${File}_alternative.m generated.${NC} "
 
 
 else
