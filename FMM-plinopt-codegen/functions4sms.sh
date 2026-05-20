@@ -298,7 +298,7 @@ function slp2MMmpl {
     (`dirname $0`/replacer ${Lslp} -M i o A ${m} ${k} ${r} 1 | sed 's/b/w/g;s/x/s/g;s/t/x/g;s/v/t/g;s/z/v/g;s/g/u/g;s/oA/l/g') >> ${filename}
 
     echo "# Right SLP" >> ${filename}
-    (`dirname $0`/replacer ${Rslp} -M i o B ${k} ${n} ${r} 1| sed 's/t/y/g;s/b/g/g;s/x/c/g;s/v/d/g;s/g/e/g;s/z/f/g;s/r/b/g;s/oB/r/g') >> ${filename}
+    (`dirname $0`/replacer ${Rslp} -M i o B ${k} ${n} ${r} 1| sed 's/t/y/g;s/g/e/g;s/b/g/g;s/x/c/g;s/v/d/g;s/z/f/g;s/r/b/g;s/oB/r/g') >> ${filename}
 
     rmun=$((r-1))
     echo "# Inner products: ${r}" >> ${filename}
