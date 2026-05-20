@@ -255,7 +255,7 @@ function combPMcheck {
     local pri=$2
     local pro=$3
     local usedvar=`sed 's/[^[:alpha:]]//g' ${pri} ${pro} | grep -o . | sort -u | tr -d "\n"`
-    local freechar=`echo "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" | sed "s/${usedvar}//g" | grep -o . | head -1`
+    local freechar=`echo "defghjkmnqstuvwxyzDEFGHJKMNQSTUVWXYZ" | sed "s/${usedvar}//g" | grep -o . | head -1`
     sed -r "s/(o)([0-9]*)/${freechar}\2/g" ${pri} > s2m.slp
     sed -r "s/(i)([0-9]*)/${freechar}\2/g" ${pro} >> s2m.slp
 
@@ -310,7 +310,7 @@ function slp2MMmpl {
 
     echo "C:=Matrix(${m},${n}):" >> ${filename}
     echo -e '\n# Post SLP' >> ${filename}
-    (`dirname $0`/replacer ${Pslp} -M i o C ${m} ${n} ${r} 0| sed 's/z/n/g;s/r/h/g;s/x/j/g;s/v/k/g;s/g/m/g;s/t/z/g;s/b/q/g;s/iC/p/g') >> ${filename}
+    (`dirname $0`/replacer ${Pslp} -M i o C ${m} ${n} ${r} 0| sed 's/z/n/g;s/r/h/g;s/l/s/g;s/x/j/g;s/v/k/g;s/g/m/g;s/t/z/g;s/b/q/g;s/iC/p/g') >> ${filename}
 
     echo "# Check" >> ${filename}
     modcomp="";
