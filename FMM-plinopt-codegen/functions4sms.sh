@@ -327,7 +327,7 @@ function slp2MMmpl {
 	fi
     fi
 
-    echo "Errors := LinearAlgebra:-Map(expand, C - ((Matrix(${m}, ${k}, symbol = 'A')) . (Matrix(${k}, ${n}, symbol = 'B'))))"${modcomp}"; NumErrors:=LinearAlgebra:-Rank(Errors);" >> ${filename}
+    echo "Errors := LinearAlgebra:-Map(expand, C - ((Matrix(${m}, ${k}, symbol = 'A')) . (Matrix(${k}, ${n}, symbol = 'B'))))"${modcomp}"; NumErrors:=rtable_scanblock(Errors, [], NonZeros);" >> ${filename}
 
     if [ "${MAPLEHERE}" = true ] ; then
 	tmpfile=/tmp/fdt_s2m.$$
