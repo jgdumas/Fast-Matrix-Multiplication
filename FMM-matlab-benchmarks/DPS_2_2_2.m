@@ -1,7 +1,13 @@
 function C = DPS_2_2_2(A, B, nmin, peeling, level)
-SQRT3o2=sqrt(3)/2;
-SQRT3o3=sqrt(3)/3;
-SQRT3f2o3=sqrt(3)*2/3;
+NTH2ROOT3once=nthroot(3,2);
+NTH2ROOT3o2=nthroot(3,2)/2;
+NTH2ROOT3t2o=2/nthroot(3,2);
+NTH2ROOT3t1o=1/nthroot(3,2);
+NTH2ROOT3o4=nthroot(3,2)/4;
+NTH2ROOT3o8=nthroot(3,2)/8;
+NTH2ROOT3o16=nthroot(3,2)/16;
+NTH2ROOT3o3=nthroot(3,2)/3;
+NTH2ROOT3f2o3=nthroot(3,2)*2/3;
 
 if nargin < 3, nmin = 4; end    % Threshold to conventional
 if nargin < 4, peeling = 1; end % Static (1) or Dynamic (2) peeling
@@ -43,28 +49,32 @@ m0 = 0; m1 = 1*m/2; m2 = m;
  r0 = m0+1:m1; r1 = m1+1:m2;
 n0 = 0; n1 = 1*n/2; n2 = n;
  c0 = n0+1:n1; c1 = n1+1:n2;
-r4 = A(r1,c1)*SQRT3o3;
-oA2 = A(r0,c1)+r4;
-oA0 = A(r0,c0)*SQRT3o2+(A(r1,c0)+oA2)/2;
-oA1 = A(r1,c0)-r4;
-oA3 = r4*2;
-oA4 = oA1-oA0;
-oA5 = oA3+oA4;
-oA6 = oA2+oA4;
+t4 = A(r1,c0)-A(r0,c0)*NTH2ROOT3once;
+r5 = A(r1,c1)*NTH2ROOT3o3;
+oA2 = A(r0,c1)+r5;
+r7 = A(r1,c1)*NTH2ROOT3once/6;
+r8 = (t4-A(r0,c1))/2;
+oA0 = A(r0,c0)*NTH2ROOT3o2+(A(r1,c0)+oA2)/2;
+oA1 = A(r1,c0)-r5;
+oA3 = -A(r1,c1)*NTH2ROOT3f2o3;
+oA4 = r8-A(r1,c1)*NTH2ROOT3o2;
+oA5 = r7+r8;
+oA6 = (A(r0,c1)+t4)/2-r7;
 
 [m,n] = size(B);
 m0 = 0; m1 = 1*m/2; m2 = m;
  r0 = m0+1:m1; r1 = m1+1:m2;
 n0 = 0; n1 = 1*n/2; n2 = n;
  c0 = n0+1:n1; c1 = n1+1:n2;
-r4 = B(r0,c1)*SQRT3o3;
+r4 = B(r0,c1)*NTH2ROOT3o3;
 oB1 = r4-B(r0,c0);
-oB0 = r4*2;
+oB0 = B(r0,c1)*NTH2ROOT3f2o3;
 oB2 = r4-B(r1,c1);
-oB3 = (B(r1,c1)+oB1)/2-B(r1,c0)*SQRT3o2;
-oB4 = oB2+oB3;
-oB5 = oB0-oB4;
-oB6 = oB4-oB1;
+oB3 = B(r1,c0)*NTH2ROOT3o2-(oB1+B(r1,c1))/2;
+v11 = B(r0,c0)+B(r1,c0)*NTH2ROOT3once;
+oB4 = v11-oB3*3-B(r1,c1)*2;
+oB6 = B(r0,c0)-B(r1,c1)-oB3;
+oB5 = v11-oB3;
 
 iC0 = DPS( oA0, oB0, nmin, peeling, level);
 iC1 = DPS( oA1, oB1, nmin, peeling, level);
@@ -73,15 +83,15 @@ iC3 = DPS( oA3, oB3, nmin, peeling, level);
 iC4 = DPS( oA4, oB4, nmin, peeling, level);
 iC5 = DPS( oA5, oB5, nmin, peeling, level);
 iC6 = DPS( oA6, oB6, nmin, peeling, level);
-
-b1 = iC3+iC5+iC4;
-z2 = iC2+b1;
-z0 = iC0+b1;
-t5 = z0/2;
-oC3 = z0*SQRT3o2;
-oC2 = t5-iC1-iC3;
-oC1 = t5-z2;
-oC0 = (z2+oC2-(iC6+iC5)*2)*SQRT3o3;
+t10 = iC3/2;
+t9 = iC0/2;
+d4 = iC2+t10;
+t5 = (iC5+iC4)/2;
+oC0 = iC4*NTH2ROOT3o2-iC6*NTH2ROOT3f2o3+(iC0-iC5)*NTH2ROOT3once/6+(d4-iC1)*NTH2ROOT3o3;
+t4 = t9+t5;
+oC1 = t9-d4-t5;
+oC2 = t4-t10-iC1;
+oC3 = iC3*NTH2ROOT3o2+t4*NTH2ROOT3once;
 
 C = [ oC0 oC1 ; oC2 oC3 ] ;
   end
