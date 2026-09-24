@@ -113,13 +113,17 @@ Rmat=`dirname $Lsms`/`basename $Rsms .sms`
 Pmat=`dirname $Lsms`/`basename $Psms .sms`
 #echo "$Lmat $Rmat $Pmat"
 
+ALTDIM=${fl}
+if [[ "$ALTDIM" -eq 0 ]]; then
+    ALTDIM=""
+fi
 
-LAmat="`dirname $Lsms`/`basename $Lsms _L.sms`-ALT_L"
-RAmat="`dirname $Rsms`/`basename $Rsms _R.sms`-ALT_R"
-PAmat="`dirname $Psms`/`basename $Psms _P.sms`-ALT_P"
-LCmat="`dirname $Lsms`/`basename $Lsms _L.sms`-CoB_L"
-RCmat="`dirname $Rsms`/`basename $Rsms _R.sms`-CoB_R"
-PCmat="`dirname $Psms`/`basename $Psms _P.sms`-CoB_P"
+LAmat="`dirname $Lsms`/`basename $Lsms _L.sms`-${ALTDIM}ALT_L"
+RAmat="`dirname $Rsms`/`basename $Rsms _R.sms`-${ALTDIM}ALT_R"
+PAmat="`dirname $Psms`/`basename $Psms _P.sms`-${ALTDIM}ALT_P"
+LCmat="`dirname $Lsms`/`basename $Lsms _L.sms`-${ALTDIM}CoB_L"
+RCmat="`dirname $Rsms`/`basename $Rsms _R.sms`-${ALTDIM}CoB_R"
+PCmat="`dirname $Psms`/`basename $Psms _P.sms`-${ALTDIM}CoB_P"
 LAsms="${LAmat}.sms"
 RAsms="${RAmat}.sms"
 PAsms="${PAmat}.sms"
